@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mrent/pages/login.dart';
 
 class Beginning extends StatelessWidget {
   const Beginning({super.key});
@@ -12,7 +14,14 @@ class Beginning extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: Column(
-          children: [SizedBox(child: Image.asset("assets/images/2.png"))],
+          children: [
+            SizedBox(child: Image.asset("assets/images/2.png")),
+            ElevatedButton(
+                onPressed: () {
+                  Get.to(() => const LoginPage());
+                },
+                child: const Text("Dar"))
+          ],
         ),
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'components/horizantal_card.dart';
 import 'components/text_field.dart';
+import 'components/vertical_card.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -12,60 +14,283 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var rentToggle = true;
 
+  final List<Map<String, String>> properties = [
+    {
+      "text": "Завхан дахь байшин",
+      "location": "Malang, Probolinggo",
+      "rent": "527",
+      "roomCount": "7",
+      "square": "100",
+      "rating": "4.8",
+      "ratingCount": "100"
+    },
+    {
+      "text": "Улаанбаатар төв байшин",
+      "location": "Ulaanbaatar, Bayanzurkh",
+      "rent": "750",
+      "roomCount": "5",
+      "square": "150",
+      "rating": "4.9",
+      "ratingCount": "150"
+    },
+    {
+      "text": "Эрдэнэт орон сууц",
+      "location": "Erdenet, Bulgan",
+      "rent": "420",
+      "roomCount": "3",
+      "square": "90",
+      "rating": "4.6",
+      "ratingCount": "85"
+    },
+    {
+      "text": "Дархан шинэ хороолол",
+      "location": "Darkhan, Selenge",
+      "rent": "600",
+      "roomCount": "4",
+      "square": "110",
+      "rating": "4.7",
+      "ratingCount": "120"
+    },
+    {
+      "text": "Хөвсгөл нуурын байшин",
+      "location": "Khuvsgul, Khatgal",
+      "rent": "800",
+      "roomCount": "6",
+      "square": "200",
+      "rating": "5.0",
+      "ratingCount": "300"
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: const Color(0xffFCFCFC),
-      body: Container(
-        padding: const EdgeInsets.only(top: 10, right: 15, left: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Таны байршил",
-              style: TextStyle(fontSize: 11, color: Color(0xff7D7F88)),
-            ),
-            Row(
+      backgroundColor: const Color(0xffF4F4F4),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.only(bottom: 50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 5.0),
-                  child: Image.asset(
-                    "assets/images/location.png",
-                    width: 20,
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15,bottom: 5),
+                  child: const Text(
+                    "Таны байршил",
+                    style: TextStyle(fontSize: 15, color: Color(0xff7D7F88)),
                   ),
                 ),
-                const Text(
-                  "Улаанбаатар , Монгол",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Image.asset(
+                          "assets/images/location.png",
+                          width: 20,
+                        ),
+                      ),
+                      const Text(
+                        "Улаанбаатар , Монгол",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                      ),
+                    ],
+                  ),
+                ),
+                searchBar(width),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15,top: 20,bottom: 20),
+                  child: const Text(
+                    "Tанд юу хэрэгтэй вэ?",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                  ),
+                ),
+                toggler(width),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15,top: 20),
+                  child: const Text(
+                    "Тантай ойр",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15,bottom: 10),
+                  child: const Text(
+                    "Завхан дахь 243 үл хөдлөх хөрөнгө ",
+                    style: TextStyle(color: Color(0xff7D7F88), fontSize: 15),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  height: height * 0.2,
+                  child: first(),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Завхан дахь өндөр\nүнэлгээтэй",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                      ),
+                      GestureDetector(
+                        child: const Text(
+                          "Бүгд",
+                          style: TextStyle(color: Color(0xff6246EA)),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  height: height * 0.2,
+                  child: second(),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15,bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Завхан дахь өндөр\nүнэлгээтэй",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                      ),
+                      GestureDetector(
+                        child: const Text(
+                          "Бүгд",
+                          style: TextStyle(color: Color(0xff6246EA)),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  padding: const EdgeInsets.only(right: 10),
+                  height: height * 0.25,
+                  child: third(),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 15, left: 15),
+                  child: const Text(
+                    "Танд зориулсан tips",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                  ),
                 ),
               ],
             ),
-            searchBar(width),
-            const Text(
-              "Tанд юу хэрэгтэй вэ?",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-            ),
-            toggler(width),
-            const Text(
-              "Тантай ойр",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
+  ListView third() {
+    return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return const VerticalCardComponent(
+                      path:
+                          "https://scontent.xx.fbcdn.net/v/t1.15752-9/462558027_591998583259847_4304968298902437579_n.png?stp=dst-png_s480x480&_nc_cat=102&ccb=1-7&_nc_sid=0024fc&_nc_ohc=bYYM3CmE6isQ7kNvgEBuWgf&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEjWxcmzRszvMECZYneKaHKKXloMMjIV5FNUv1LlOMllw&oe=67600A3C",
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      width: 15,
+                    );
+                  },
+                  itemCount: properties.length,
+                );
+  }
+
+  ListView first() {
+    return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return NearToYouComponenState(
+                      path:
+                          "https://scontent.xx.fbcdn.net/v/t1.15752-9/462565873_886592826916950_4518783065590103332_n.png?_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_ohc=dvKk4Z2C0fsQ7kNvgHO5NQ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QGlXlS2YoiHDJQT7mN_zF200iJPUv3Le3C-CYVevSKrXw&oe=675FBF41",
+                      text: properties[index]["text"]!,
+                      location: properties[index]["location"]!,
+                      rent: properties[index]["rent"]!,
+                      roomCount: properties[index]["roomCount"]!,
+                      square: properties[index]["square"]!,
+                      rating: properties[index]["rating"]!,
+                      ratingCount: properties[index]["ratingCount"]!,
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      width: 20,
+                    );
+                  },
+                  itemCount: properties.length,
+                );
+  }
+
+  ListView second() {
+    return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return NearToYouComponenState(
+                      path:
+                          "https://scontent.xx.fbcdn.net/v/t1.15752-9/462641873_1100989061595783_4075707448027261257_n.png?_nc_cat=109&ccb=1-7&_nc_sid=0024fc&_nc_ohc=Ueq55peeF98Q7kNvgEJz5w3&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEJmKq3P3ziKvAFE3VmTbajTKhfULRl181Ri-K6OdMLIA&oe=675FF7D8",
+                      text: properties[index]["text"]!,
+                      location: properties[index]["location"]!,
+                      rent: properties[index]["rent"]!,
+                      roomCount: properties[index]["roomCount"]!,
+                      square: properties[index]["square"]!,
+                      rating: properties[index]["rating"]!,
+                      ratingCount: properties[index]["ratingCount"]!,
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      width: 20,
+                    );
+                  },
+                  itemCount: properties.length,
+                );
+  }
+
   Container toggler(double width) {
     return Container(
-      padding: const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(right: 15, left: 15),
+      padding: const EdgeInsets.all(8),
       width: width,
-      height: 48,
+      height: 55,
       decoration: BoxDecoration(
-        color: const Color(0xffF2F2F3),
+        color:  Colors.black.withOpacity(0.055),
         borderRadius: BorderRadius.circular(72),
       ),
       child: Row(
@@ -100,8 +325,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Center(
                   child: Text(
                     "Түрээслэх",
-                    style: TextStyle(
-                      color: rentToggle ? Colors.white : Colors.black,
+                    style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,
+                      color: rentToggle ? Colors.white : Colors.black.withOpacity(0.6),
                     ),
                   ),
                 ),
@@ -135,9 +360,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 child: Center(
                   child: Text(
-                    "Түрээслэх",
-                    style: TextStyle(
-                      color: rentToggle == false ? Colors.white : Colors.black,
+                    "Үл хөдлөх",
+                    style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16,
+                      color: rentToggle == false ? Colors.white : Colors.black.withOpacity(0.6),
                     ),
                   ),
                 ),
@@ -151,11 +376,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Container searchBar(double width) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(right: 25, left: 25, bottom: 10),
       width: width,
-      child: const CustomizedTextField(
+      child:  CustomizedTextField(
         isDense: true,
-        color: Color(0xffF2F2F3),
+        color: Colors.black.withOpacity(0.03),
         text: "Хайлт",
         prefixIcon: "assets/images/search-normal.png",
         suffixIcon: "assets/images/setting-5.png",

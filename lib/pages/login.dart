@@ -7,6 +7,7 @@ import 'package:mrent/pages/register_page.dart';
 
 import 'components/button.dart';
 import 'home_page.dart';
+import 'naviagation_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                       text: "Нууц үг",
                       prefixIcon: "assets/images/nocolorkey.png"),
                   MyButton(
-                    onPress: () => Get.to(() => const MyHomePage()),
+                    onPress: () => Get.to(() => NavigationPage()),
                     text: "Нэвтрэх",
                   ),
                   const Text(

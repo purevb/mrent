@@ -52,8 +52,7 @@ class _VerticalCardComponentState extends State<VerticalCardComponent> {
                 ),
                 Text(
                   "${widget.rentCount ?? 29} түрээслэсэн",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 13),
                 ),
               ],
             ),

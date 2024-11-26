@@ -33,6 +33,7 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
 
     return Container(
       width: screen.width * 0.85,
+      margin: const EdgeInsets.all(2),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),

@@ -1,12 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mrent/pages/components/text_field.dart';
 import 'package:mrent/pages/register_page.dart';
 
 import 'components/button.dart';
-import 'home_page.dart';
 import 'naviagation_page.dart';
 
 class LoginPage extends StatefulWidget {

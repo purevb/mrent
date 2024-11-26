@@ -14,13 +14,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
-  List<Widget> body = const [
-    Icon(Icons.home),
-    Icon(Icons.menu),
-    Icon(Icons.person),
-    Icon(Icons.favorite)
-  ];
   var rentToggle = true;
 
   final List<Map<String, String>> properties = [
@@ -75,7 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: const Color(0xffF4F4F4),
       body: SafeArea(
@@ -204,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   margin: const EdgeInsets.only(left: 15),
                   padding: const EdgeInsets.only(right: 10),
                   height: height * 0.25,
-                  child: third(),
+                  child: third(height, width),
                 ),
                 const SizedBox(
                   height: 25,
@@ -370,13 +362,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ListView third() {
+  ListView third(double height, double width) {
     return ListView.separated(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return const TouchableScale(
+        return TouchableScale(
           child: VerticalCardComponent(
+            hasTitle: false,
+            width: width*0.45,
+            height: height*0.3,
             path:
                 "https://scontent.xx.fbcdn.net/v/t1.15752-9/462558027_591998583259847_4304968298902437579_n.png?stp=dst-png_s480x480&_nc_cat=102&ccb=1-7&_nc_sid=0024fc&_nc_ohc=bYYM3CmE6isQ7kNvgEBuWgf&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEjWxcmzRszvMECZYneKaHKKXloMMjIV5FNUv1LlOMllw&oe=67600A3C",
           ),
@@ -493,7 +488,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 child: Center(
                   child: Text(
-                    "Үл хөдлөх",
+                    "Түрээслүүлэх",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,

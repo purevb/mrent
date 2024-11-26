@@ -5,7 +5,7 @@ import 'package:mrent/pages/profile_page.dart';
 import 'home_page.dart';
 
 class NavigationPage extends StatefulWidget {
-  NavigationPage({super.key});
+  const NavigationPage({super.key});
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -13,10 +13,10 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   final screens = [
-    MyHomePage(),
-    FavoritePage(),
-    ExplorePage(),
-    ProfilePage(),
+    const MyHomePage(),
+    const ExplorePage(),
+    const FavoritePage(),
+    const ProfilePage(),
   ];
 
   int _currentIndex = 0;

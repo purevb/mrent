@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:mrent/pages/login.dart';
 
 import 'components/button.dart';
-import 'home_page.dart';
 
 class Beginning extends StatelessWidget {
   const Beginning({super.key});
@@ -14,17 +13,22 @@ class Beginning extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: Column(
           children: [
-            SizedBox(child: Image.asset("assets/images/homebackground.png")),
-            Expanded (
+            SizedBox(
+              height: height*0.73,
+                width: width,
+                child: Image.asset(
+                    fit: BoxFit.fill, "assets/images/homebackground.png")),
+            Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text("Шинэ эхлэл, Шинэ аялал!",
-                  textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                   const Text(
@@ -39,8 +43,6 @@ class Beginning extends StatelessWidget {
                 ],
               ),
             ),
-
-
           ],
         ),
       ),

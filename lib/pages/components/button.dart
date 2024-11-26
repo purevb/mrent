@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mrent/pages/components/touchable_scale.dart';
 
 class MyButton extends StatefulWidget {
   final String text;
@@ -13,8 +14,8 @@ class _MyButtonState extends State<MyButton> {
   @override
   Widget build(BuildContext context) {
     var screen = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: widget.onPress,
+    return TouchableScale(
+      onPressed: widget.onPress,
       child: Container(
         width: screen.width,
         height: 40,

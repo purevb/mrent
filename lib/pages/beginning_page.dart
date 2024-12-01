@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mrent/pages/login.dart';
+import 'package:mrent/pages/login_page.dart';
 
 import 'components/button.dart';
 

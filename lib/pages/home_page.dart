@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:mrent/pages/components/tips_for_you.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
-
+import 'package:get/get.dart';
+import 'package:mrent/pages/detail_of_object_page.dart';
 import 'components/horizantal_card.dart';
 import 'components/text_field.dart';
 import 'components/vertical_card.dart';
@@ -312,6 +314,9 @@ class _MyHomePageState extends State<MyHomePage> {
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         return TouchableScale(
+          onPressed: () {
+            Get.to(() => const DetailOfObjectPage());
+          },
           child: NearToYouComponenState(
             path:
                 "https://scontent.xx.fbcdn.net/v/t1.15752-9/462565873_886592826916950_4518783065590103332_n.png?_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_ohc=dvKk4Z2C0fsQ7kNvgHO5NQ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QGlXlS2YoiHDJQT7mN_zF200iJPUv3Le3C-CYVevSKrXw&oe=675FBF41",
@@ -370,8 +375,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return TouchableScale(
           child: VerticalCardComponent(
             hasTitle: false,
-            width: width*0.45,
-            height: height*0.3,
+            width: width * 0.45,
+            height: height * 0.3,
             path:
                 "https://scontent.xx.fbcdn.net/v/t1.15752-9/462558027_591998583259847_4304968298902437579_n.png?stp=dst-png_s480x480&_nc_cat=102&ccb=1-7&_nc_sid=0024fc&_nc_ohc=bYYM3CmE6isQ7kNvgEBuWgf&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEjWxcmzRszvMECZYneKaHKKXloMMjIV5FNUv1LlOMllw&oe=67600A3C",
           ),

@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mrent/pages/components/text_field.dart';
-import 'package:mrent/pages/login.dart';
+import 'package:mrent/pages/login_page.dart';
 
 import 'components/button.dart';
 

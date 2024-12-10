@@ -43,6 +43,8 @@ dependencies:
   google_fonts: ^6.2.1
   firebase_core: ^3.8.0
   firebase_auth: ^5.3.3
+  omni_datetime_picker: ^2.0.5
+  flutter_xlider: ^3.5.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/pages/components/text_field.dart';
+import 'package:mrent/pages/components/touchable_scale.dart';
 
 class RentalSearchPage extends StatefulWidget {
   const RentalSearchPage({super.key});
@@ -9,6 +10,7 @@ class RentalSearchPage extends StatefulWidget {
 }
 
 class _RentalSearchPageState extends State<RentalSearchPage> {
+  bool toggleButton = false;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -27,20 +29,42 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
               children: [
                 Container(
                   width: width,
-                  height: height * 0.2,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back,size: 30,),
                       ),
                       Container(
-                        padding: const EdgeInsets.only(left: 30, right: 30),
-                        height: height*0.1,
-                        width: width*0.5,
+                        padding: const EdgeInsets.only(right: 30),
+                        width: width * 0.7,
                         child: const CustomizedTextField(
-                          text: "Ulaanbaatar Mongolia",
+                          text: "Search",
                           prefixIcon: "assets/images/searchicon.png",
+                        ),
+                      ),
+                      TouchableScale(
+                        onPressed: () {
+                          toggleButton = !toggleButton;
+                          setState(() {});
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                              borderRadius: BorderRadius.circular(12)),
+                          width: 48,
+                          height: 48,
+                          child: Image.asset(
+                              fit: BoxFit.fill,
+                              toggleButton == false
+                                  ? "assets/search/disableshatbutton.png"
+                                  : "assets/search/pisda.png"),
                         ),
                       ),
                     ],

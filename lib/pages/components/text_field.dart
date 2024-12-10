@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mrent/pages/components/touchable_scale.dart';
+import 'package:get/get.dart';
+import 'package:mrent/pages/search_page.dart';
 
 class CustomizedTextField extends StatefulWidget {
   final bool? obscure;
@@ -45,10 +48,15 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title ?? "",
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
+        if (widget.title != null) ...[
+          Text(
+            widget.title ?? "",
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+        ],
         Container(
           decoration: BoxDecoration(
             color: isFocused
@@ -82,15 +90,20 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
                 ),
               ),
               suffixIcon: widget.suffixIcon != null
-                  ? Container(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10),
-                      width: 10,
-                      height: 10,
-                      child: Image.asset(
-                        color: isFocused
-                            ? const Color(0xff6246EA)
-                            : const Color(0xff7D7F88),
-                        widget.suffixIcon!,
+                  ? TouchableScale(
+                      onPressed: () {
+                        Get.to(() => RentalSearchPage());
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10),
+                        width: 10,
+                        height: 10,
+                        child: Image.asset(
+                          color: isFocused
+                              ? const Color(0xff6246EA)
+                              : const Color(0xff7D7F88),
+                          widget.suffixIcon!,
+                        ),
                       ),
                     )
                   : null,

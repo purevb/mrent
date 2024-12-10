@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     var screen = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Container(
         padding:

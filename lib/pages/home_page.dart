@@ -275,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 5),
-                                  child: Text(
+                                  child: const Text(
                                     "Tүрээслэгч болох",
                                     style: TextStyle(
                                       color: Color(0xff6246EA),
@@ -345,6 +345,9 @@ class _MyHomePageState extends State<MyHomePage> {
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         return TouchableScale(
+          onPressed: () {
+            Get.to(() => const DetailOfObjectPage());
+          },
           child: NearToYouComponenState(
             path:
                 "https://scontent.xx.fbcdn.net/v/t1.15752-9/462641873_1100989061595783_4075707448027261257_n.png?_nc_cat=109&ccb=1-7&_nc_sid=0024fc&_nc_ohc=Ueq55peeF98Q7kNvgEJz5w3&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEJmKq3P3ziKvAFE3VmTbajTKhfULRl181Ri-K6OdMLIA&oe=675FF7D8",

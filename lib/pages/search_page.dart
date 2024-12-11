@@ -18,7 +18,6 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
   List<String> period = ["Цаг", "Өдөр", "Сар", "Улирал"];
   int? periodSelectedIndex;
 
-
   double _lowerValue = 50;
   double _upperValue = 180;
   @override
@@ -177,7 +176,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
                   style: GoogleFonts.roboto(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xff1A1E25)),
+                      color: const Color(0xff1A1E25)),
                 ),
 
                 Text(
@@ -185,7 +184,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
                   style: GoogleFonts.roboto(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xff1A1E25)),
+                      color: const Color(0xff1A1E25)),
                 ),
 
                 FlutterSlider(
@@ -253,7 +252,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
                     });
                   },
                 ),
-                Container(
+                SizedBox(
                   height: 30,
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
@@ -338,7 +337,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
                         },
                         child: Row(
                           children: [
-                            Container(
+                            SizedBox(
                               height: 20,
                               width: 20,
                               child: Image.asset(

@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'payment_page.dart';
+
 class DetailOfObjectPage extends StatefulWidget {
   const DetailOfObjectPage({super.key});
 
@@ -267,7 +269,9 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               ],
                             ),
                             TouchableScale(
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.to(() => const PaymentPage());
+                              },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 20),

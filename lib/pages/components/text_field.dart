@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mrent/pages/search_page.dart';
 
 class CustomizedTextField extends StatefulWidget {
+  final TextEditingController? controller;
   final bool? obscure;
   final String? text;
   final String? title;
@@ -13,6 +14,7 @@ class CustomizedTextField extends StatefulWidget {
   final bool? isDense;
 
   const CustomizedTextField({
+    this.controller,
     this.isDense,
     this.obscure,
     this.color,
@@ -28,7 +30,6 @@ class CustomizedTextField extends StatefulWidget {
 }
 
 class _CustomizedTextFieldState extends State<CustomizedTextField> {
-  final controller = TextEditingController();
   String result = "";
   final FocusNode focusNode = FocusNode();
   bool isFocused = false;
@@ -67,7 +68,7 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
           child: TextFormField(
             focusNode: focusNode,
             obscureText: widget.obscure ?? false,
-            controller: controller,
+            controller: widget.controller,
             decoration: InputDecoration(
               isDense: widget.isDense,
               floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -133,7 +134,7 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
               result = value;
             },
             validator: (name) =>
-                name!.isEmpty ? "Survey name is required" : null,
+                name!.isEmpty ? "Fill this form" : null,
           ),
         ),
       ],

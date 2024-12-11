@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NearToYouComponenState extends StatefulWidget {
+  final bool? isPayment;
   final String? rating;
   final String? ratingCount;
   final String? text;
@@ -8,9 +9,10 @@ class NearToYouComponenState extends StatefulWidget {
   final String? roomCount;
   final String? square;
   final String? rent;
-  final String? path;
+  final List<String>? path;
 
   const NearToYouComponenState({
+    this.isPayment,
     this.text,
     this.location,
     this.roomCount,
@@ -32,7 +34,7 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
     var screen = MediaQuery.of(context).size;
 
     return Container(
-      width: screen.width * 0.85,
+      width: widget.isPayment == true ? screen.width : screen.width * 0.85,
       margin: const EdgeInsets.all(2),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -40,8 +42,8 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                blurRadius: 1,
-                spreadRadius: 1)
+                blurRadius: 2,
+                spreadRadius: 2)
           ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -52,11 +54,11 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
               bottomLeft: Radius.circular(10),
             ),
             child: SizedBox(
-              width: screen.width * 0.3,
+              width: screen.width * 0.33,
               height: screen.height,
               child: Image.network(
-                fit: BoxFit.fill,
-                widget.path ??
+                fit: BoxFit.fitHeight,
+                widget.path?[0] ??
                     "https://scontent.xx.fbcdn.net/v/t1.15752-9/462565873_886592826916950_4518783065590103332_n.png?_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_ohc=dvKk4Z2C0fsQ7kNvgHO5NQ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QGlXlS2YoiHDJQT7mN_zF200iJPUv3Le3C-CYVevSKrXw&oe=675FBF41",
               ),
             ),

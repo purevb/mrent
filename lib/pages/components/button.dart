@@ -18,7 +18,7 @@ class _MyButtonState extends State<MyButton> {
       onPressed: widget.onPress,
       child: Container(
         width: screen.width,
-        height: 40,
+        height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(81),
           gradient: const LinearGradient(

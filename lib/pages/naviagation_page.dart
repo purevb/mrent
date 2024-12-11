@@ -5,8 +5,8 @@ import 'package:mrent/pages/profile_page.dart';
 import 'home_page.dart';
 
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({super.key});
-
+  const NavigationPage({this.id, super.key});
+  final String? id;
   @override
   State<NavigationPage> createState() => _NavigationPageState();
 }

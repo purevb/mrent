@@ -29,4 +29,31 @@ class PropertyService {
 
     return [];
   }
+
+  Future<PropertyData?> searchFavorite(String id) async {
+    var client = http.Client();
+    var uri = Uri.parse('http://10.0.2.2:3106/api/properties/$id');
+
+    try {
+      var response = await client.get(uri);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+
+        // Assuming the `property` key contains a single object
+        var propertyJson = jsonResponse['property'] as Map<String, dynamic>;
+
+        return PropertyData.fromJson(propertyJson);
+      } else {
+        print('Server error. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Network error: $e');
+    } finally {
+      client.close();
+    }
+
+    // Return null if an error occurred
+    return null;
+  }
 }

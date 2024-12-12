@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/model/properties.dart';
 import 'package:mrent/pages/components/button.dart';
 import 'package:mrent/pages/components/horizantal_card.dart';
 
@@ -29,7 +30,7 @@ class _PaymentPageState extends State<PaymentPage> {
       "text": "KHAN BANK",
     },
   ];
-
+  PropertyData? s;
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -38,21 +39,24 @@ class _PaymentPageState extends State<PaymentPage> {
     return Scaffold(
       backgroundColor: const Color(0xffFCFCFC),
       appBar: AppBar(
-      backgroundColor: const Color(0xffFCFCFC),
+        backgroundColor: const Color(0xffFCFCFC),
         title: const Text("Түрээслэх"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom:20),
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
             child: Column(
               children: [
                 SizedBox(
                   height: height * 0.2,
-                  child: const NearToYouComponenState(
+                  child: NearToYouComponenState(
+                    propertyData: s!,
                     isPayment: true,
-                    path:
-                        ["https://scontent.xx.fbcdn.net/v/t1.15752-9/462565873_886592826916950_4518783065590103332_n.png?_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_ohc=dvKk4Z2C0fsQ7kNvgHO5NQ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QGlXlS2YoiHDJQT7mN_zF200iJPUv3Le3C-CYVevSKrXw&oe=675FBF41"],
+                    path: [
+                      "https://scontent.xx.fbcdn.net/v/t1.15752-9/462565873_886592826916950_4518783065590103332_n.png?_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_ohc=dvKk4Z2C0fsQ7kNvgHO5NQ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QGlXlS2YoiHDJQT7mN_zF200iJPUv3Le3C-CYVevSKrXw&oe=675FBF41"
+                    ],
                     text: "Дархан шинэ хороолол",
                     location: "Darkhan, Selenge",
                     rent: "600",

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mrent/model/properties.dart';
+import 'package:mrent/pages/components/touchable_scale.dart';
+import 'package:mrent/providers/favorite_provider.dart';
+import 'package:provider/provider.dart';
 
 class NearToYouComponenState extends StatefulWidget {
+  final String? id;
   final bool? isPayment;
   final String? rating;
   final String? ratingCount;
@@ -10,8 +15,10 @@ class NearToYouComponenState extends StatefulWidget {
   final String? square;
   final String? rent;
   final List<String>? path;
-
+  final PropertyData propertyData;
   const NearToYouComponenState({
+    required this.propertyData,
+    this.id,
     this.isPayment,
     this.text,
     this.location,
@@ -32,7 +39,7 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
   @override
   Widget build(BuildContext context) {
     var screen = MediaQuery.of(context).size;
-
+    final provider = Provider.of<FavoriteProvider>(context);
     return Container(
       width: widget.isPayment == true ? screen.width : screen.width * 0.85,
       margin: const EdgeInsets.all(2),
@@ -100,6 +107,7 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
                   ),
                   Text(
                     widget.text ?? "Завхан дахь байшин",
+                    maxLines: 2,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Color(0xff1A1E25),
@@ -182,12 +190,17 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(right: 10, bottom: 10),
-                          child: GestureDetector(
-                            onTap: () {},
+                          child: TouchableScale(
+                            onPressed: () {
+                              setState(() {});
+                              provider.toggleFavorite(widget.propertyData);
+                            },
                             child: Image.asset(
                                 width: 20,
                                 height: 20,
-                                "assets/images/Vector.png"),
+                                provider.isExist(widget.propertyData)
+                                    ? "assets/images/like.png"
+                                    : "assets/images/Vector.png"),
                           ),
                         ),
                       ],

@@ -4,6 +4,7 @@ import 'package:mrent/pages/components/tips_for_you.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
 import 'package:get/get.dart';
 import 'package:mrent/pages/detail_of_object_page.dart';
+import 'package:mrent/pages/search_page.dart';
 import 'package:mrent/services/property_service.dart';
 import '../model/properties.dart';
 import 'components/horizantal_card.dart';
@@ -46,6 +47,44 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     getPropertiesData();
   }
+
+  final List<Map<String, dynamic>> bali = [
+    {
+      "path":
+          "https://media.cntraveler.com/photos/63f4f4fc0630e21ed8088321/1:1/w_1280%2Ch_1280%2Cc_limit/GettyImages-1145042281.jpeg",
+      "location": "Bali, Indonesia",
+      "rentCount": "29",
+      "hasTitle": false
+    },
+    {
+      "path":
+          "https://i0.wp.com/handluggageonly.co.uk/wp-content/uploads/2018/10/Hand-Luggage-Only-12.jpg?resize=1000%2C1500&ssl=1",
+      "location": "Kyoto, Japan",
+      "rentCount": "15",
+      "hasTitle": true
+    },
+    {
+      "path":
+          "https://media.istockphoto.com/id/1388339818/photo/a-classic-red-telephone-booth-in-front-of-the-big-ben-clocktower-in-london.jpg?s=612x612&w=0&k=20&c=gT4YX-hWMVXHqZj0GSIegrWMaMRpIAldnmd36t6uP8g=",
+      "location": "Santorini, Greece",
+      "rentCount": "42",
+      "hasTitle": false
+    },
+    {
+      "path":
+          "https://plus.unsplash.com/premium_photo-1673511731942-8841dc483cb2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmVhdXRpZnVsJTIwbmF0dXJlfGVufDB8fDB8fHww",
+      "location": "Paris, France",
+      "rentCount": "34",
+      "hasTitle": true
+    },
+    {
+      "path":
+          "https://images.unsplash.com/photo-1611332124437-b6278baffb52?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGJlYXV0aWZ1bCUyMG5hdHVyZXxlbnwwfHwwfHx8MA%3D%3D",
+      "location": "Maui, Hawaii",
+      "rentCount": "50",
+      "hasTitle": false
+    }
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +171,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           return const Center(
                               child: Text('No properties available.'));
                         }
-
                         return first(propertyData);
                       },
                     ),
@@ -332,10 +370,16 @@ class _MyHomePageState extends State<MyHomePage> {
       itemBuilder: (BuildContext context, int index) {
         return TouchableScale(
           onPressed: () {
-            Get.to(() => const DetailOfObjectPage());
-            print(propertyData[index].images);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailOfObjectPage(
+                          propertyData: propertyData[index],
+                        )));
           },
           child: NearToYouComponenState(
+            propertyData: propertyData[index],
+            id: propertyData[index].id,
             path: propertyData[index].images,
             text: propertyData[index].description!,
             location: propertyData[index].location,
@@ -356,14 +400,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget second(List<PropertyData> propertyData) {
     return ListView.separated(
+      reverse: true,
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         return TouchableScale(
           onPressed: () {
-            Get.to(() => const DetailOfObjectPage());
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailOfObjectPage(
+                          propertyData: propertyData[index],
+                        )));
           },
           child: NearToYouComponenState(
+            propertyData: propertyData[index],
             path: propertyData[index].images,
             text: propertyData[index].description!,
             location: propertyData[index].location,
@@ -394,8 +445,8 @@ class _MyHomePageState extends State<MyHomePage> {
             hasTitle: false,
             width: width * 0.45,
             height: height * 0.3,
-            path:
-                "https://scontent.xx.fbcdn.net/v/t1.15752-9/462558027_591998583259847_4304968298902437579_n.png?stp=dst-png_s480x480&_nc_cat=102&ccb=1-7&_nc_sid=0024fc&_nc_ohc=bYYM3CmE6isQ7kNvgEBuWgf&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEjWxcmzRszvMECZYneKaHKKXloMMjIV5FNUv1LlOMllw&oe=67600A3C",
+            path: bali[index]["path"],
+            location: bali[index]["location"],
           ),
         );
       },
@@ -404,7 +455,7 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 15,
         );
       },
-      itemCount: properties?.length ?? 5,
+      itemCount: bali.length,
     );
   }
 
@@ -528,16 +579,41 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Container searchBar(double width) {
-    return Container(
-      margin: const EdgeInsets.only(right: 25, left: 25, bottom: 10),
-      width: width,
-      child: CustomizedTextField(
-        isDense: true,
-        color: Colors.black.withOpacity(0.03),
-        text: "Хайлт",
-        prefixIcon: "assets/images/search-normal.png",
-        suffixIcon: "assets/images/setting-5.png",
+  TouchableScale searchBar(double width) {
+    return TouchableScale(
+      onPressed: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const RentalSearchPage()));
+      },
+      child: Container(
+        height: 50,
+        width: width,
+        margin: const EdgeInsets.only(top: 20, right: 25, left: 25, bottom: 10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(72),
+            color: Colors.black.withOpacity(0.03),
+            border: Border.all(width: 1, color: Colors.black.withOpacity(0.1))),
+        child: Row(
+          children: [
+            Container(
+                margin: const EdgeInsets.only(right: 10, left: 10),
+                width: 30,
+                height: 30,
+                child: Image.asset(
+                    fit: BoxFit.fill, "assets/images/search-normal.png")),
+            const Text("Хайлт"),
+            const Spacer(),
+            Container(
+                margin: const EdgeInsets.only(right: 15),
+                width: 30,
+                height: 30,
+                child: Image.asset(
+                    fit: BoxFit.fill, "assets/images/setting-5.png")),
+          ],
+        ),
+        // text: "Хайлт",
+        // prefixIcon: "assets/images/search-normal.png",
+        // suffixIcon: "assets/images/setting-5.png",
       ),
     );
   }

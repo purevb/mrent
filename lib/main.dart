@@ -4,25 +4,31 @@ import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:mrent/firebase_options.dart';
 import 'package:mrent/pages/beginning_page.dart';
+import 'package:mrent/providers/favorite_provider.dart';
+import 'package:provider/provider.dart'; // Import the provider package
 
 void main() {
   debugPrintKeyboardEvents = false;
-  // Future<void> main() async {
-  //   WidgetsFlutterBinding.ensureInitialized();
-  //   await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.currentPlatform,
-  //   );
+  // Initialize Firebase and any other necessary services
+  // WidgetsFlutterBinding.ensureInitialized();
+  // Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Beginning(),
+    return ChangeNotifierProvider(
+      create: (context) => FavoriteProvider(),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Beginning(),
+      ),
     );
   }
 }

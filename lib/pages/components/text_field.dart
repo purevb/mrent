@@ -12,6 +12,7 @@ class CustomizedTextField extends StatefulWidget {
   final String? suffixIcon;
   final Color? color;
   final bool? isDense;
+  final void Function(String)? onChanged;
 
   const CustomizedTextField({
     this.controller,
@@ -22,6 +23,7 @@ class CustomizedTextField extends StatefulWidget {
     this.prefixIcon,
     this.title,
     this.text,
+    this.onChanged,
     super.key,
   });
 
@@ -93,7 +95,11 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
               suffixIcon: widget.suffixIcon != null
                   ? TouchableScale(
                       onPressed: () {
-                        Get.to(() => RentalSearchPage());
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const RentalSearchPage()));
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 10.0, right: 10),
@@ -130,11 +136,8 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
               ),
             ),
             textAlign: TextAlign.start,
-            onChanged: (value) {
-              result = value;
-            },
-            validator: (name) =>
-                name!.isEmpty ? "Fill this form" : null,
+            onChanged: widget.onChanged,
+            validator: (name) => name!.isEmpty ? "Fill this form" : null,
           ),
         ),
       ],

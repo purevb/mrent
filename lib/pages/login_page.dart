@@ -214,7 +214,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Get.to(() => const RegisterPage());
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterPage()));
                       },
                   ),
                 ],

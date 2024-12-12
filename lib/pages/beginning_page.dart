@@ -19,7 +19,7 @@ class Beginning extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: height*0.73,
+                height: height * 0.73,
                 width: width,
                 child: Image.asset(
                     fit: BoxFit.fill, "assets/images/homebackground.png")),
@@ -37,7 +37,12 @@ class Beginning extends StatelessWidget {
                     style: TextStyle(fontSize: 16, color: Color(0xff7D7F88)),
                   ),
                   MyButton(
-                    onPress: () => Get.to(() => const LoginPage()),
+                    onPress: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    ),
                     text: "Нэвтрэх",
                   ),
                 ],

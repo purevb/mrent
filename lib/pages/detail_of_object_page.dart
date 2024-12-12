@@ -2,32 +2,36 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/model/properties.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/favorite_provider.dart';
 import 'payment_page.dart';
 
 class DetailOfObjectPage extends StatefulWidget {
-  const DetailOfObjectPage({super.key});
+  const DetailOfObjectPage({required this.propertyData, super.key});
+  final PropertyData propertyData;
 
   @override
   State<DetailOfObjectPage> createState() => _DetailOfObjectPageState();
 }
 
 class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
+  late List<String> imgList;
+
+  @override
+  void initState() {
+    super.initState();
+    imgList = widget.propertyData?.images ?? [];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FavoriteProvider>(context);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
-    final List<String> imgList = [
-      'https://scontent.xx.fbcdn.net/v/t1.15752-9/465779527_553811244179204_8313992589326752841_n.png?stp=dst-png_s526x395&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=QAArbCk6_O4Q7kNvgH7fJmr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEXZnVXYuRx8XPzwqnfnuZs-QHo-s7yqt1-1MoMclgvZQ&oe=676E27F3',
-      'https://scontent.xx.fbcdn.net/v/t1.15752-9/465779527_553811244179204_8313992589326752841_n.png?stp=dst-png_s526x395&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=QAArbCk6_O4Q7kNvgH7fJmr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEXZnVXYuRx8XPzwqnfnuZs-QHo-s7yqt1-1MoMclgvZQ&oe=676E27F3',
-      'https://scontent.xx.fbcdn.net/v/t1.15752-9/465779527_553811244179204_8313992589326752841_n.png?stp=dst-png_s526x395&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=QAArbCk6_O4Q7kNvgH7fJmr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEXZnVXYuRx8XPzwqnfnuZs-QHo-s7yqt1-1MoMclgvZQ&oe=676E27F3',
-      'https://scontent.xx.fbcdn.net/v/t1.15752-9/465779527_553811244179204_8313992589326752841_n.png?stp=dst-png_s526x395&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=QAArbCk6_O4Q7kNvgH7fJmr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEXZnVXYuRx8XPzwqnfnuZs-QHo-s7yqt1-1MoMclgvZQ&oe=676E27F3',
-      'https://scontent.xx.fbcdn.net/v/t1.15752-9/465779527_553811244179204_8313992589326752841_n.png?stp=dst-png_s526x395&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=QAArbCk6_O4Q7kNvgH7fJmr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEXZnVXYuRx8XPzwqnfnuZs-QHo-s7yqt1-1MoMclgvZQ&oe=676E27F3',
-      'https://scontent.xx.fbcdn.net/v/t1.15752-9/465779527_553811244179204_8313992589326752841_n.png?stp=dst-png_s526x395&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=QAArbCk6_O4Q7kNvgH7fJmr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QEXZnVXYuRx8XPzwqnfnuZs-QHo-s7yqt1-1MoMclgvZQ&oe=676E27F3'
-    ];
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -46,7 +50,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                   ),
                   child: TouchableScale(
                     onPressed: () {
-                      Get.back();
+                      Navigator.pop(context);
                     },
                     child: const Icon(
                       Icons.arrow_back_ios_new_rounded,
@@ -91,21 +95,28 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Сурабая дахь Бромо\nуулыг харах бүхээг",
-                          style: GoogleFonts.robotoCondensed(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
                         Container(
-                          margin: const EdgeInsets.only(right: 10, bottom: 10),
-                          child: TouchableScale(
-                            onPressed: () {},
-                            child: Image.asset(
-                                fit: BoxFit.fitWidth,
-                                width: 20,
-                                height: 20,
-                                "assets/images/heart.png"),
+                          margin: const EdgeInsets.only(bottom: 10),
+                          width: width * 0.8,
+                          height: width * 0.15,
+                          child: Text(
+                            maxLines: 2,
+                            widget.propertyData?.description ?? "",
+                            style: GoogleFonts.robotoCondensed(
+                                fontWeight: FontWeight.bold, fontSize: 18),
                           ),
+                        ),
+                        TouchableScale(
+                          onPressed: () {
+                            setState(() {});
+                            provider.toggleFavorite(widget.propertyData);
+                          },
+                          child: Image.asset(
+                              width: 20,
+                              height: 20,
+                              provider.isExist(widget.propertyData)
+                                  ? "assets/images/like.png"
+                                  : "assets/images/Vector.png"),
                         ),
                       ],
                     ),
@@ -127,9 +138,9 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               padding: EdgeInsets.only(right: 2.0),
                               child: Text("4.9"),
                             ),
-                            const Text(
-                              "(104 үзэгч)",
-                              style: TextStyle(
+                            Text(
+                              "(${widget.propertyData?.squares})",
+                              style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
                               ),
@@ -146,9 +157,9 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                                 height: 15,
                               ),
                             ),
-                            const Text(
-                              " 2 өрөө",
-                              style: TextStyle(
+                            Text(
+                              "${widget.propertyData?.numBeds.toString()} өрөө",
+                              style: const TextStyle(
                                 fontSize: 13,
                                 color: Color(0xff7D7F88),
                               ),
@@ -167,9 +178,9 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               width: 15,
                               height: 15,
                             ),
-                            const Text(
-                              "Улиастай ,Завхан",
-                              style: TextStyle(
+                            Text(
+                              widget.propertyData?.location.toString() ?? "",
+                              style: const TextStyle(
                                 fontSize: 13,
                                 color: Color(0xff7D7F88),
                               ),
@@ -187,9 +198,9 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                                 height: 15,
                               ),
                             ),
-                            const Text(
-                              " 673 m2",
-                              style: TextStyle(
+                            Text(
+                              "${widget.propertyData?.squares.toString()}м2",
+                              style: const TextStyle(
                                 fontSize: 13,
                                 color: Color(0xff7D7F88),
                               ),
@@ -220,12 +231,12 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                         // Map Section
                         Container(
                           height: 200,
-                          color: Colors.grey[300], // Placeholder for map
+                          width: width,
+                          color: Colors.grey[300],
                           child: CachedNetworkImage(
                             fit: BoxFit.fill,
                             imageUrl:
-                                "https://scontent.xx.fbcdn.net/v/t1.15752-9/462648092_601098165772788_825754241460003300_n.png?stp=dst-png_s600x600&_nc_cat=107&ccb=1-7&_nc_sid=0024fc&_nc_ohc=IB5r3nCh3rQQ7kNvgEpDOTD&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QFNMvWOc_koBl1ybcqmTMQ9yzIFYDI9rDeH2urSwhhJUg&oe=677F1107" ??
-                                    "http://via.placeholder.com/350x150",
+                                "https://scontent.xx.fbcdn.net/v/t1.15752-9/462648092_601098165772788_825754241460003300_n.png?stp=dst-png_s600x600&_nc_cat=107&ccb=1-7&_nc_sid=0024fc&_nc_ohc=IB5r3nCh3rQQ7kNvgEpDOTD&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&oh=03_Q7cD1QFNMvWOc_koBl1ybcqmTMQ9yzIFYDI9rDeH2urSwhhJUg&oe=677F1107",
                             placeholder: (context, url) => const Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -234,7 +245,6 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // Nearby Locations Section
                         const Text('Хамгийн ойрхон объектууд',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
@@ -252,25 +262,29 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                             label: 'Хоолны газар',
                             distance: '400м'),
                         const SizedBox(height: 20),
-                        // Booking Section
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Дундаж төлбөр',
+                                const Text('Дундаж төлбөр',
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.grey)),
-                                Text('500₮/сард',
-                                    style: TextStyle(
+                                Text(
+                                    '${widget.propertyData?.nightlyPrice}₮/сард',
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold)),
                               ],
                             ),
                             TouchableScale(
                               onPressed: () {
-                                Get.to(() => const PaymentPage());
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PaymentPage()));
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -333,7 +347,7 @@ class FeatureIcon extends StatelessWidget {
   final String label;
   final IconData icon;
 
-  const FeatureIcon({required this.label, required this.icon});
+  const FeatureIcon({super.key, required this.label, required this.icon});
 
   @override
   Widget build(BuildContext context) {

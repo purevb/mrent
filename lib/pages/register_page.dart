@@ -26,10 +26,21 @@ class _RegisterPageState extends State<RegisterPage> {
   final phoneController = TextEditingController();
 
   final rePasswordController = TextEditingController();
-
   Future<void> postUser() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Please fill all fields.");
+    if (!validateEmail(emailController.text)) {
+      Fluttertoast.showToast(msg: "Email must include '@' and be valid.");
+      return;
+    }
+    if (!validatePassword(passwordController.text)) {
+      Fluttertoast.showToast(msg: "Password must be at least 6 characters.");
+      return;
+    }
+    if (!validatePhone(phoneController.text)) {
+      Fluttertoast.showToast(msg: "Phone number must be exactly 8 digits.");
+      return;
+    }
+    if (nameController.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Name field cannot be empty.");
       return;
     }
 
@@ -51,7 +62,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (response.statusCode == 200 && responseJson['status'] == true) {
         Fluttertoast.showToast(msg: "Registration successful!");
-        Get.to(() => const LoginPage());
+        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()));
       } else {
         Fluttertoast.showToast(
             msg: "Registration failed: ${responseJson['msg']}");
@@ -59,6 +73,19 @@ class _RegisterPageState extends State<RegisterPage> {
     } catch (e) {
       Fluttertoast.showToast(msg: "Error: $e");
     }
+  }
+
+  bool validateEmail(String email) {
+    return email.contains('@');
+  }
+
+  bool validatePassword(String password) {
+    return password.length >= 6;
+  }
+
+  bool validatePhone(String phone) {
+    final phoneRegex = RegExp(r'^\d{8}$');
+    return phoneRegex.hasMatch(phone);
   }
 
   void checkPasswordsAndRegister() async {
@@ -220,7 +247,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Get.to(() => const LoginPage());
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()));
                       },
                   ),
                 ],

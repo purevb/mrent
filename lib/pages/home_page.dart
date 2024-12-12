@@ -19,18 +19,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var rentToggle = true;
-
+  ValueNotifier<List<PropertyData>?> propertiesNotifier = ValueNotifier(null);
   List<PropertyData>? properties;
   Future<void> getPropertiesData() async {
     try {
-      properties = await PropertyService().getSurvey();
-      if (properties != null && properties!.isNotEmpty) {
-        print('Properties fetched successfully: ${properties!.length}');
+      var fetchedProperties = await PropertyService().getSurvey();
+      propertiesNotifier.value = fetchedProperties;
+
+      if (fetchedProperties != null && fetchedProperties.isNotEmpty) {
+        print('Properties fetched successfully: ${fetchedProperties.length}');
       } else {
         print('No properties found.');
       }
     } catch (e) {
       print('Error loading properties: $e');
+      propertiesNotifier.value = null;
     }
   }
 
@@ -119,7 +122,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     margin: const EdgeInsets.only(left: 15),
                     height: height * 0.2,
-                    child: first(),
+                    child: ValueListenableBuilder<List<PropertyData>?>(
+                      valueListenable: propertiesNotifier,
+                      builder: (context, propertyData, child) {
+                        if (propertyData == null) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (propertyData.isEmpty) {
+                          return const Center(
+                              child: Text('No properties available.'));
+                        }
+
+                        return first(propertyData);
+                      },
+                    ),
                   ),
                   const SizedBox(
                     height: 25,
@@ -149,7 +165,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     margin: const EdgeInsets.only(left: 15),
                     height: height * 0.2,
-                    child: second(),
+                    child: ValueListenableBuilder<List<PropertyData>?>(
+                      valueListenable: propertiesNotifier,
+                      builder: (context, propertyData, child) {
+                        if (propertyData == null) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (propertyData.isEmpty) {
+                          return const Center(
+                              child: Text('No properties available.'));
+                        }
+
+                        return second(propertyData);
+                      },
+                    ),
                   ),
                   const SizedBox(
                     height: 25,
@@ -296,7 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ListView first() {
+  Widget first(List<PropertyData> propertyData) {
     return ListView.separated(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
@@ -304,29 +333,28 @@ class _MyHomePageState extends State<MyHomePage> {
         return TouchableScale(
           onPressed: () {
             Get.to(() => const DetailOfObjectPage());
+            print(propertyData[index].images);
           },
           child: NearToYouComponenState(
-            path: properties?[index].images,
-            text: properties?[index].description!,
-            location: properties?[index].location,
-            rent: properties?[index].nightlyPrice,
-            roomCount: properties?[index].numBeds!.toString(),
-            square: properties?[index].squares.toString(),
-            rating: properties?[index].squares.toString(),
-            ratingCount: properties?[index].numBeds.toString(),
+            path: propertyData[index].images,
+            text: propertyData[index].description!,
+            location: propertyData[index].location,
+            rent: propertyData[index].nightlyPrice,
+            roomCount: propertyData[index].numBeds!.toString(),
+            square: propertyData[index].squares.toString(),
+            rating: propertyData[index].squares.toString(),
+            ratingCount: propertyData[index].numBeds.toString(),
           ),
         );
       },
       separatorBuilder: (BuildContext context, int index) {
-        return const SizedBox(
-          width: 20,
-        );
+        return const SizedBox(width: 20);
       },
-      itemCount: properties?.length ?? 0,
+      itemCount: propertyData.length,
     );
   }
 
-  ListView second() {
+  Widget second(List<PropertyData> propertyData) {
     return ListView.separated(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
@@ -336,14 +364,14 @@ class _MyHomePageState extends State<MyHomePage> {
             Get.to(() => const DetailOfObjectPage());
           },
           child: NearToYouComponenState(
-            path: properties?[index].images,
-            text: properties?[index].description!,
-            location: properties?[index].location,
-            rent: properties?[index].nightlyPrice,
-            roomCount: properties?[index].numBeds!.toString(),
-            square: properties?[index].squares.toString(),
-            rating: properties?[index].squares.toString(),
-            ratingCount: properties?[index].numBeds.toString(),
+            path: propertyData[index].images,
+            text: propertyData[index].description!,
+            location: propertyData[index].location,
+            rent: propertyData[index].nightlyPrice,
+            roomCount: propertyData[index].numBeds!.toString(),
+            square: propertyData[index].squares.toString(),
+            rating: propertyData[index].squares.toString(),
+            ratingCount: propertyData[index].numBeds.toString(),
           ),
         );
       },
@@ -352,7 +380,7 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 20,
         );
       },
-      itemCount: properties?.length ?? 0,
+      itemCount: propertyData.length, // Use propertyData.length here
     );
   }
 
@@ -376,7 +404,7 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 15,
         );
       },
-      itemCount: properties?.length ?? 0,
+      itemCount: properties?.length ?? 5,
     );
   }
 

@@ -32,7 +32,7 @@ class _TipsForYouState extends State<TipsForYou> {
 
     return Container(
       padding: const EdgeInsets.only(bottom: 15),
-      width: screen.width * 0.85,
+      width: screen.width * 0.8,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -52,7 +52,7 @@ class _TipsForYouState extends State<TipsForYou> {
             ),
             child: SizedBox(
               width: screen.width,
-              height: screen.height * 0.12,
+              height: screen.height * 0.15,
               child: Image.network(
                 fit: BoxFit.fitWidth,
                 widget.path ??
@@ -61,7 +61,7 @@ class _TipsForYouState extends State<TipsForYou> {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,13 +97,14 @@ class _TipsForYouState extends State<TipsForYou> {
                       ),
                       TouchableScale(
                         child: Container(
+                          width: 60,
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 5),
                           margin: const EdgeInsets.only(top: 20),
                           decoration: BoxDecoration(
                               color: const Color(0xff917AFD).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(35)),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 24),
+                          child: const Center(
                             child: Text(
                               "Илүү",
                               style: TextStyle(color: Color(0xff917AFD)),

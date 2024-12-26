@@ -7,14 +7,13 @@ import 'package:mrent/pages/beginning_page.dart';
 import 'package:mrent/providers/favorite_provider.dart';
 import 'package:provider/provider.dart'; // Import the provider package
 
-void main() {
+Future<void> main() async {
   debugPrintKeyboardEvents = false;
-  // Initialize Firebase and any other necessary services
-  // WidgetsFlutterBinding.ensureInitialized();
-  // Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
 
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -26,6 +25,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => FavoriteProvider(),
       child: const MaterialApp(
+        color: Colors.white,
         debugShowCheckedModeBanner: false,
         home: Beginning(),
       ),

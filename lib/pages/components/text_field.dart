@@ -54,7 +54,7 @@ class _CustomizedTextFieldState extends State<CustomizedTextField> {
         if (widget.title != null) ...[
           Text(
             widget.title ?? "",
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: const TextStyle(fontWeight: FontWeight.w400),
           ),
           const SizedBox(
             height: 5,

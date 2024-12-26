@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mrent/pages/components/tips_for_you.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
-import 'package:get/get.dart';
 import 'package:mrent/pages/detail_of_object_page.dart';
 import 'package:mrent/pages/search_page.dart';
-import 'package:mrent/services/property_service.dart';
+import 'package:mrent/api_services/property_service.dart';
 import '../model/properties.dart';
 import 'components/horizantal_card.dart';
-import 'components/text_field.dart';
 import 'components/vertical_card.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -91,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: const Color(0xffF4F4F4),
+      backgroundColor: const Color(0xffFCFCFC),
       body: RefreshIndicator(
         onRefresh: () => _refreshProperties(),
         child: SafeArea(
@@ -130,8 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   searchBar(width),
                   Container(
-                    margin: const EdgeInsets.only(
-                        right: 15, left: 15, top: 20, bottom: 20),
+                    margin:
+                        const EdgeInsets.only(right: 15, left: 15, bottom: 5),
                     child: const Text(
                       "Tанд юу хэрэгтэй вэ?",
                       style:
@@ -487,8 +484,9 @@ class _MyHomePageState extends State<MyHomePage> {
       margin: const EdgeInsets.only(right: 15, left: 15),
       padding: const EdgeInsets.all(8),
       width: width,
-      height: 55,
+      height: 52,
       decoration: BoxDecoration(
+        border: Border.all(color: const Color(0xffE3E3E7)),
         color: Colors.black.withOpacity(0.055),
         borderRadius: BorderRadius.circular(72),
       ),
@@ -502,8 +500,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               child: Container(
+                padding: const EdgeInsets.only(bottom: 3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(72),
+                  boxShadow: rentToggle
+                      ? const [
+                          BoxShadow(
+                            color: Color(0xff6246EA),
+                            blurRadius: 2,
+                            offset: Offset(0, 1),
+                          )
+                        ]
+                      : const [
+                          BoxShadow(
+                            color: Colors.transparent,
+                          )
+                        ],
                   gradient: rentToggle
                       ? const LinearGradient(
                           begin: Alignment.topLeft,
@@ -542,8 +554,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               child: Container(
+                padding: const EdgeInsets.only(bottom: 3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(72),
+                  boxShadow: rentToggle
+                      ? const [
+                          BoxShadow(
+                            color: Colors.transparent,
+                          ),
+                        ]
+                      : const [
+                          BoxShadow(
+                            color: Color(0xff6246EA),
+                            blurRadius: 2,
+                            offset: Offset(0, 1),
+                          )
+                        ],
                   gradient: rentToggle
                       ? const LinearGradient(
                           begin: Alignment.topLeft,
@@ -588,7 +614,8 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Container(
         height: 50,
         width: width,
-        margin: const EdgeInsets.only(top: 20, right: 25, left: 25, bottom: 10),
+        margin: const EdgeInsets.only(top: 10, right: 15, left: 15, bottom: 10),
+        padding: const EdgeInsets.only(left: 5, right: 5),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(72),
             color: Colors.black.withOpacity(0.03),
@@ -597,16 +624,22 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Container(
                 margin: const EdgeInsets.only(right: 10, left: 10),
-                width: 30,
-                height: 30,
+                width: 20,
+                height: 20,
                 child: Image.asset(
                     fit: BoxFit.fill, "assets/images/search-normal.png")),
-            const Text("Хайлт"),
+            const Text(
+              "Хайлт",
+              style: TextStyle(
+                  color: Color(0xff7D7F88),
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500),
+            ),
             const Spacer(),
             Container(
                 margin: const EdgeInsets.only(right: 15),
-                width: 30,
-                height: 30,
+                width: 20,
+                height: 20,
                 child: Image.asset(
                     fit: BoxFit.fill, "assets/images/setting-5.png")),
           ],

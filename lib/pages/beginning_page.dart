@@ -17,12 +17,15 @@ class Beginning extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-                height: height * 0.73,
-                width: width,
-                child: Image.asset(
-                    fit: BoxFit.fill, "assets/images/homebackground.png")),
+            Flexible(
+              flex: 3,
+              child: SizedBox(
+                  width: width,
+                  child: Image.asset(
+                      fit: BoxFit.fill, "assets/images/homebackground.png")),
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,6 +40,8 @@ class Beginning extends StatelessWidget {
                     style: TextStyle(fontSize: 16, color: Color(0xff7D7F88)),
                   ),
                   MyButton(
+                    width: width,
+                    height: 50,
                     onPress: () => Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mrent/pages/home_page.dart';
 import 'package:mrent/pages/naviagation_page.dart';
+import 'package:mrent/services/auth_service.dart';
 
 import 'components/button.dart';
 import 'components/text_field.dart';
@@ -35,44 +36,15 @@ class _RegisterPageState extends State<RegisterPage> {
       Fluttertoast.showToast(msg: "Password must be at least 6 characters.");
       return;
     }
-    if (!validatePhone(phoneController.text)) {
-      Fluttertoast.showToast(msg: "Phone number must be exactly 8 digits.");
-      return;
-    }
-    if (nameController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Name field cannot be empty.");
-      return;
-    }
-
-    var regBody = {
-      "email": emailController.text,
-      "password": passwordController.text,
-      "name": nameController.text,
-      "phone_number": phoneController.text
-    };
-
-    try {
-      var response = await http.post(
-        Uri.parse('http://10.0.2.2:3106/api/user'),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(regBody),
-      );
-
-      var responseJson = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && responseJson['status'] == true) {
-        Fluttertoast.showToast(msg: "Registration successful!");
-        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()));
-      } else {
-        Fluttertoast.showToast(
-            msg: "Registration failed: ${responseJson['msg']}");
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: "Error: $e");
-    }
+    final authService = AuthService();
+    await authService.signup(
+        email: emailController.text,
+        password: passwordController.text,
+        context: context,
+        ovog: nameController.text,
+        ner: nameController.text,
+        age: 15,
+        phone: phoneController.text);
   }
 
   bool validateEmail(String email) {
@@ -83,10 +55,10 @@ class _RegisterPageState extends State<RegisterPage> {
     return password.length >= 6;
   }
 
-  bool validatePhone(String phone) {
-    final phoneRegex = RegExp(r'^\d{8}$');
-    return phoneRegex.hasMatch(phone);
-  }
+  // bool validatePhone(String phone) {
+  //   final phoneRegex = RegExp(r'^\d{8}$');
+  //   return phoneRegex.hasMatch(phone);
+  // }
 
   void checkPasswordsAndRegister() async {
     if (passwordController.text != rePasswordController.text) {
@@ -120,13 +92,13 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Center(
-              child: Container(
-                color: Colors.amber,
-                width: screen.width * 0.35,
-                height: screen.width * 0.35,
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  fit: BoxFit.fill,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: SizedBox(
+                  width: screen.width * 0.2,
+                  height: screen.width * 0.2,
+                  child: Image.asset(
+                      fit: BoxFit.fill, "assets/images/logologo.png"),
                 ),
               ),
             ),
@@ -143,14 +115,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   CustomizedTextField(
                     controller: passwordController,
-                    obscure: true,
+                    obscure: false,
                     title: "Нууц үг",
                     text: "Нууц үг",
                     prefixIcon: "assets/images/nocolorkey.png",
                   ),
                   CustomizedTextField(
                     controller: rePasswordController,
-                    obscure: true,
+                    obscure: false,
                     title: "Нууц үг давтах",
                     text: "Нууц үг давтах",
                     prefixIcon: "assets/images/nocolorkey.png",
@@ -170,6 +142,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     prefixIcon: "assets/images/noperson.png",
                   ),
                   MyButton(
+                    width: screen.width,
+                    height: screen.height * 0.07,
                     onPress: () => checkPasswordsAndRegister(),
                     text: "Бүртгүүлэх",
                   ),
@@ -248,9 +222,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
                       },
                   ),
                 ],

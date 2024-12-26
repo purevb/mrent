@@ -4,7 +4,15 @@ import 'package:mrent/pages/components/touchable_scale.dart';
 class MyButton extends StatefulWidget {
   final String text;
   final VoidCallback onPress;
-  const MyButton({required this.onPress, required this.text, super.key});
+  final double height;
+  final double width;
+
+  const MyButton(
+      {required this.onPress,
+      required this.height,
+      required this.width,
+      required this.text,
+      super.key});
 
   @override
   State<MyButton> createState() => _MyButtonState();
@@ -13,12 +21,11 @@ class MyButton extends StatefulWidget {
 class _MyButtonState extends State<MyButton> {
   @override
   Widget build(BuildContext context) {
-    var screen = MediaQuery.of(context).size;
     return TouchableScale(
       onPressed: widget.onPress,
       child: Container(
-        width: screen.width,
-        height: 50,
+        width: widget.width,
+        height: widget.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(81),
           gradient: const LinearGradient(
@@ -28,9 +35,8 @@ class _MyButtonState extends State<MyButton> {
           boxShadow: const [
             BoxShadow(
               color: Color(0xff6246EA),
-              offset: Offset(0, 8),
-              blurRadius: 6,
-              spreadRadius: -5,
+              offset: Offset(0, 1),
+              blurRadius: 2,
             ),
           ],
         ),

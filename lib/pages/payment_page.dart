@@ -123,6 +123,8 @@ class _PaymentPageState extends State<PaymentPage> {
                   height: 20,
                 ),
                 MyButton(
+                  width: width,
+                  height: height * 0.07,
                   text: "Түрээслэх хүсэлт",
                   onPress: () {},
                 ),

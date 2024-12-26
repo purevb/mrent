@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "69846034338",
-    "project_id": "fir-auth-1e58f",
-    "storage_bucket": "fir-auth-1e58f.firebasestorage.app"
+    "project_number": "502985194321",
+    "project_id": "mrent-6c014",
+    "storage_bucket": "mrent-6c014.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:69846034338:android:f22bb3526c6c7590f574fb",
+        "mobilesdk_app_id": "1:502985194321:android:8ee7cda7ca87bbcc8bb170",
         "android_client_info": {
           "package_name": "com.example.mrent"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCgzM14V_c3opoXJM7xi-kBk8o2Hrqpsyw"
+          "current_key": "AIzaSyCHDWsB8Arts5c677z-zQWJqTNiCumVU9Q"
         }
       ],
       "services": {

@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mrent/model/user.dart';
-import 'package:mrent/services/user_service.dart';
+import 'package:mrent/api_services/user_service.dart';
+import 'package:mrent/pages/components/button.dart';
+import 'package:mrent/services/auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   final String id;
@@ -19,12 +23,12 @@ class _ProfilePageState extends State<ProfilePage> {
       userNotifier.value = fetchedProperties;
 
       if (fetchedProperties != null) {
-        print('User fetched successfully: ${userNotifier.toString()}');
+        log('User fetched successfully: ${userNotifier.toString()}');
       } else {
-        print('No properties found.');
+        log('No properties found.');
       }
     } catch (e) {
-      print('Error loading properties: $e');
+      log('Error loading properties: $e');
       userNotifier.value = null;
     }
   }
@@ -37,15 +41,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: const Color(0xffFCFCFC),
       appBar: AppBar(
         title: const Text('Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -126,6 +127,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Handle switch to hosting action
                   },
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 150),
+                  child: Center(
+                    child: MyButton(
+                      height: height * 0.05,
+                      width: width,
+                      onPress: () async {
+                        await AuthService().signout(context);
+                      },
+                      text: 'Logout',
+                    ),
+                  ),
+                )
               ],
             ),
           ],

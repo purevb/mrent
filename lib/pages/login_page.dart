@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:mrent/pages/components/text_field.dart';
 import 'package:mrent/pages/home_page.dart';
 import 'package:mrent/pages/register_page.dart';
+import 'package:mrent/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'components/button.dart';
@@ -40,59 +41,64 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     if (emailController.text.isNotEmpty && passWordController.text.isNotEmpty) {
-      var reqBody = {
-        "email": emailController.text,
-        "password": passWordController.text,
-      };
+      await AuthService().signin(
+          email: emailController.text,
+          password: passWordController.text,
+          context: context);
+      //   var reqBody = {
+      //     "email": emailController.text,
+      //     "password": passWordController.text,
+      //   };
 
-      try {
-        var response = await http.post(
-          Uri.parse('http://10.0.2.2:3106/api/login'),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(reqBody),
-        );
+      //   try {
+      //     var response = await http.post(
+      //       Uri.parse('http://10.0.2.2:3106/api/login'),
+      //       headers: {"Content-Type": "application/json"},
+      //       body: jsonEncode(reqBody),
+      //     );
 
-        if (response.statusCode == 200) {
-          var jsonResponse = jsonDecode(response.body);
-          bool status = jsonResponse['status'] ?? false;
+      //     if (response.statusCode == 200) {
+      //       var jsonResponse = jsonDecode(response.body);
+      //       bool status = jsonResponse['status'] ?? false;
 
-          if (status) {
-            var myToken = jsonResponse['token'];
-            var id = jsonResponse['id'];
+      //       if (status) {
+      //         var myToken = jsonResponse['token'];
+      //         var id = jsonResponse['id'];
 
-            await prefs.setString('token', myToken);
+      //         await prefs.setString('token', myToken);
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NavigationPage(
-                  id: id,
-                ),
-              ),
-            );
-            print('Token checked');
-          } else {
-            // Handle login failure
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Invalid email or password')),
-            );
-          }
-        } else {
-          print('Server returned an error: ${response.statusCode}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid email or password')),
-          );
-        }
-      } catch (e) {
-        print('Error during login: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email and password cannot be empty')),
-      );
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => NavigationPage(
+      //               id: id,
+      //             ),
+      //           ),
+      //         );
+      //         print('Token checked');
+      //       } else {
+      //         // Handle login failure
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           const SnackBar(content: Text('Invalid email or password')),
+      //         );
+      //       }
+      //     } else {
+      //       print('Server returned an error: ${response.statusCode}');
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         const SnackBar(content: Text('Invalid email or password')),
+      //       );
+      //     }
+      //   } catch (e) {
+      //     print('Error during login: $e');
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(content: Text('Error: $e')),
+      //     );
+      //   }
+      // } else {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text('Email and password cannot be empty')),
+      //   );
+      // }
     }
   }
 
@@ -110,11 +116,18 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Center(
-              child: SizedBox(
-                width: screen.width * 0.4,
-                height: screen.width * 0.4,
-                child: Image.asset("assets/images/logo.png"),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: SizedBox(
+                  width: screen.width * 0.35,
+                  height: screen.width * 0.35,
+                  child: Image.asset(
+                      fit: BoxFit.fill, "assets/images/logologo.png"),
+                ),
               ),
+            ),
+            SizedBox(
+              height: screen.height * 0.1,
             ),
             SizedBox(
               height: screen.height * 0.4,
@@ -137,6 +150,8 @@ class _LoginPageState extends State<LoginPage> {
                       prefixIcon: "assets/images/nocolorkey.png",
                     ),
                     MyButton(
+                      width: screen.width,
+                      height: screen.height * 0.06,
                       onPress: signUserIn,
                       text: "Нэвтрэх",
                     ),
@@ -169,6 +184,9 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ],
             ),
+            const SizedBox(
+              height: 10,
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               width: screen.width,
@@ -194,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ]),
             ),
-            SizedBox(height: screen.height * 0.08),
+            SizedBox(height: screen.height * 0.04),
             RichText(
               text: TextSpan(
                 children: [
@@ -215,9 +233,9 @@ class _LoginPageState extends State<LoginPage> {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterPage()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RegisterPage()));
                       },
                   ),
                 ],

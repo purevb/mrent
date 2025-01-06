@@ -1,13 +1,18 @@
+import 'dart:developer';
+
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/pages/components/tips_for_you.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
 import 'package:mrent/pages/detail_of_object_page.dart';
 import 'package:mrent/pages/search_page.dart';
 import 'package:mrent/api_services/property_service.dart';
+import 'package:mrent/route/route.gr.dart';
 import '../model/properties.dart';
 import 'components/horizantal_card.dart';
 import 'components/vertical_card.dart';
 
+@RoutePage()
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, this.id});
   final String? id;
@@ -24,13 +29,13 @@ class _MyHomePageState extends State<MyHomePage> {
       var fetchedProperties = await PropertyService().getSurvey();
       propertiesNotifier.value = fetchedProperties;
 
-      if (fetchedProperties != null && fetchedProperties.isNotEmpty) {
-        print('Properties fetched successfully: ${fetchedProperties.length}');
+      if (fetchedProperties.isNotEmpty) {
+        log('Properties fetched successfully: ${fetchedProperties.length}');
       } else {
-        print('No properties found.');
+        log('No properties found.');
       }
     } catch (e) {
-      print('Error loading properties: $e');
+      log('Error loading properties: $e');
       propertiesNotifier.value = null;
     }
   }
@@ -93,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onRefresh: () => _refreshProperties(),
         child: SafeArea(
           child: SingleChildScrollView(
-            child: Container(
+            child: Padding(
               padding: const EdgeInsets.only(bottom: 50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,9 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         const Text(
-                          "Улаанбаатар , Монгол",
+                          "Улаанбаатар,Монгол",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19),
+                              fontWeight: FontWeight.w400, fontSize: 18),
                         ),
                       ],
                     ),
@@ -132,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text(
                       "Tанд юу хэрэгтэй вэ?",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                          TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
                     ),
                   ),
                   toggler(width),
@@ -141,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text(
                       "Тантай ойр",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                          TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
                     ),
                   ),
                   Container(
@@ -149,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         const EdgeInsets.only(right: 15, left: 15, bottom: 10),
                     child: const Text(
                       "Завхан дахь 243 үл хөдлөх хөрөнгө ",
-                      style: TextStyle(color: Color(0xff7D7F88), fontSize: 15),
+                      style: TextStyle(color: Color(0xff7D7F88), fontSize: 14),
                     ),
                   ),
                   const SizedBox(
@@ -157,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 15),
-                    height: height * 0.2,
+                    height: 170,
                     child: ValueListenableBuilder<List<PropertyData>?>(
                       valueListenable: propertiesNotifier,
                       builder: (context, propertyData, child) {
@@ -183,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         const Text(
                           "Завхан дахь өндөр\nүнэлгээтэй",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19),
+                              fontWeight: FontWeight.w400, fontSize: 18),
                         ),
                         GestureDetector(
                           child: const Text(
@@ -199,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 15),
-                    height: height * 0.2,
+                    height: 170,
                     child: ValueListenableBuilder<List<PropertyData>?>(
                       valueListenable: propertiesNotifier,
                       builder: (context, propertyData, child) {
@@ -227,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         const Text(
                           "Дараагийн аялалаа\nхайж байна уу",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19),
+                              fontWeight: FontWeight.w400, fontSize: 18),
                         ),
                         GestureDetector(
                           child: const Text(
@@ -255,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text(
                       "Танд зориулсан tips",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+                          TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
                     ),
                   ),
                   Container(
@@ -294,51 +299,49 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 20),
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    bottomLeft: Radius.circular(10)),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xff917AFD),
-                                    Color(0xff6246EA),
-                                  ],
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "Та өөрийн байрыг түрээслүүлэхийг хүсч байна уу?",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  ),
-                                  TouchableScale(
-                                      child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(49),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 5),
-                                    child: const Text(
-                                      "Tүрээслэгч болох",
-                                      style: TextStyle(
-                                        color: Color(0xff6246EA),
-                                      ),
-                                    ),
-                                  ))
+                          Container(
+                            width: (width - 30) * 0.65,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 20),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10)),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xff917AFD),
+                                  Color(0xff6246EA),
                                 ],
                               ),
                             ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Та өөрийн байрыг түрээслүүлэхийг хүсч байна уу?",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                                TouchableScale(
+                                    child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(49),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  child: const Text(
+                                    "Tүрээслэгч болох",
+                                    style: TextStyle(
+                                      color: Color(0xff6246EA),
+                                    ),
+                                  ),
+                                ))
+                              ],
+                            ),
                           ),
                           SizedBox(
-                            width: width * 0.35,
+                            width: (width - 30) * 0.35,
                             child: ClipRRect(
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(10),
@@ -367,12 +370,17 @@ class _MyHomePageState extends State<MyHomePage> {
       itemBuilder: (BuildContext context, int index) {
         return TouchableScale(
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DetailOfObjectPage(
-                          propertyData: propertyData[index],
-                        )));
+            context.router.push(
+              DetailOfObjectRoute(
+                propertyData: propertyData[index],
+              ),
+            );
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => DetailOfObjectPage(
+            //               propertyData: propertyData[index],
+            //             )));
           },
           child: NearToYouComponenState(
             propertyData: propertyData[index],
@@ -397,7 +405,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget second(List<PropertyData> propertyData) {
     return ListView.separated(
-      reverse: true,
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
@@ -428,7 +435,7 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 20,
         );
       },
-      itemCount: propertyData.length, // Use propertyData.length here
+      itemCount: propertyData.length,
     );
   }
 
@@ -438,6 +445,9 @@ class _MyHomePageState extends State<MyHomePage> {
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         return TouchableScale(
+          onPressed: () {
+            context.router.pushNamed('/home');
+          },
           child: VerticalCardComponent(
             hasTitle: false,
             width: width * 0.45,
@@ -487,7 +497,7 @@ class _MyHomePageState extends State<MyHomePage> {
       height: 52,
       decoration: BoxDecoration(
         border: Border.all(color: const Color(0xffE3E3E7)),
-        color: Colors.black.withOpacity(0.055),
+        color: Colors.black.withOpacity(0.03),
         borderRadius: BorderRadius.circular(72),
       ),
       child: Row(

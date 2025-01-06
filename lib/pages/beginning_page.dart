@@ -1,15 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:mrent/pages/login_page.dart';
 
 import 'components/button.dart';
 
-class Beginning extends StatelessWidget {
-  const Beginning({super.key});
+@RoutePage()
+class BeginningPage extends StatelessWidget {
+  const BeginningPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -20,13 +19,14 @@ class Beginning extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              flex: 3,
+              flex: 6,
               child: SizedBox(
                   width: width,
                   child: Image.asset(
                       fit: BoxFit.fill, "assets/images/homebackground.png")),
             ),
-            Expanded(
+            Flexible(
+              flex: 2,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -42,12 +42,13 @@ class Beginning extends StatelessWidget {
                   MyButton(
                     width: width,
                     height: 50,
-                    onPress: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                    ),
+                    onPress: () => context.router.pushNamed('/login'),
+                    //  Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const LoginPage(),
+                    //   ),
+                    // ),
                     text: "Нэвтрэх",
                   ),
                 ],

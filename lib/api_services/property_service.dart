@@ -1,11 +1,15 @@
-import 'dart:convert'; // Needed for jsonDecode
+import 'dart:convert';
+import 'dart:developer';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:mrent/model/properties.dart';
 
 class PropertyService {
   Future<List<PropertyData>> getSurvey() async {
     var client = http.Client();
-    var uri = Uri.parse('http://10.0.2.2:3106/api/properties');
+    var uri = Uri.parse('http://localhost:3106/api/properties/');
+
+    // http://10.0.2.2:3106/api/properties
 
     try {
       var response = await client.get(uri);
@@ -18,11 +22,11 @@ class PropertyService {
                 PropertyData.fromJson(property as Map<String, dynamic>))
             .toList();
       } else {
-        print('Server error. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        log('Server error. Status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
       }
     } catch (e) {
-      print('Network error: $e');
+      log('Network error: $e');
     } finally {
       client.close();
     }
@@ -32,7 +36,8 @@ class PropertyService {
 
   Future<PropertyData?> searchFavorite(String id) async {
     var client = http.Client();
-    var uri = Uri.parse('http://10.0.2.2:3106/api/properties/$id');
+    var uri = Uri.parse('http://localhost:3106/api/properties/$id');
+    //    http:10.0.2.2:3106/api/properties/$id');
 
     try {
       var response = await client.get(uri);
@@ -44,11 +49,11 @@ class PropertyService {
 
         return PropertyData.fromJson(propertyJson);
       } else {
-        print('Server error. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        log('Server error. Status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
       }
     } catch (e) {
-      print('Network error: $e');
+      log('Network error: $e');
     } finally {
       client.close();
     }

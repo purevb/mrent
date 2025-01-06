@@ -1,6 +1,6 @@
+import 'package:auto_route/annotations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/properties.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../providers/favorite_provider.dart';
 import 'payment_page.dart';
 
+@RoutePage()
 class DetailOfObjectPage extends StatefulWidget {
   const DetailOfObjectPage({required this.propertyData, super.key});
   final PropertyData propertyData;
@@ -24,7 +25,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
   @override
   void initState() {
     super.initState();
-    imgList = widget.propertyData?.images ?? [];
+    imgList = widget.propertyData.images ?? [];
   }
 
   @override
@@ -42,16 +43,16 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.white,
-                  ),
-                  child: TouchableScale(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                TouchableScale(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.white,
+                    ),
                     child: const Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 18,
@@ -59,14 +60,14 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.white,
-                  ),
-                  child: TouchableScale(
-                    onPressed: () {},
+                TouchableScale(
+                  onPressed: () {},
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.white,
+                    ),
                     child: const Icon(
                       Icons.share,
                       size: 18,
@@ -101,7 +102,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                           height: width * 0.15,
                           child: Text(
                             maxLines: 2,
-                            widget.propertyData?.description ?? "",
+                            widget.propertyData.description ?? "",
                             style: GoogleFonts.robotoCondensed(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
@@ -116,7 +117,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               height: 20,
                               provider.isExist(widget.propertyData)
                                   ? "assets/images/like.png"
-                                  : "assets/images/Vector.png"),
+                                  : "assets/images/heart1.png"),
                         ),
                       ],
                     ),
@@ -139,7 +140,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               child: Text("4.9"),
                             ),
                             Text(
-                              "(${widget.propertyData?.squares})",
+                              "(${widget.propertyData.squares})",
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
@@ -158,7 +159,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               ),
                             ),
                             Text(
-                              "${widget.propertyData?.numBeds.toString()} өрөө",
+                              "${widget.propertyData.numBeds.toString()} өрөө",
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Color(0xff7D7F88),
@@ -179,7 +180,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               height: 15,
                             ),
                             Text(
-                              widget.propertyData?.location.toString() ?? "",
+                              widget.propertyData.location.toString(),
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Color(0xff7D7F88),
@@ -199,7 +200,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                               ),
                             ),
                             Text(
-                              "${widget.propertyData?.squares.toString()}м2",
+                              "${widget.propertyData.squares.toString()}м2",
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Color(0xff7D7F88),
@@ -272,7 +273,7 @@ class _DetailOfObjectPageState extends State<DetailOfObjectPage> {
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.grey)),
                                 Text(
-                                    '${widget.propertyData?.nightlyPrice}₮/сард',
+                                    '${widget.propertyData.nightlyPrice}₮/сард',
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold)),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
-import 'package:get/get.dart';
 import 'package:mrent/pages/search_page.dart';
 
 class CustomizedTextField extends StatefulWidget {

@@ -1,20 +1,15 @@
-import 'dart:convert';
-
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:mrent/pages/home_page.dart';
-import 'package:mrent/pages/naviagation_page.dart';
 import 'package:mrent/services/auth_service.dart';
 
 import 'components/button.dart';
 import 'components/text_field.dart';
-import 'login_page.dart';
 
+@RoutePage()
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -65,11 +60,11 @@ class _RegisterPageState extends State<RegisterPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: Container(
+          return const Dialog(
+            child: SizedBox(
               width: 50,
               height: 100,
-              child: const Center(child: Text("Таний 2 password uur baina.")),
+              child: Center(child: Text("Таний 2 password uur baina.")),
             ),
           );
         },
@@ -221,10 +216,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
+                        // context.router.pushNamed('/login');
+                        context.router.maybePop();
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => const LoginPage()));
                       },
                   ),
                 ],

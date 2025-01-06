@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +6,7 @@ import 'package:mrent/pages/components/text_field.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
+@RoutePage()
 class RentalSearchPage extends StatefulWidget {
   const RentalSearchPage({super.key});
 
@@ -28,7 +30,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
   bool toggleButton = false;
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -40,7 +42,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
+                SizedBox(
                   width: width,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,7 +113,7 @@ class _RentalSearchPageState extends State<RentalSearchPage> {
                       fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                Container(
+                SizedBox(
                   height: 30,
                   child: ListView.separated(
                     padding: EdgeInsets.zero,

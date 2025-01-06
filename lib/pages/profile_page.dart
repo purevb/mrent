@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/model/user.dart';
 import 'package:mrent/api_services/user_service.dart';
 import 'package:mrent/pages/components/button.dart';
 import 'package:mrent/services/auth_service.dart';
 
+@RoutePage()
 class ProfilePage extends StatefulWidget {
   final String id;
   const ProfilePage({required this.id, super.key});
@@ -127,6 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Handle switch to hosting action
                   },
                 ),
+                const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 150),
                   child: Center(
@@ -145,26 +148,26 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Таалагдсан',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Профайл',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.explore),
+      //       label: 'Explore',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.favorite),
+      //       label: 'Таалагдсан',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'Профайл',
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

@@ -61,7 +61,7 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
               bottomLeft: Radius.circular(10),
             ),
             child: SizedBox(
-              width: screen.width * 0.33,
+              width: 120,
               height: screen.height,
               child: Image.network(
                 fit: BoxFit.fitHeight,
@@ -77,39 +77,35 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Flexible(
-                    flex: 2,
-                    fit: FlexFit.tight,
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          width: 15,
-                          height: 15,
-                          child: Image.asset(
-                            fit: BoxFit.fill,
-                            "assets/images/star.png",
-                          ),
+                  Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 5),
+                        width: 15,
+                        height: 15,
+                        child: Image.asset(
+                          fit: BoxFit.fill,
+                          "assets/images/star.png",
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 2.0),
-                          child: Text(widget.rating ?? "4.9"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2.0),
+                        child: Text(widget.rating ?? "4.9"),
+                      ),
+                      Text(
+                        "(${widget.ratingCount ?? 104})",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
                         ),
-                        Text(
-                          "(${widget.ratingCount ?? 104})",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Text(
                     widget.text ?? "Завхан дахь байшин",
                     maxLines: 2,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Color(0xff1A1E25),
                     ),
                   ),
@@ -120,90 +116,75 @@ class _NearToYouComponenStateState extends State<NearToYouComponenState> {
                       color: Color(0xff7D7F88),
                     ),
                   ),
-                  Flexible(
-                    flex: 2,
-                    fit: FlexFit.tight,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5.0),
-                          child: Image.asset(
-                            "assets/images/bed.png",
-                            width: 15,
-                            height: 15,
-                          ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Image.asset(
+                          "assets/images/bed.png",
+                          width: 15,
+                          height: 15,
                         ),
-                        Text(
-                          "${widget.roomCount ?? "2"} өрөө",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0xff7D7F88),
-                          ),
+                      ),
+                      Text(
+                        "${widget.roomCount ?? "2"} өрөө",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff7D7F88),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Image.asset(
-                            "assets/images/square.png",
-                            width: 15,
-                            height: 15,
-                          ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Image.asset(
+                          "assets/images/square.png",
+                          width: 15,
+                          height: 15,
                         ),
-                        Text(
-                          "${widget.square ?? "673"} m2",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0xff7D7F88),
-                          ),
+                      ),
+                      Text(
+                        "${widget.square ?? "673"} m2",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff7D7F88),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Flexible(
-                    flex: 3,
-                    fit: FlexFit.tight,
-                    child: Row(
-                      children: [
-                        Text(
-                          "₮ ${widget.rent ?? 526}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
+                  Row(
+                    children: [
+                      Text(
+                        "₮ ${widget.rent ?? 526}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
                         ),
-                        Text(
-                          " / сард",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 13,
-                            color: Colors.black.withOpacity(0.5),
-                          ),
+                      ),
+                      Text(
+                        " / сард",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: Colors.black.withOpacity(0.5),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Flexible(
-                    flex: 2,
-                    fit: FlexFit.tight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 10, bottom: 10),
-                          child: TouchableScale(
-                            onPressed: () {
-                              setState(() {});
-                              provider.toggleFavorite(widget.propertyData);
-                            },
-                            child: Image.asset(
-                                width: 20,
-                                height: 20,
-                                provider.isExist(widget.propertyData)
-                                    ? "assets/images/like.png"
-                                    : "assets/images/Vector.png"),
-                          ),
-                        ),
-                      ],
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: const EdgeInsets.only(right: 5),
+                    child: TouchableScale(
+                      onPressed: () {
+                        setState(() {});
+                        provider.toggleFavorite(widget.propertyData);
+                      },
+                      child: Image.asset(
+                          fit: BoxFit.fill,
+                          width: 25,
+                          height: 24,
+                          provider.isExist(widget.propertyData)
+                              ? "assets/images/like.png"
+                              : "assets/images/heart1.png"),
                     ),
                   ),
                 ],

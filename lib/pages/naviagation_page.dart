@@ -1,9 +1,11 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/pages/explore_page.dart';
 import 'package:mrent/pages/favorite_page.dart';
 import 'package:mrent/pages/profile_page.dart';
 import 'home_page.dart';
 
+@RoutePage()
 class NavigationPage extends StatefulWidget {
   const NavigationPage({required this.id, super.key});
   final String id;

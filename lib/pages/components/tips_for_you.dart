@@ -66,8 +66,7 @@ class _TipsForYouState extends State<TipsForYou> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  flex: 3,
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -97,13 +96,14 @@ class _TipsForYouState extends State<TipsForYou> {
                       ),
                       TouchableScale(
                         child: Container(
-                          width: 60,
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 5),
+                          width: MediaQuery.of(context).size.width *
+                              0.15, // Dynamic width
+                          padding: const EdgeInsets.symmetric(vertical: 5),
                           margin: const EdgeInsets.only(top: 20),
                           decoration: BoxDecoration(
-                              color: const Color(0xff917AFD).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(35)),
+                            color: const Color(0xff917AFD).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(35),
+                          ),
                           child: const Center(
                             child: Text(
                               "Илүү",
@@ -115,15 +115,13 @@ class _TipsForYouState extends State<TipsForYou> {
                     ],
                   ),
                 ),
-                Flexible(
-                  flex: 1,
-                  child: TouchableScale(
-                    onPressed: () {},
-                    child: Image.asset(
-                        fit: BoxFit.fill,
-                        width: 20,
-                        height: 18,
-                        "assets/images/Vector.png"),
+                TouchableScale(
+                  onPressed: () {},
+                  child: Image.asset(
+                    "assets/images/heart1.png",
+                    fit: BoxFit.contain,
+                    width: 18,
+                    height: 18,
                   ),
                 ),
               ],

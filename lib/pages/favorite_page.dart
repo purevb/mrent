@@ -1,15 +1,15 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/model/properties.dart';
-import 'package:mrent/pages/components/tips_for_you.dart';
 import 'package:mrent/pages/components/touchable_scale.dart';
 import 'package:mrent/providers/favorite_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'components/horizantal_card.dart';
 import 'components/text_field.dart';
-import 'components/vertical_card.dart';
 import 'detail_of_object_page.dart';
 
+@RoutePage()
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 

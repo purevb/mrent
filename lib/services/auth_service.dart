@@ -3,9 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mrent/pages/home_page.dart';
-import 'package:mrent/pages/login_page.dart';
-import 'package:mrent/route/route.gr.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class AuthService {
   Future<void> signup(
@@ -21,11 +19,11 @@ class AuthService {
           .createUserWithEmailAndPassword(email: email, password: password);
       addUserDetails(
           ovog: ovog, ner: ner, age: age, email: email, phone: phone);
-      Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => const MyHomePage()));
+      // Navigator.pushReplacement(
+      //     // ignore: use_build_context_synchronously
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (BuildContext context) => const MyHomePage()));
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'weak-password') {
@@ -66,7 +64,7 @@ class AuthService {
 
       await Future.delayed(const Duration(seconds: 1));
       // ignore: use_build_context_synchronously
-      context.router.push(NavigationRoute(id: ""));
+      // context.router.push(NavigationRoute(id: ""));
       // Navigator.pushReplacement(
       //     context,
       //     MaterialPageRoute(
@@ -80,9 +78,15 @@ class AuthService {
         log(message);
       } else if (e.code == 'invalid-credential') {
         message = 'Wrong password provided for that user.';
+        showToast('Wrong password provided for that user.',
+            // ignore: use_build_context_synchronously
+            context: context,
+            axis: Axis.horizontal,
+            alignment: Alignment.center,
+            position: StyledToastPosition.bottom);
         log(message);
       } else {
-        log(e.code);
+        log("${e.code} medegdhgu aldaa");
       }
 
       // Fluttertoast.showToast(
@@ -101,10 +105,10 @@ class AuthService {
   Future<void> signout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     await Future.delayed(const Duration(seconds: 1));
-    Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => const LoginPage()));
+    // Navigator.pushReplacement(
+    //     // ignore: use_build_context_synchronously
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (BuildContext context) => const LoginPage()));
   }
 }

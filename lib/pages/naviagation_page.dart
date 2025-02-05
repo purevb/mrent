@@ -1,14 +1,16 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:mrent/pages/explore_page.dart';
-import 'package:mrent/pages/favorite_page.dart';
-import 'package:mrent/pages/profile_page.dart';
-import 'home_page.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mrent/pages/favorite_page/favorite_page.dart';
+import 'package:mrent/pages/message_page/message_page.dart';
+import 'package:mrent/pages/profile_page/profile_page.dart';
+import 'package:mrent/pages/rent_history_page/rent_history_page.dart';
+import 'package:mrent/pages/trip_page/trip_page.dart';
 
 @RoutePage()
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({required this.id, super.key});
-  final String id;
+  const NavigationPage({this.id, super.key});
+  final String? id;
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -20,45 +22,83 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: IndexedStack(
         index: _currentIndex,
-        children: [
-          const MyHomePage(),
-          const ExplorePage(),
-          const FavoritePage(),
-          ProfilePage(id: widget.id),
+        children: const [
+          TripPage(),
+          FavoritePage(),
+          RentHistoryPage(),
+          MessagePage(),
+          ProfilePage(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        unselectedItemColor: const Color(0xff7D8588),
-        selectedItemColor: const Color(0xff6246EA),
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        currentIndex: _currentIndex,
-        items: const [
-          BottomNavigationBarItem(
-            label: "Нүүр",
-            icon: Icon(Icons.home),
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          unselectedFontSize: 12,
+          selectedFontSize: 12,
+          type: BottomNavigationBarType.fixed,
+          unselectedItemColor: const Color(0xff7D8588),
+          selectedItemColor: const Color(0xffFF385C),
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          onTap: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              label: "Аялах",
+              icon: _buildIcon("assets/images/navigationbar/search.svg", 0),
+            ),
+            BottomNavigationBarItem(
+              label: "Таалагдсан",
+              icon: _buildIcon("assets/images/navigationbar/favorite.svg", 1),
+            ),
+            BottomNavigationBarItem(
+              label: "Түрээсэлсэн",
+              icon: _buildIcon("assets/images/navigationbar/trip.svg", 2),
+            ),
+            BottomNavigationBarItem(
+              label: "Зурвас",
+              icon: _buildIcon("assets/images/navigationbar/message.svg", 3),
+            ),
+            BottomNavigationBarItem(
+              label: "Профайл",
+              icon: _buildIcon("assets/images/navigationbar/profile.svg", 4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIcon(String assetPath, int index) {
+    return SizedBox(
+      height: 30,
+      width: 30,
+      child: Center(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: _currentIndex == index ? 30 : 25,
+          width: _currentIndex == index ? 30 : 25,
+          child: SvgPicture.asset(
+            assetPath,
+            fit: BoxFit.contain,
+            colorFilter: ColorFilter.mode(
+              _currentIndex == index
+                  ? const Color(0xffFF385C)
+                  : const Color(0xff7D8588),
+              BlendMode.srcIn,
+            ),
           ),
-          BottomNavigationBarItem(
-            label: "Explore",
-            icon: Icon(Icons.explore),
-          ),
-          BottomNavigationBarItem(
-            label: "Таалагдсан",
-            icon: Icon(Icons.favorite),
-          ),
-          BottomNavigationBarItem(
-            label: "Профайл",
-            icon: Icon(Icons.person),
-          ),
-        ],
+        ),
       ),
     );
   }

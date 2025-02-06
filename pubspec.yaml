@@ -80,6 +80,7 @@ flutter:
     - assets/images/
     - assets/images/navigationbar/
     - assets/search/
+    - assets/object/
 
   #   - images/a_dot_ham.jpeg
 

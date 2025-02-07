@@ -20,27 +20,20 @@ class MyButton extends StatefulWidget {
 class _MyButtonState extends State<MyButton> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.width,
-      height: widget.height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(81),
-        gradient: const LinearGradient(
-          transform: GradientRotation(1),
-          colors: [Color(0xff917AFD), Color(0xff6246EA)],
+    return GestureDetector(
+      onTap: widget.onPress,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: const Color(0xffe61c50),
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xff6246EA),
-            offset: Offset(0, 1),
-            blurRadius: 2,
+        child: Center(
+          child: Text(
+            widget.text,
+            style: const TextStyle(color: Colors.white, fontSize: 18),
           ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          widget.text,
-          style: const TextStyle(color: Colors.white),
         ),
       ),
     );

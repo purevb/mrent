@@ -81,6 +81,7 @@ flutter:
     - assets/images/navigationbar/
     - assets/search/
     - assets/object/
+    - assets/login/
 
   #   - images/a_dot_ham.jpeg
 

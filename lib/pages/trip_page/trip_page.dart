@@ -15,6 +15,9 @@ class _TripPageState extends State<TripPage> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -40,7 +43,7 @@ class _TripPageState extends State<TripPage> {
                     ),
                   ],
                 ),
-                height: 70,
+                height: height * 0.075,
                 child: Row(
                   spacing: 8,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +130,7 @@ class _TripPageState extends State<TripPage> {
         ),
       ),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView.separated(
           itemBuilder: (BuildContext context, int index) {
             return const TheObject();

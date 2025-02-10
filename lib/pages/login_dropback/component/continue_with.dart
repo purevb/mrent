@@ -22,10 +22,11 @@ class ContinueWith extends StatelessWidget {
         width: width,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-            ),
-            borderRadius: BorderRadius.circular(16)),
+          border: Border.all(
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -36,7 +37,7 @@ class ContinueWith extends StatelessWidget {
             ),
             Text(
               text,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
             ),
             const SizedBox(
               width: 20,

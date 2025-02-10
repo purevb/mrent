@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mrent/pages/components/appbar.dart';
 import 'package:mrent/pages/components/button.dart';
 import 'package:mrent/pages/login_dropback/component/continue_with.dart';
 import 'package:mrent/pages/login_dropback/component/login_form.dart';
+import 'package:mrent/pages/register_dropback/register.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -18,9 +20,6 @@ class _LoginState extends State<Login> {
     double height = MediaQuery.of(context).size.height;
 
     return Container(
-      padding: const EdgeInsets.only(
-        top: 15,
-      ),
       height: height * 0.92,
       width: width,
       decoration: BoxDecoration(
@@ -31,41 +30,21 @@ class _LoginState extends State<Login> {
         spacing: 10,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppBar(
-            shadowColor: Colors.black,
-            elevation: 0.8,
-            backgroundColor: Colors.white,
-            leading: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(
-                minWidth: 40,
-                minHeight: 40,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: SvgPicture.asset(
-                "assets/images/navigationbar/Close.svg",
-                width: 20,
-                height: 20,
-              ),
-            ),
-            title: const Text(
-              "Log in or sign up",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            ),
-            centerTitle: true,
-          ),
+          const mAppBar(),
           const LoginForm(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: MyButton(
-                onPress: () {}, height: 55, width: width, text: "Continue"),
+              onPress: () {},
+              height: 55,
+              width: width,
+              text: "Continue",
+            ),
           ),
-          customDivider(),
+          customDivider(height),
           Expanded(
             child: Column(
-              spacing: 15,
+              spacing: 10,
               children: [
                 ContinueWith(
                   onPressed: () {},
@@ -91,6 +70,39 @@ class _LoginState extends State<Login> {
                   path: "assets/login/facebook.png",
                   text: "Continue with facebook",
                 ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Dont you have account? ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            elevation: 0,
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const Register();
+                            },
+                          ).then((_) {
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: const Text(
+                          "Register",
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           )
@@ -99,9 +111,9 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container customDivider() {
+  Container customDivider(double height) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 50),
+      margin: EdgeInsets.symmetric(vertical: height * 0.01),
       child: Row(
         children: [
           Expanded(

@@ -39,8 +39,8 @@ class _NavigationPageState extends State<NavigationPage> {
           highlightColor: Colors.transparent,
         ),
         child: BottomNavigationBar(
-          unselectedFontSize: 12,
-          selectedFontSize: 12,
+          unselectedFontSize: 10,
+          selectedFontSize: 10,
           type: BottomNavigationBarType.fixed,
           unselectedItemColor: const Color(0xff7D8588),
           selectedItemColor: const Color(0xffFF385C),
@@ -55,23 +55,23 @@ class _NavigationPageState extends State<NavigationPage> {
           items: [
             BottomNavigationBarItem(
               label: "Аялах",
-              icon: _buildIcon("assets/images/navigationbar/search.svg", 0),
+              icon: _buildIcon("assets/navigationbar/search.svg", 0),
             ),
             BottomNavigationBarItem(
               label: "Таалагдсан",
-              icon: _buildIcon("assets/images/navigationbar/favorite.svg", 1),
+              icon: _buildIcon("assets/navigationbar/favorite.svg", 1),
             ),
             BottomNavigationBarItem(
               label: "Түрээсэлсэн",
-              icon: _buildIcon("assets/images/navigationbar/trip.svg", 2),
+              icon: _buildIcon("assets/navigationbar/trip.svg", 2),
             ),
             BottomNavigationBarItem(
               label: "Зурвас",
-              icon: _buildIcon("assets/images/navigationbar/message.svg", 3),
+              icon: _buildIcon("assets/navigationbar/message.svg", 3),
             ),
             BottomNavigationBarItem(
               label: "Профайл",
-              icon: _buildIcon("assets/images/navigationbar/profile.svg", 4),
+              icon: _buildIcon("assets/navigationbar/profile.svg", 4),
             ),
           ],
         ),

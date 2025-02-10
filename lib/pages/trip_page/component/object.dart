@@ -17,7 +17,7 @@ class _TheObjectState extends State<TheObject> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
 
     return Container(
       margin: const EdgeInsets.only(top: 20),
@@ -94,7 +94,7 @@ class _TheObjectState extends State<TheObject> {
               top: 15,
               left: 15,
               child: SizedBox(
-                width: width - 90,
+                width: width - 70,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

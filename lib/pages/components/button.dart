@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class MyButton extends StatefulWidget {
   final String text;
+  final bool? canPress;
   final VoidCallback onPress;
   final double height;
   final double width;
 
   const MyButton(
-      {required this.onPress,
+      {this.canPress,
+      required this.onPress,
       required this.height,
       required this.width,
       required this.text,

@@ -35,6 +35,7 @@ class _LoginState extends State<Login> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: MyButton(
+              canPress: true,
               onPress: () {},
               height: 55,
               width: width,

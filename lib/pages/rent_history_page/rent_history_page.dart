@@ -77,6 +77,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                 child: Container(
                   margin: const EdgeInsets.only(top: 60, left: 20),
                   child: MyButton(
+                    canPress: true,
                     onPress: () {
                       showModalBottomSheet(
                         elevation: 0,

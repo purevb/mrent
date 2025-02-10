@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class MyButton extends StatefulWidget {
   final String text;
-  final bool? canPress;
+  final bool canPress;
   final VoidCallback onPress;
   final double height;
   final double width;
 
   const MyButton(
-      {this.canPress,
+      {required this.canPress,
       required this.onPress,
       required this.height,
       required this.width,
@@ -23,18 +23,22 @@ class _MyButtonState extends State<MyButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onPress,
+      onTap: widget.canPress == true ? widget.onPress : () {},
       child: Container(
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
-          color: const Color(0xffe61c50),
+          color: widget.canPress == true
+              ? const Color(0xffe61c50)
+              : const Color(0xffc4c4c4),
         ),
         child: Center(
           child: Text(
             widget.text,
-            style: const TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(
+                color: widget.canPress == true ? Colors.white : Colors.black,
+                fontSize: 18),
           ),
         ),
       ),

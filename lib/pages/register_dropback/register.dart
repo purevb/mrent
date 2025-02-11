@@ -136,7 +136,7 @@ class _RegisterState extends State<Register> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: MyButton(
-                canPress: isCheck == false ? true : false,
+                canPress: isCheck == true ? true : false,
                 onPress: () {
                   checkTwoPasswordsEqual(
                     passwordController.text,

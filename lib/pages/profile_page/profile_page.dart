@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -43,9 +44,45 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const Divider(),
+              Row(
+                spacing: 10,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: SvgPicture.asset("assets/profile/Earn-Money.svg")),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: const [
+                          TextSpan(text: "Earn money from your extra space"),
+                          TextSpan(
+                            text: "\nLearn more",
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const Text(
                 "Account settings",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: 4,
+                itemBuilder: (BuildContext context, int index) {
+                  return SizedBox();
+                },
               )
             ],
           ),

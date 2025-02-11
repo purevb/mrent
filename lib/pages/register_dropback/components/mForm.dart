@@ -24,7 +24,7 @@ class _mFormState extends State<mForm> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 30),
       decoration: BoxDecoration(
-        color: const Color(0xffC4C4C4).withOpacity(0.3),
+        border: Border.all(width: 1),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(

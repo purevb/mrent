@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:mrent/pages/components/appbar.dart';
-import 'package:mrent/pages/components/button.dart';
+import 'package:mrent/components/appbar.dart';
+import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/register_dropback/components/mForm.dart';
+import 'package:mrent/utils/constants.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -23,6 +24,24 @@ class _RegisterState extends State<Register> {
 
   bool isCheck = false;
   bool canCreate = false;
+
+  // final Map<int, Map<String, String>> properties = {
+  //   1: {
+  //     "booster": "assets/subscription_loyalty/backgrounds/nbooster.png",
+  //     "background": "assets/subscription_loyalty/backgrounds/nnbackground.png",
+  //   },
+  //   2: {
+  //     "booster": "assets/subscription_loyalty/backgrounds/ubooster.png",
+  //     "background": "assets/subscription_loyalty/backgrounds/ubackground.png",
+  //   },
+  //   3: {
+  //     "booster": "assets/subscription_loyalty/backgrounds/obooster.png",
+  //     "background": "assets/subscription_loyalty/backgrounds/obackground.png",
+  //   },
+  // };
+  Map<int, Map<String, String>> profileListTile = {
+    0: {"icon": ""}
+  };
   void checkTwoPasswordsEqual(String password, String verifyPassword) {
     if (password == verifyPassword) {
       setState(() {
@@ -102,24 +121,24 @@ class _RegisterState extends State<Register> {
                 ),
                 Expanded(
                   child: RichText(
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: 10, color: Colors.black),
+                    text: TextSpan(
+                      style: const TextStyle(fontSize: 10, color: Colors.black),
                       children: [
-                        TextSpan(
+                        const TextSpan(
                           text: 'By checking the box you agree to our ',
                         ),
                         TextSpan(
                           text: 'Terms',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: mRed,
                             decoration: TextDecoration.underline,
                           ),
                         ),
-                        TextSpan(text: ' and '),
+                        const TextSpan(text: ' and '),
                         TextSpan(
                           text: 'Conditions',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: mRed,
                             decoration: TextDecoration.underline,
                           ),
                         ),

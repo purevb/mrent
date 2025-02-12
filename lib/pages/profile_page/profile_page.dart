@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,6 +11,25 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final Map<int, Map<String, String>> profileListTileDatas = {
+    0: {
+      "iconPath": "assets/profile/Vector.svg",
+      "description": "Personal information",
+    },
+    1: {
+      "iconPath": "assets/profile/Vector-1.svg",
+      "description": "Payments and payouts",
+    },
+    2: {
+      "iconPath": "assets/profile/Vector-2.svg",
+      "description": "Notificattion",
+    },
+    3: {
+      "iconPath": "assets/profile/Icon.svg",
+      "description": "Privacy and sharing",
+    }
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
+              SizedBox(
                 height: 60,
                 width: 60,
                 child: ClipRRect(
@@ -43,7 +63,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Divider(),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Divider(),
+              ),
               Row(
                 spacing: 10,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,17 +96,40 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 20,
+              ),
               const Text(
                 "Account settings",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               ),
               ListView.builder(
                 shrinkWrap: true,
-                itemCount: 4,
+                itemCount: profileListTileDatas.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return SizedBox();
+                  return ProfileListTiles(
+                    iconPath:
+                        profileListTileDatas[index]!["iconPath"].toString(),
+                    description:
+                        profileListTileDatas[index]!["description"].toString(),
+                    onPressed: () {},
+                  );
                 },
-              )
+              ),
+              const Spacer(),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                  child: GestureDetector(
+                    // onTap: ,
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(decoration: TextDecoration.underline),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

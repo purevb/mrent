@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mrent/pages/components/button.dart';
+import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 
 class MessagePage extends StatefulWidget {

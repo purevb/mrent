@@ -6,6 +6,7 @@ import 'package:mrent/pages/message_page/message_page.dart';
 import 'package:mrent/pages/profile_page/profile_page.dart';
 import 'package:mrent/pages/rent_history_page/rent_history_page.dart';
 import 'package:mrent/pages/trip_page/trip_page.dart';
+import 'package:mrent/utils/constants.dart';
 
 @RoutePage()
 class NavigationPage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _NavigationPageState extends State<NavigationPage> {
           selectedFontSize: 10,
           type: BottomNavigationBarType.fixed,
           unselectedItemColor: const Color(0xff7D8588),
-          selectedItemColor: const Color(0xffFF385C),
+          selectedItemColor: mRed,
           showSelectedLabels: true,
           showUnselectedLabels: true,
           onTap: (int index) {
@@ -92,9 +93,7 @@ class _NavigationPageState extends State<NavigationPage> {
             assetPath,
             fit: BoxFit.contain,
             colorFilter: ColorFilter.mode(
-              _currentIndex == index
-                  ? const Color(0xffFF385C)
-                  : const Color(0xff7D8588),
+              _currentIndex == index ? mRed : const Color(0xff7D8588),
               BlendMode.srcIn,
             ),
           ),

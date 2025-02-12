@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mrent/utils/constants.dart';
 
 class MyButton extends StatefulWidget {
   final String text;
@@ -29,9 +30,7 @@ class _MyButtonState extends State<MyButton> {
         height: widget.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
-          color: widget.canPress == true
-              ? const Color(0xffe61c50)
-              : const Color(0xffc4c4c4),
+          color: widget.canPress == true ? mRed : const Color(0xffc4c4c4),
         ),
         child: Center(
           child: Text(

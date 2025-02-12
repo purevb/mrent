@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mrent/pages/components/appbar.dart';
-import 'package:mrent/pages/components/button.dart';
+import 'package:mrent/components/appbar.dart';
+import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/component/continue_with.dart';
 import 'package:mrent/pages/login_dropback/component/login_form.dart';
 import 'package:mrent/pages/register_dropback/register.dart';
+import 'package:mrent/utils/constants.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -95,10 +96,10 @@ class _LoginState extends State<Login> {
                             Navigator.pop(context);
                           });
                         },
-                        child: const Text(
+                        child: Text(
                           "Register",
                           style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.bold),
+                              color: mRed, fontWeight: FontWeight.bold),
                         ),
                       )
                     ],

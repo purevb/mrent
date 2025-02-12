@@ -1,15 +1,40 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
-class ProfileListTiles extends StatefulWidget {
-  const ProfileListTiles({super.key});
+class ProfileListTiles extends StatelessWidget {
+  const ProfileListTiles({
+    required this.iconPath,
+    required this.description,
+    required this.onPressed,
+    super.key,
+  });
+  final String iconPath;
+  final String description;
+  final VoidCallback onPressed;
 
-  @override
-  State<ProfileListTiles> createState() => _ProfileListTilesState();
-}
-
-class _ProfileListTilesState extends State<ProfileListTiles> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
+    return Container(
+      child: Row(
+        spacing: 15,
+        children: [
+          SizedBox(
+            height: height * 0.03,
+            width: height * 0.03,
+            child: SvgPicture.asset(fit: BoxFit.contain, iconPath),
+          ),
+          Text(description),
+          const Spacer(),
+          IconButton(
+            onPressed: onPressed,
+            icon: const Icon(CupertinoIcons.right_chevron),
+          )
+        ],
+      ),
+    );
   }
 }

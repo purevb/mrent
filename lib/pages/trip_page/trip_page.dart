@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 import 'package:mrent/pages/trip_page/component/object.dart';
 
 class TripPage extends StatefulWidget {
@@ -12,6 +13,30 @@ class TripPage extends StatefulWidget {
 
 class _TripPageState extends State<TripPage> {
   int currentIndex = 0;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToIndex(int index) {
+    final itemWidth = 85.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = 10.0;
+    double targetOffset =
+        (itemWidth * index) - (screenWidth / 2) + (itemWidth / 2) + padding;
+    targetOffset = targetOffset.clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+    _scrollController.animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +70,6 @@ class _TripPageState extends State<TripPage> {
                 ),
                 height: height * 0.075,
                 child: Row(
-                  spacing: 8,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -68,6 +92,7 @@ class _TripPageState extends State<TripPage> {
                 margin: const EdgeInsets.only(bottom: 6),
                 height: 85,
                 child: ListView.separated(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -77,6 +102,7 @@ class _TripPageState extends State<TripPage> {
                         setState(() {
                           currentIndex = index;
                         });
+                        _scrollToIndex(index);
                       },
                       child: SizedBox(
                         width: 80,
@@ -133,7 +159,16 @@ class _TripPageState extends State<TripPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView.separated(
           itemBuilder: (BuildContext context, int index) {
-            return const TheObject();
+            return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PropertyDetailPage(),
+                    ),
+                  );
+                },
+                child: const TheObject());
           },
           separatorBuilder: (BuildContext context, int index) {
             return const SizedBox(height: 20);

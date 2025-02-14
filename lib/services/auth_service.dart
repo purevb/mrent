@@ -4,12 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:mrent/pages/naviagation_page.dart';
 
 class AuthService {
   Future<void> signup(
-      {required String ovog,
-      required String ner,
-      required int age,
+      {required String name,
       required String phone,
       required String email,
       required String password,
@@ -17,8 +16,7 @@ class AuthService {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      addUserDetails(
-          ovog: ovog, ner: ner, age: age, email: email, phone: phone);
+      addUserDetails(ner: name, phone: phone);
       // Navigator.pushReplacement(
       //     // ignore: use_build_context_synchronously
       //     context,
@@ -39,17 +37,9 @@ class AuthService {
     }
   }
 
-  Future addUserDetails(
-      {required String ovog,
-      required String ner,
-      required int age,
-      required String email,
-      required String phone}) async {
+  Future addUserDetails({required String ner, required String phone}) async {
     await FirebaseFirestore.instance.collection('users').add({
-      'ovog': ovog,
       'ner': ner,
-      'age': age,
-      'email': email,
       'phone': phone,
     });
   }
@@ -63,14 +53,13 @@ class AuthService {
           .signInWithEmailAndPassword(email: email, password: password);
 
       await Future.delayed(const Duration(seconds: 1));
-      // ignore: use_build_context_synchronously
       // context.router.push(NavigationRoute(id: ""));
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => const NavigationPage(
-      //             // id: '',
-      //             )));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const NavigationPage(
+                  // id: '',
+                  )));
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'invalid-email') {

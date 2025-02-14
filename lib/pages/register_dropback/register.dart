@@ -5,6 +5,7 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/register_dropback/components/mForm.dart';
+import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 
 class Register extends StatefulWidget {
@@ -42,14 +43,22 @@ class _RegisterState extends State<Register> {
   Map<int, Map<String, String>> profileListTile = {
     0: {"icon": ""}
   };
-  void checkTwoPasswordsEqual(String password, String verifyPassword) {
+  Future<void> checkTwoPasswordsEqualThenSignUp(
+      String password, String verifyPassword) async {
     if (password == verifyPassword) {
       setState(() {
         canCreate = true;
       });
+      AuthService authService = AuthService();
+      await authService.signup(
+          name: nameController.text,
+          phone: phoneNumberController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          context: context);
     } else {
       Fluttertoast.showToast(
-          msg: "This is Center Short Toast",
+          msg: "Passwords have to equal",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -157,7 +166,7 @@ class _RegisterState extends State<Register> {
               child: MyButton(
                 canPress: isCheck == true ? true : false,
                 onPress: () {
-                  checkTwoPasswordsEqual(
+                  checkTwoPasswordsEqualThenSignUp(
                     passwordController.text,
                     verifypasswordController.text,
                   );

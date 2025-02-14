@@ -7,6 +7,7 @@ class MyButton extends StatefulWidget {
   final VoidCallback onPress;
   final double height;
   final double width;
+  final double? borderRadius;
 
   const MyButton(
       {required this.canPress,
@@ -14,6 +15,7 @@ class MyButton extends StatefulWidget {
       required this.height,
       required this.width,
       required this.text,
+      this.borderRadius,
       super.key});
 
   @override
@@ -29,7 +31,7 @@ class _MyButtonState extends State<MyButton> {
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 6),
           color: widget.canPress == true ? mRed : const Color(0xffc4c4c4),
         ),
         child: Center(

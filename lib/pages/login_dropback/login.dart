@@ -5,6 +5,7 @@ import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/component/continue_with.dart';
 import 'package:mrent/pages/login_dropback/component/login_form.dart';
 import 'package:mrent/pages/register_dropback/register.dart';
+import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 
 class Login extends StatefulWidget {
@@ -15,6 +16,18 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> signUserIn() async {
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      await AuthService().signin(
+          email: emailController.text,
+          password: passwordController.text,
+          context: context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -32,12 +45,17 @@ class _LoginState extends State<Login> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const mAppBar(),
-          const LoginForm(),
+          LoginForm(
+            emailController: emailController,
+            padsswordController: passwordController,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: MyButton(
               canPress: true,
-              onPress: () {},
+              onPress: () async {
+                signUserIn();
+              },
               height: 55,
               width: width,
               text: "Continue",

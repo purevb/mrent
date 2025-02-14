@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
+  final TextEditingController emailController;
+  final TextEditingController padsswordController;
+
   const LoginForm({
+    required this.emailController,
+    required this.padsswordController,
     super.key,
   });
 
@@ -15,6 +20,7 @@ class LoginForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
+            controller: emailController,
             showCursor: true,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(left: 10, top: 5),
@@ -26,6 +32,7 @@ class LoginForm extends StatelessWidget {
             color: Colors.black,
           ),
           TextFormField(
+            controller: padsswordController,
             showCursor: true,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(left: 10, bottom: 10),

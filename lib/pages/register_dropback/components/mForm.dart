@@ -33,7 +33,8 @@ class _mFormState extends State<mForm> {
             child: TextFormField(
               controller: widget.controller,
               showCursor: true,
-              obscureText: isObscure,
+              obscureText:
+                  widget.hasObscure == true ? isObscure : widget.hasObscure,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.only(
                   left: 20,

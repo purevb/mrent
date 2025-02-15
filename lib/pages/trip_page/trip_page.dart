@@ -46,7 +46,7 @@ class _TripPageState extends State<TripPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 100,
+        toolbarHeight: height*(0.11),
         shadowColor: Colors.black,
         backgroundColor: Colors.white,
         elevation: 0.8,
@@ -70,6 +70,7 @@ class _TripPageState extends State<TripPage> {
                 ),
                 height: height * 0.075,
                 child: Row(
+                  spacing: 5,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

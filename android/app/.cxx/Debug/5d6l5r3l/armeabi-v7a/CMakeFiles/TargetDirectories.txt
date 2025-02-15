@@ -1,0 +1,2 @@
+C:/Users/M-TECH/Desktop/diploma/mrent/android/app/.cxx/Debug/5d6l5r3l/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/M-TECH/Desktop/diploma/mrent/android/app/.cxx/Debug/5d6l5r3l/armeabi-v7a/CMakeFiles/rebuild_cache.dir

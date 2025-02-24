@@ -1,12 +1,68 @@
 import 'dart:developer';
-import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mrent/pages/naviagation_page.dart';
 
 class AuthService {
+  final _auth = FirebaseAuth.instance;
+  Future<UserCredential?> loginWithGoogle(BuildContext context) async {
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        print("Google Sign-In cancelled by user.");
+        return null;
+      }
+      final googleAuth = await googleUser.authentication;
+      final cred = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(cred);
+
+      if (userCredential.user != null) {
+        print("Google Sign-In successful!");
+        print("User UID: ${userCredential.user?.uid}");
+        print("User Email: ${userCredential.user?.email}");
+        print("User Display Name: ${userCredential.user?.displayName}");
+
+        await addUserDetails(
+          userId: userCredential.user!.uid,
+          gmail: userCredential.user!.email!,
+          name: userCredential.user!.displayName ?? 'Unknown Name',
+          phone: userCredential.user!.phoneNumber ?? 'Unknown Phone',
+        );
+
+        String userId = userCredential.user!.uid;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => NavigationPage(
+              id: userId,
+            ),
+          ),
+        );
+        return userCredential;
+      } else {
+        print("Google Sign-In failed: User is null.");
+        return null;
+      }
+    } on FirebaseAuthException catch (e) {
+      print(
+          "Firebase Auth Error during Google Sign-In: ${e.code} - ${e.message}");
+    } on PlatformException catch (e) {
+      print(
+          "Platform Exception during Google Sign-In: ${e.code} - ${e.message}");
+    } catch (e) {
+      print("Unexpected Error during Google Sign-In: $e");
+    }
+    return null;
+  }
+
   Future<void> signup(
       {required String name,
       required String phone,
@@ -14,33 +70,71 @@ class AuthService {
       required String password,
       required BuildContext context}) async {
     try {
-      await FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      addUserDetails(ner: name, phone: phone);
-      // Navigator.pushReplacement(
-      //     // ignore: use_build_context_synchronously
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => const MyHomePage()));
+      if (userCredential.user != null) {
+        await addUserDetails(
+          userId: userCredential.user!.uid,
+          gmail: email,
+          name: name,
+          phone: phone,
+        );
+        showToast(
+          'Registration successful!',
+          context: context,
+          axis: Axis.horizontal,
+          alignment: Alignment.center,
+          position: StyledToastPosition.bottom,
+        );
+        Navigator.pop(context);
+      }
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'weak-password') {
         message = 'The password provided is too weak.';
+        showToast(
+          message.isNotEmpty ? message : 'An error occurred during signup',
+          context: context,
+          axis: Axis.horizontal,
+          alignment: Alignment.center,
+          position: StyledToastPosition.bottom,
+        );
       } else if (e.code == 'email-already-in-use') {
         message = 'An account already exists with that email.';
-      } else {
-        log(e.code);
-        log(message);
+        showToast(
+          message.isNotEmpty ? message : 'An error occurred during signup',
+          context: context,
+          axis: Axis.horizontal,
+          alignment: Alignment.center,
+          position: StyledToastPosition.bottom,
+        );
       }
+
+      showToast(
+          message.isNotEmpty ? message : 'An error occurred during signup',
+          context: context,
+          axis: Axis.horizontal,
+          alignment: Alignment.center,
+          position: StyledToastPosition.bottom);
+
+      log(e.code);
+      log(message);
     } catch (e) {
       log(e.toString());
     }
   }
 
-  Future addUserDetails({required String ner, required String phone}) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'ner': ner,
+  Future<void> addUserDetails({
+    required String gmail,
+    required String userId,
+    required String name,
+    required String phone,
+  }) async {
+    await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'gmail': gmail,
+      'name': name,
       'phone': phone,
+      'createdAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -49,17 +143,20 @@ class AuthService {
       required String password,
       required BuildContext context}) async {
     try {
-      await FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      String userId = userCredential.user!.uid;
 
       await Future.delayed(const Duration(seconds: 1));
-      // context.router.push(NavigationRoute(id: ""));
+
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => const NavigationPage(
-                  // id: '',
-                  )));
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => NavigationPage(
+            id: userId,
+          ),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'invalid-email') {
@@ -77,15 +174,6 @@ class AuthService {
       } else {
         log("${e.code} medegdhgu aldaa");
       }
-
-      // Fluttertoast.showToast(
-      //   msg: message,
-      //   toastLength: Toast.LENGTH_LONG,
-      //   gravity: ToastGravity.SNACKBAR,
-      //   backgroundColor: Colors.black54,
-      //   textColor: Colors.white,
-      //   fontSize: 14.0,
-      // );
     } catch (e) {
       log(e.toString());
     }
@@ -94,10 +182,10 @@ class AuthService {
   Future<void> signout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     await Future.delayed(const Duration(seconds: 1));
-    // Navigator.pushReplacement(
-    //     // ignore: use_build_context_synchronously
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (BuildContext context) => const LoginPage()));
+    Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => const NavigationPage()));
   }
 }

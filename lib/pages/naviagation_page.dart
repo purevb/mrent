@@ -1,10 +1,12 @@
 import 'package:auto_route/annotations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mrent/pages/favorite_page/favorite_page.dart';
-import 'package:mrent/pages/message_page/message_page.dart';
-import 'package:mrent/pages/profile_page/profile_page.dart';
-import 'package:mrent/pages/rent_history_page/rent_history_page.dart';
+import 'package:mrent/model/user_model.dart';
+import 'package:mrent/pages/favorite_page/favorite_checker.dart';
+import 'package:mrent/pages/message_page/message_checker.dart';
+import 'package:mrent/pages/profile_page/profile_checker.dart';
+import 'package:mrent/pages/rent_history_page/rent_checker.dart';
 import 'package:mrent/pages/trip_page/trip_page.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -19,62 +21,105 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
+  User? user;
+  @override
+  void initState() {
+    super.initState();
+    fetchUserById(widget.id ?? "");
+  }
+
+  Future<void> fetchUserById(String userId) async {
+    if (userId.isEmpty) {
+      print('Error: userId cannot be empty');
+      return;
+    }
+
+    try {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (documentSnapshot.exists) {
+        user = User.fromFirestore(documentSnapshot);
+        print(
+            'User Data: ${user!.name}, ${user!.email}, ${user!.phone}, ${user!.createdAt}');
+      } else {
+        print('User  not found');
+      }
+    } catch (e) {
+      print('Error fetching user: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          TripPage(),
-          FavoritePage(),
-          RentHistoryPage(),
-          MessagePage(),
-          ProfilePage(),
-        ],
-      ),
-      bottomNavigationBar: Theme(
-        data: ThemeData(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: BottomNavigationBar(
-          unselectedFontSize: 10,
-          selectedFontSize: 10,
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: const Color(0xff7D8588),
-          selectedItemColor: mRed,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          onTap: (int index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          currentIndex: _currentIndex,
-          items: [
-            BottomNavigationBarItem(
-              label: "Аялах",
-              icon: _buildIcon("assets/navigationbar/search.svg", 0),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIndex,
+          children: [
+            TripPage(
+              user: user,
             ),
-            BottomNavigationBarItem(
-              label: "Таалагдсан",
-              icon: _buildIcon("assets/navigationbar/favorite.svg", 1),
+            FavoriteChecker(
+              user: user,
             ),
-            BottomNavigationBarItem(
-              label: "Түрээсэлсэн",
-              icon: _buildIcon("assets/navigationbar/trip.svg", 2),
+            RentChecker(
+              user: user,
             ),
-            BottomNavigationBarItem(
-              label: "Зурвас",
-              icon: _buildIcon("assets/navigationbar/message.svg", 3),
+            MessageChecker(
+              user: user,
             ),
-            BottomNavigationBarItem(
-              label: "Профайл",
-              icon: _buildIcon("assets/navigationbar/profile.svg", 4),
+            ProfileChecker(
+              user: user,
             ),
           ],
+        ),
+        bottomNavigationBar: Theme(
+          data: ThemeData(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: backgroundColor,
+            unselectedFontSize: 10,
+            selectedFontSize: 10,
+            type: BottomNavigationBarType.fixed,
+            unselectedItemColor: const Color(0xff7D8588),
+            selectedItemColor: mRed,
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
+            onTap: (int index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            currentIndex: _currentIndex,
+            items: [
+              BottomNavigationBarItem(
+                label: "Аялах",
+                icon: _buildIcon("assets/navigationbar/search.svg", 0),
+              ),
+              BottomNavigationBarItem(
+                label: "Таалагдсан",
+                icon: _buildIcon("assets/navigationbar/favorite.svg", 1),
+              ),
+              BottomNavigationBarItem(
+                label: "Түрээсэлсэн",
+                icon: _buildIcon("assets/navigationbar/trip.svg", 2),
+              ),
+              BottomNavigationBarItem(
+                label: "Зурвас",
+                icon: _buildIcon("assets/navigationbar/message.svg", 3),
+              ),
+              BottomNavigationBarItem(
+                label: "Профайл",
+                icon: _buildIcon("assets/navigationbar/profile.svg", 4),
+              ),
+            ],
+          ),
         ),
       ),
     );

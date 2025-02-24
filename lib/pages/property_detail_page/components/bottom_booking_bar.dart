@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/components/button.dart';
+import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 
 class BottomBookingBar extends StatelessWidget {
   const BottomBookingBar({
     super.key,
     required this.width,
+    required this.propertyData,
   });
+  final PropertyModel propertyData;
 
   final double width;
 
@@ -45,10 +48,10 @@ class BottomBookingBar extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 RichText(
-                  text: const TextSpan(
-                    style: TextStyle(fontSize: 10, color: Colors.black),
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 10, color: Colors.black),
                     children: [
-                      TextSpan(
+                      const TextSpan(
                         text: '\$',
                         style: TextStyle(
                           color: Colors.black,
@@ -56,20 +59,20 @@ class BottomBookingBar extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: '350',
-                        style: TextStyle(
+                        text: propertyData.nightlyPrice.toString(),
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 24,
                         ),
                       ),
-                      TextSpan(
+                      const TextSpan(
                         text: '/',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 24,
                         ),
                       ),
-                      TextSpan(
+                      const TextSpan(
                         text: 'month',
                         style: TextStyle(
                           color: Colors.black,

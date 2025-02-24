@@ -12,7 +12,20 @@
           "package_name": "com.example.mrent"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "502985194321-are9m9fsontsoenod451qtlq6l0auqsr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mrent",
+            "certificate_hash": "4f9fa89679cf1dd1fcd08a45e5373c6f263ac256"
+          }
+        },
+        {
+          "client_id": "502985194321-396pqbajcckot6ige6l1vbr5o6lh6i0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCHDWsB8Arts5c677z-zQWJqTNiCumVU9Q"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502985194321-396pqbajcckot6ige6l1vbr5o6lh6i0r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "502985194321-o35qt8v8l6kfe9vnsa8i4ou8b1flokgb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mrent"
+              }
+            }
+          ]
         }
       }
     }

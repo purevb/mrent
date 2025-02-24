@@ -1,20 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mrent/components/button.dart';
-import 'package:mrent/main.dart';
+import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/property_detail_page/components/image_swiper.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
-import 'package:mrent/pages/property_detail_page/components/map.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
 import 'package:mrent/utils/constants.dart';
 
 class PropertyDetailPage extends StatefulWidget {
-  const PropertyDetailPage({super.key});
+  const PropertyDetailPage({required this.propertyData, super.key});
+  final PropertyModel propertyData;
 
   @override
   State<PropertyDetailPage> createState() => _PropertyDetailPageState();
@@ -23,15 +20,6 @@ class PropertyDetailPage extends StatefulWidget {
 class _PropertyDetailPageState extends State<PropertyDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<String> images = [
-    "https://images.pexels.com/photos/34950/pexels-photo.jpg",
-    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
-    "https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg",
-    "https://images.unsplash.com/photo-1505144808419-1957a94ca61e",
-    "https://images.unsplash.com/photo-1484589065579-248aad0d8b13",
-    "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg",
-    "https://images.unsplash.com/photo-1518689000812-44e345196396",
-  ];
 
   final Map<int, Map<String, dynamic>> advantages = {
     0: {
@@ -74,6 +62,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -135,7 +124,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
           SingleChildScrollView(
             child: Column(
               children: [
-                ImageSwiper(height: height, images: images),
+                ImageSwiper(
+                    height: height, images: widget.propertyData.images!),
                 Container(
                   color: Colors.white,
                   padding: const EdgeInsets.only(
@@ -196,7 +186,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
               ],
             ),
           ),
-          BottomBookingBar(width: width),
+          BottomBookingBar(width: width, propertyData: widget.propertyData),
         ],
       ),
     );
@@ -208,9 +198,9 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
         TabBar(
           dividerColor: Colors.transparent,
           controller: _tabController,
-          labelColor: mRed,
+          labelColor: textDefaultColor,
           unselectedLabelColor: Colors.grey,
-          indicatorColor: mRed,
+          indicatorColor: textDefaultColor,
           indicatorWeight: 2,
           tabs: const [
             Tab(text: 'Description'),
@@ -349,7 +339,7 @@ class DescriptionTab extends StatelessWidget {
       children: [
         SizedBox(
           height: width * 0.28,
-          child: ListView.builder(
+          child: ListView.separated(
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 20, left: 0),
             scrollDirection: Axis.horizontal,
@@ -360,6 +350,11 @@ class DescriptionTab extends StatelessWidget {
                 label: advantage!["label"] ?? "",
                 value: advantage["value"] ?? "",
                 icon: advantage["icon"] as IconData? ?? Icons.error,
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return const SizedBox(
+                width: 12,
               );
             },
           ),
@@ -377,12 +372,12 @@ class DescriptionTab extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {},
-              child: Text(
+              child: const Text(
                 "View on Map",
                 style: TextStyle(
-                  color: mRed,
+                  color: Colors.black,
                   decoration: TextDecoration.underline,
-                  decorationColor: mRed,
+                  decorationColor: Colors.black,
                 ),
               ),
             ),

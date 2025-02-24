@@ -21,8 +21,7 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
     double width = MediaQuery.of(context).size.width;
     return Container(
       width: width * 0.2,
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -38,12 +37,12 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(widget.icon, color: mRed, size: 24),
+          Icon(widget.icon, color: textDefaultColor, size: 24),
           const SizedBox(height: 8),
           Text(
             widget.value,
             style: TextStyle(
-              color: mRed,
+              color: Colors.grey[600],
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

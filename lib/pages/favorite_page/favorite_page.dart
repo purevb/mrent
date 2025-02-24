@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/components/button.dart';
+import 'package:mrent/model/user_model.dart';
+import 'package:mrent/pages/favorite_page/components/favorite_property.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/providers/property_provider.dart';
+import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class FavoritePage extends StatefulWidget {
-  const FavoritePage({super.key});
+  const FavoritePage({
+    this.user,
+    super.key,
+  });
+  final User? user;
 
   @override
   State<FavoritePage> createState() => _FavoritePageState();
@@ -12,91 +21,32 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    final provider =
+        Provider.of<PropertyProvider>(context).userFavoriteProperties;
+
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                flex: 2,
-                child: Row(
-                  children: [
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        "Edit",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      backgroundColor: backgroundColor,
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          children: [
+            GridView.builder(
+              shrinkWrap: true,
+              itemBuilder: (BuildContext context, int index) {
+                return FavoriteProperty(
+                  propertyData: provider[index],
+                );
+              },
+              itemCount: provider!.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: height * 0.3,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 20,
+                crossAxisCount: 2,
               ),
-              const Flexible(
-                fit: FlexFit.tight,
-                flex: 1,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Wishlists",
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-              const Flexible(
-                flex: 0,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 20.0),
-                  child: Text(
-                    "Log in to view your wishlists",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
-                ),
-              ),
-              const Flexible(
-                flex: 2,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    "You can create, view or edit wishlists once you've logged in.",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-              Flexible(
-                flex: 2,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 60, left: 20),
-                  child: MyButton(
-                    canPress: true,
-                    onPress: () {
-                      showModalBottomSheet(
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const Login();
-                        },
-                      );
-                    },
-                    height: 55,
-                    width: 120,
-                    text: "Log in",
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

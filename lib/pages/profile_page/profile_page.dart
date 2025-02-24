@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
+import 'package:mrent/services/auth_service.dart';
+import 'package:mrent/utils/constants.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+  const ProfilePage({required this.user, super.key});
+  final User user;
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -33,11 +36,13 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
                 height: 60,
@@ -51,9 +56,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              const Text(
-                "John",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              Text(
+                widget.user.name,
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const Text(
                 "View profile",
@@ -122,7 +128,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 20.0, bottom: 20),
                   child: GestureDetector(
-                    // onTap: ,
+                    onTap: () async {
+                      AuthService authService = AuthService();
+                      await authService.signout(context);
+                    },
                     child: const Text(
                       "Logout",
                       style: TextStyle(decoration: TextDecoration.underline),

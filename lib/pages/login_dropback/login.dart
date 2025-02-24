@@ -18,7 +18,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  final AuthService _auth = AuthService();
   Future<void> signUserIn() async {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       await AuthService().signin(
@@ -64,27 +64,33 @@ class _LoginState extends State<Login> {
           customDivider(height),
           Expanded(
             child: Column(
-              spacing: 10,
+              spacing: 20,
               children: [
                 ContinueWith(
+                  working: false,
                   onPressed: () {},
                   width: width,
                   path: "assets/login/mail-inbox-app.png",
                   text: "Continue with email",
                 ),
                 ContinueWith(
-                  onPressed: () {},
+                  working: true,
+                  onPressed: () async {
+                    await _auth.loginWithGoogle(context);
+                  },
                   width: width,
                   path: "assets/login/gmail.png",
                   text: "Continue with gmail",
                 ),
                 ContinueWith(
+                  working: false,
                   onPressed: () {},
                   width: width,
                   path: "assets/login/apple-logo.png",
                   text: "Continue with apple",
                 ),
                 ContinueWith(
+                  working: false,
                   onPressed: () {},
                   width: width,
                   path: "assets/login/facebook.png",
@@ -102,6 +108,7 @@ class _LoginState extends State<Login> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          Navigator.pop(context);
                           showModalBottomSheet(
                             elevation: 0,
                             backgroundColor: Colors.transparent,
@@ -110,9 +117,7 @@ class _LoginState extends State<Login> {
                             builder: (BuildContext context) {
                               return const Register();
                             },
-                          ).then((_) {
-                            Navigator.pop(context);
-                          });
+                          );
                         },
                         child: Text(
                           "Register",

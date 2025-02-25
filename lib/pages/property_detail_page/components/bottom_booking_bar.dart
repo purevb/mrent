@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
+import 'package:mrent/pages/booking_page/booking_page.dart';
 
 class BottomBookingBar extends StatelessWidget {
   const BottomBookingBar({
@@ -44,7 +44,7 @@ class BottomBookingBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Total price",
+                  "Нийт үнэ",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 RichText(
@@ -73,7 +73,7 @@ class BottomBookingBar extends StatelessWidget {
                         ),
                       ),
                       const TextSpan(
-                        text: 'month',
+                        text: 'сард',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -93,13 +93,17 @@ class BottomBookingBar extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MapSample(),
+                      builder: (context) {
+                        return BookingPage(
+                          propertyData: propertyData,
+                        );
+                      },
                     ),
                   );
                 },
                 height: 60,
                 width: 150,
-                text: "Book now",
+                text: "Захиалах",
               ),
             )
           ],

@@ -5,7 +5,7 @@ class PropertyProvider extends ChangeNotifier {
   final List<PropertyModel> _propertyData = [];
   List<PropertyModel>? get userFavoriteProperties => _propertyData;
 
-  bool Authorized = false;
+  // bool Authorized = false;
   void toggleFavorite(PropertyModel propertyData) {
     final isExist = _propertyData.contains(propertyData);
     if (isExist) {
@@ -16,7 +16,7 @@ class PropertyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isExist(PropertyModel id) {
-    return _propertyData.contains(id);
+  bool isExist(PropertyModel propertyData) {
+    return _propertyData.contains(propertyData);
   }
 }

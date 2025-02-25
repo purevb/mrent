@@ -27,6 +27,7 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 2,
             blurRadius: 1,

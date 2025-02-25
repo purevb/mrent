@@ -1,7 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/model/user_model.dart';
-import 'package:mrent/pages/favorite_page/favorite_page.dart';
 import 'package:mrent/pages/message_page/message_page.dart';
 import 'package:mrent/pages/message_page/unauthorized_message_page.dart';
 

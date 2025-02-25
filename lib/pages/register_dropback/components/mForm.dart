@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class mForm extends StatefulWidget {
+class MForm extends StatefulWidget {
   final String hintText;
   final bool hasObscure;
   final TextEditingController controller;
-  const mForm({
+  const MForm({
     required this.hasObscure,
     required this.hintText,
     required this.controller,
@@ -13,10 +13,10 @@ class mForm extends StatefulWidget {
   });
 
   @override
-  State<mForm> createState() => _mFormState();
+  State<MForm> createState() => _MFormState();
 }
 
-class _mFormState extends State<mForm> {
+class _MFormState extends State<MForm> {
   bool isObscure = true;
 
   @override

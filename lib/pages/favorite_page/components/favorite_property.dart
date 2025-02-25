@@ -1,13 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/providers/property_provider.dart';
+import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteProperty extends StatefulWidget {
-  const FavoriteProperty({required this.propertyData, super.key});
+  const FavoriteProperty({
+    required this.propertyData,
+    super.key,
+  });
   final PropertyModel propertyData;
 
   @override
@@ -50,7 +55,12 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(widget.propertyData.placeName ?? ""),
+                      Text(
+                        widget.propertyData.placeName ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       GestureDetector(
                         onTap: () {
                           setState(() {
@@ -62,13 +72,84 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                           height: 20,
                           width: 25,
                           child: SvgPicture.asset(
-                              fit: BoxFit.fitHeight,
-                              favorite == true
-                                  ? "assets/object/pressedlike.svg"
-                                  : "assets/object/Vector.svg"),
+                            fit: BoxFit.fitHeight,
+                            provider.isExist(widget.propertyData) == true
+                                ? "assets/object/pressedlike.svg"
+                                : "assets/object/Vector.svg",
+                          ),
                         ),
                       )
                     ],
+                  ),
+                  Text(
+                    widget.propertyData.description ?? "",
+                    maxLines: 3,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 11,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Row(
+                    spacing: 5,
+                    children: [
+                      const Icon(
+                        CupertinoIcons.bed_double,
+                        size: 15,
+                      ),
+                      Text(
+                        "${widget.propertyData.numBeds.toString()}.0",
+                      ),
+                      const Icon(
+                        CupertinoIcons.person_2,
+                        size: 15,
+                      ),
+                      Text(
+                        "${widget.propertyData.numGuests.toString()}.0",
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: RichText(
+                      text: TextSpan(
+                        style:
+                            const TextStyle(fontSize: 10, color: Colors.black),
+                        children: [
+                          const TextSpan(
+                            text: '\$',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
+                          ),
+                          TextSpan(
+                            text: widget.propertyData.nightlyPrice.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: '/',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: 'month',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -94,6 +175,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                   builder: DotSwiperPaginationBuilder(
                     activeSize: 5,
                     size: 5,
+                    // ignore: deprecated_member_use
                     color: Colors.white.withOpacity(0.5),
                     activeColor: Colors.white,
                   ),
@@ -107,8 +189,8 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                 },
               ),
               Positioned(
-                top: 15,
-                left: 15,
+                top: 8,
+                left: 8,
                 child: SizedBox(
                   width: width - 70,
                   child: Row(
@@ -120,10 +202,17 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.white, width: 1),
+                          // ignore: deprecated_member_use
                           color: Colors.white.withOpacity(0.7),
                         ),
-                        child: const Center(
-                          child: Text("Guest favorite"),
+                        child: Center(
+                          child: Text(
+                            "Олонд таалагдсан",
+                            style: TextStyle(
+                              color: textDefaultColor,
+                              fontSize: 10,
+                            ),
+                          ),
                         ),
                       ),
                     ],

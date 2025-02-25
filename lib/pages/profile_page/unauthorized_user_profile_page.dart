@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
-import 'package:mrent/pages/register_dropback/register.dart';
 import 'package:mrent/utils/constants.dart';
 
 class UnauthorizedUserProfilePage extends StatefulWidget {
@@ -24,14 +23,14 @@ class _UnauthorizedUserState extends State<UnauthorizedUserProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Profile",
+                "Профайл",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 36,
                     color: textDefaultColor),
               ),
               Text(
-                "Login in to start planning your text trip",
+                "Дараагийн аялалаа эхлэхийн тулд нэвтэрнэ үү!",
                 style: TextStyle(color: textDefaultColor, fontSize: 16),
               ),
               MyButton(
@@ -49,7 +48,7 @@ class _UnauthorizedUserState extends State<UnauthorizedUserProfilePage> {
                 },
                 height: 60,
                 width: 240,
-                text: "Log in",
+                text: "Нэвтрэх",
               )
             ],
           ),

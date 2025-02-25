@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/component/continue_with.dart';
@@ -44,7 +43,7 @@ class _LoginState extends State<Login> {
         spacing: 10,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const mAppBar(),
+          const MappBar(),
           LoginForm(
             emailController: emailController,
             padsswordController: passwordController,
@@ -58,7 +57,7 @@ class _LoginState extends State<Login> {
               },
               height: 55,
               width: width,
-              text: "Continue",
+              text: "Үргэлжлүүлэх",
             ),
           ),
           customDivider(height),
@@ -71,7 +70,7 @@ class _LoginState extends State<Login> {
                   onPressed: () {},
                   width: width,
                   path: "assets/login/mail-inbox-app.png",
-                  text: "Continue with email",
+                  text: "Email-ээр нэвтрэх",
                 ),
                 ContinueWith(
                   working: true,
@@ -80,21 +79,21 @@ class _LoginState extends State<Login> {
                   },
                   width: width,
                   path: "assets/login/gmail.png",
-                  text: "Continue with gmail",
+                  text: "Gmail-ээр нэвтрэх",
                 ),
                 ContinueWith(
                   working: false,
                   onPressed: () {},
                   width: width,
                   path: "assets/login/apple-logo.png",
-                  text: "Continue with apple",
+                  text: "Apple-ээр нэвтрэх",
                 ),
                 ContinueWith(
                   working: false,
                   onPressed: () {},
                   width: width,
                   path: "assets/login/facebook.png",
-                  text: "Continue with facebook",
+                  text: "Facebook-ээр нэвтрэх",
                 ),
                 const Spacer(),
                 Padding(
@@ -103,7 +102,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Dont you have account? ",
+                        "Танд бүртгэл байгаа юу? ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
@@ -120,7 +119,7 @@ class _LoginState extends State<Login> {
                           );
                         },
                         child: Text(
-                          "Register",
+                          "Бүртгүүлэх",
                           style: TextStyle(
                               color: mRed, fontWeight: FontWeight.bold),
                         ),

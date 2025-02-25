@@ -1,16 +1,15 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mrent/components/main_appbar.dart';
 
 class MapSample extends StatefulWidget {
-  const MapSample({super.key});
-
+  const MapSample({required this.hasAppBar, super.key});
+  final bool hasAppBar;
   @override
   State<MapSample> createState() => MapSampleState();
 }
 
 class MapSampleState extends State<MapSample> {
-  final Completer<GoogleMapController> _controller = Completer();
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
@@ -27,7 +26,7 @@ class MapSampleState extends State<MapSample> {
   void _addMarkers() {
     setState(() {
       _markers.add(
-        Marker(
+        const Marker(
           markerId: MarkerId('Charleston'),
           position: LatLng(
               37.42796133580664, -122.085749655962), // Example coordinates
@@ -35,7 +34,7 @@ class MapSampleState extends State<MapSample> {
         ),
       );
       _markers.add(
-        Marker(
+        const Marker(
           markerId: MarkerId('Shoreline Parks'),
           position: LatLng(37.43296265331129, -122.08832357078792),
           infoWindow: InfoWindow(title: 'Shoreline Parks'),
@@ -47,11 +46,11 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.white,
-      ),
+      appBar: widget.hasAppBar == true
+          ? const MainAppBar(
+              hasLocationBar: false,
+            )
+          : null,
       extendBodyBehindAppBar: true,
       body: GoogleMap(
         mapType: MapType.hybrid,

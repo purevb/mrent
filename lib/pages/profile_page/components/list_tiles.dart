@@ -16,25 +16,23 @@ class ProfileListTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    // double width = MediaQuery.of(context).size.width;
 
-    return Container(
-      child: Row(
-        spacing: 15,
-        children: [
-          SizedBox(
-            height: height * 0.03,
-            width: height * 0.03,
-            child: SvgPicture.asset(fit: BoxFit.contain, iconPath),
-          ),
-          Text(description),
-          const Spacer(),
-          IconButton(
-            onPressed: onPressed,
-            icon: const Icon(CupertinoIcons.right_chevron),
-          )
-        ],
-      ),
+    return Row(
+      spacing: 15,
+      children: [
+        SizedBox(
+          height: height * 0.03,
+          width: height * 0.03,
+          child: SvgPicture.asset(fit: BoxFit.contain, iconPath),
+        ),
+        Text(description),
+        const Spacer(),
+        IconButton(
+          onPressed: onPressed,
+          icon: const Icon(CupertinoIcons.right_chevron),
+        )
+      ],
     );
   }
 }

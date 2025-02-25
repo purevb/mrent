@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/register_dropback/components/mForm.dart';
@@ -84,7 +83,7 @@ class _RegisterState extends State<Register> {
       child: Column(
         spacing: 10,
         children: [
-          const mAppBar(),
+          const MappBar(),
           Container(
             height: height * 0.2,
             width: double.infinity,
@@ -92,29 +91,29 @@ class _RegisterState extends State<Register> {
             child: SvgPicture.asset(
                 fit: BoxFit.contain, "assets/signup/signup_background.svg"),
           ),
-          mForm(
+          MForm(
             controller: emailController,
             hintText: "E-mail",
             hasObscure: false,
           ),
-          mForm(
+          MForm(
             controller: nameController,
-            hintText: "Full name",
+            hintText: "Нэр",
             hasObscure: false,
           ),
-          mForm(
+          MForm(
             controller: phoneNumberController,
-            hintText: "Phone Number",
+            hintText: "Утасны дугаар",
             hasObscure: false,
           ),
-          mForm(
+          MForm(
             controller: passwordController,
-            hintText: "Password",
+            hintText: "Нууц үг",
             hasObscure: true,
           ),
-          mForm(
+          MForm(
             controller: verifypasswordController,
-            hintText: "Verify password",
+            hintText: "Нууц үг давтах",
             hasObscure: true,
           ),
           Padding(
@@ -134,22 +133,25 @@ class _RegisterState extends State<Register> {
                       style: const TextStyle(fontSize: 10, color: Colors.black),
                       children: [
                         const TextSpan(
-                          text: 'By checking the box you agree to our ',
+                          text: 'Та ',
                         ),
                         TextSpan(
-                          text: 'Terms',
+                          text: 'шаардлага',
                           style: TextStyle(
                             color: mRed,
                             decoration: TextDecoration.underline,
                           ),
                         ),
-                        const TextSpan(text: ' and '),
+                        const TextSpan(text: ' ба '),
                         TextSpan(
-                          text: 'Conditions',
+                          text: 'нөхцөлийг',
                           style: TextStyle(
                             color: mRed,
                             decoration: TextDecoration.underline,
                           ),
+                        ),
+                        const TextSpan(
+                          text: 'зөвшөөрснөөр бүртгүүлэх боломжтой болно.г',
                         ),
                       ],
                     ),
@@ -173,7 +175,7 @@ class _RegisterState extends State<Register> {
                 },
                 height: height * 0.07,
                 width: width,
-                text: "Register",
+                text: "Бүртгүүлэх",
               ),
             ),
           )

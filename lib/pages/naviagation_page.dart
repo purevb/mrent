@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:auto_route/annotations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_checker.dart';
-import 'package:mrent/pages/message_page/message_checker.dart';
 import 'package:mrent/pages/profile_page/profile_checker.dart';
+import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/rent_history_page/rent_checker.dart';
 import 'package:mrent/pages/trip_page/trip_page.dart';
 import 'package:mrent/utils/constants.dart';
@@ -28,9 +30,9 @@ class _NavigationPageState extends State<NavigationPage> {
     fetchUserById(widget.id ?? "");
   }
 
-  Future<void> fetchUserById(String userId) async {
-    if (userId.isEmpty) {
-      print('Error: userId cannot be empty');
+  Future<void> fetchUserById(String? userId) async {
+    if (userId!.isEmpty) {
+      log('Nevtreegu bn');
       return;
     }
 
@@ -42,13 +44,12 @@ class _NavigationPageState extends State<NavigationPage> {
 
       if (documentSnapshot.exists) {
         user = User.fromFirestore(documentSnapshot);
-        print(
-            'User Data: ${user!.name}, ${user!.email}, ${user!.phone}, ${user!.createdAt}');
+        log('User Data: ${user!.name}, ${user!.email}, ${user!.phone}, ${user!.createdAt}');
       } else {
-        print('User  not found');
+        log('User  not found');
       }
     } catch (e) {
-      print('Error fetching user: $e');
+      log('Error fetching user: $e');
     }
   }
 
@@ -63,13 +64,13 @@ class _NavigationPageState extends State<NavigationPage> {
             TripPage(
               user: user,
             ),
-            FavoriteChecker(
-              user: user,
+            const MapSample(
+              hasAppBar: true,
             ),
             RentChecker(
               user: user,
             ),
-            MessageChecker(
+            FavoriteChecker(
               user: user,
             ),
             ProfileChecker(
@@ -103,16 +104,17 @@ class _NavigationPageState extends State<NavigationPage> {
                 icon: _buildIcon("assets/navigationbar/search.svg", 0),
               ),
               BottomNavigationBarItem(
-                label: "Таалагдсан",
-                icon: _buildIcon("assets/navigationbar/favorite.svg", 1),
+                label: "Байршил",
+                icon: _buildIcon("assets/navigationbar/lco.svg", 1),
               ),
               BottomNavigationBarItem(
                 label: "Түрээсэлсэн",
-                icon: _buildIcon("assets/navigationbar/trip.svg", 2),
+                icon: _buildPngIcon(
+                    "assets/navigationbar/icons8-m-key-100.png", 2),
               ),
               BottomNavigationBarItem(
-                label: "Зурвас",
-                icon: _buildIcon("assets/navigationbar/message.svg", 3),
+                label: "Таалагдсан",
+                icon: _buildIcon("assets/navigationbar/favorite.svg", 3),
               ),
               BottomNavigationBarItem(
                 label: "Профайл",
@@ -141,6 +143,27 @@ class _NavigationPageState extends State<NavigationPage> {
               _currentIndex == index ? mRed : const Color(0xff7D8588),
               BlendMode.srcIn,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPngIcon(String assetPath, int index) {
+    return SizedBox(
+      height: 35,
+      width: 35,
+      child: Center(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: _currentIndex == index ? 35 : 30,
+          width: _currentIndex == index ? 35 : 30,
+          child: Image.asset(
+            assetPath,
+            fit: BoxFit.contain,
+            color: _currentIndex == index
+                ? mRed
+                : const Color.fromARGB(255, 106, 112, 114),
           ),
         ),
       ),

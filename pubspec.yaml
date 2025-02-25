@@ -53,6 +53,7 @@ dependencies:
   flutter_svg: ^2.0.17
   google_maps_flutter: ^2.10.0
   google_sign_in: ^6.2.2
+  table_calendar: ^3.1.3
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,8 @@ flutter:
     - assets/profile/
     - assets/property_detail/
     - assets/icon/icon.jpeg
+    - assets/booking/
+    - assets/booking/payment_methods/
 
   #   - images/a_dot_ham.jpeg
 

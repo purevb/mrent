@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class mAppBar extends StatelessWidget {
-  const mAppBar({
+class MappBar extends StatelessWidget {
+  const MappBar({
     super.key,
   });
 
@@ -29,13 +29,13 @@ class mAppBar extends StatelessWidget {
         },
         icon: SvgPicture.asset(
           "assets/navigationbar/Button.svg",
-          width: 20,
-          height: 20,
+          width: 18,
+          height: 18,
         ),
       ),
       title: const Text(
-        "Log in or sign up",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        "Нэвтрэх эсвэл бүртгүүлэх",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       centerTitle: true,
     );

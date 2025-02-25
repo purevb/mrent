@@ -50,10 +50,10 @@ class _UnauthorizedMessagePageState extends State<UnauthorizedMessagePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    "Inbox",
+                    "Ирсэн и-мэйл",
                     style: TextStyle(
                       color: textDefaultColor,
-                      fontSize: 36,
+                      fontSize: 32,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -64,11 +64,11 @@ class _UnauthorizedMessagePageState extends State<UnauthorizedMessagePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Text(
-                    "Log in to see messages",
+                    "Зурвас харахын тулд нэвтэрнэ үү",
                     style: TextStyle(
                         color: textDefaultColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24),
+                        fontSize: 18),
                   ),
                 ),
               ),
@@ -77,7 +77,7 @@ class _UnauthorizedMessagePageState extends State<UnauthorizedMessagePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text(
-                    "Once you login, you'll find messages from\nhosts here",
+                    "Та нэвтэрсний дараа эндээс түрээслэгчдээс ирсэн мессежүүдийг олох болно.",
                     style: TextStyle(fontSize: 16, color: textDefaultColor),
                   ),
                 ),
@@ -101,7 +101,7 @@ class _UnauthorizedMessagePageState extends State<UnauthorizedMessagePage> {
                     },
                     height: 55,
                     width: 120,
-                    text: "Log in",
+                    text: "Нэвтрэх",
                   ),
                 ),
               ),

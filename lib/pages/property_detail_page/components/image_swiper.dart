@@ -22,6 +22,7 @@ class ImageSwiper extends StatelessWidget {
           builder: DotSwiperPaginationBuilder(
             activeSize: 5,
             size: 5,
+            // ignore: deprecated_member_use
             color: Colors.white.withOpacity(0.5),
             activeColor: Colors.white,
           ),

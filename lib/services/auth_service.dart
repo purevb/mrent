@@ -13,7 +13,7 @@ class AuthService {
     try {
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        print("Google Sign-In cancelled by user.");
+        log("Google Sign-In cancelled by user.");
         return null;
       }
       final googleAuth = await googleUser.authentication;
@@ -25,10 +25,10 @@ class AuthService {
           await _auth.signInWithCredential(cred);
 
       if (userCredential.user != null) {
-        print("Google Sign-In successful!");
-        print("User UID: ${userCredential.user?.uid}");
-        print("User Email: ${userCredential.user?.email}");
-        print("User Display Name: ${userCredential.user?.displayName}");
+        log("Google Sign-In successful!");
+        log("User UID: ${userCredential.user?.uid}");
+        log("User Email: ${userCredential.user?.email}");
+        log("User Display Name: ${userCredential.user?.displayName}");
 
         await addUserDetails(
           userId: userCredential.user!.uid,
@@ -48,17 +48,15 @@ class AuthService {
         );
         return userCredential;
       } else {
-        print("Google Sign-In failed: User is null.");
+        log("Google Sign-In failed: User is null.");
         return null;
       }
     } on FirebaseAuthException catch (e) {
-      print(
-          "Firebase Auth Error during Google Sign-In: ${e.code} - ${e.message}");
+      log("Firebase Auth Error during Google Sign-In: ${e.code} - ${e.message}");
     } on PlatformException catch (e) {
-      print(
-          "Platform Exception during Google Sign-In: ${e.code} - ${e.message}");
+      log("Platform Exception during Google Sign-In: ${e.code} - ${e.message}");
     } catch (e) {
-      print("Unexpected Error during Google Sign-In: $e");
+      log("Unexpected Error during Google Sign-In: $e");
     }
     return null;
   }
@@ -94,6 +92,7 @@ class AuthService {
         message = 'The password provided is too weak.';
         showToast(
           message.isNotEmpty ? message : 'An error occurred during signup',
+          // ignore: use_build_context_synchronously
           context: context,
           axis: Axis.horizontal,
           alignment: Alignment.center,

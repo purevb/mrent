@@ -52,7 +52,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    "Trips",
+                    "Аялалууд",
                     style: TextStyle(
                       fontSize: 36,
                       color: textDefaultColor,
@@ -66,7 +66,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Text(
-                    "No trips yet",
+                    "Одоохондоо аялал алга",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -80,7 +80,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text(
-                    "When you're ready to plan your next trip\nwe're here to help",
+                    "Хэрвээ та аялалд бэлэн болсон бол бид танд туслахд бэлэн.",
                     style: TextStyle(fontSize: 16, color: textDefaultColor),
                   ),
                 ),
@@ -104,7 +104,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                     },
                     height: 55,
                     width: 120,
-                    text: "Log in",
+                    text: "Нэвтрэх",
                   ),
                 ),
               ),

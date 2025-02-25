@@ -213,7 +213,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
             controller: _tabController,
             children: [
               DescriptionTab(advantages: advantages),
-              ReviewTab(),
+              const ReviewTab(),
             ],
           ),
         ),
@@ -299,6 +299,7 @@ class ReviewComponent extends StatelessWidget {
                 "2 months ago",
                 style: TextStyle(
                   fontSize: 18,
+                  // ignore: deprecated_member_use
                   color: Colors.black.withOpacity(
                     0.6,
                   ),
@@ -311,6 +312,7 @@ class ReviewComponent extends StatelessWidget {
             child: Text(
               "Lorem Ipsum is simply dummy text of the printing.Lorem Ipsum is simply dummy text of the printing.",
               style:
+                  // ignore: deprecated_member_use
                   TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 15),
             ),
           )
@@ -338,10 +340,10 @@ class DescriptionTab extends StatelessWidget {
       spacing: 10,
       children: [
         SizedBox(
-          height: width * 0.28,
+          height: height * 0.12,
           child: ListView.separated(
             shrinkWrap: true,
-            padding: const EdgeInsets.only(top: 20, left: 0),
+            padding: const EdgeInsets.only(top: 20, left: 5),
             scrollDirection: Axis.horizontal,
             itemCount: advantages.length,
             itemBuilder: (BuildContext context, int index) {
@@ -399,7 +401,9 @@ class DescriptionTab extends StatelessWidget {
           width: width,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: const MapSample(),
+            child: const MapSample(
+              hasAppBar: false,
+            ),
           ),
         ),
         const Text(

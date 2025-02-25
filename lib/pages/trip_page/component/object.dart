@@ -35,7 +35,7 @@ class _TheObjectState extends State<TheObject> {
         right: 20,
       ),
       padding: const EdgeInsets.only(
-        bottom: 5,
+        bottom: 15,
       ),
       width: width,
       // height: 440,
@@ -59,7 +59,7 @@ class _TheObjectState extends State<TheObject> {
         children: [
           carouselImages(width, widget.propertyData.images, 360, provider),
           Padding(
-            padding: const EdgeInsets.only(left: 5, right: 5),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -103,6 +103,7 @@ class _TheObjectState extends State<TheObject> {
                   builder: DotSwiperPaginationBuilder(
                     activeSize: 5,
                     size: 5,
+                    // ignore: deprecated_member_use
                     color: Colors.white.withOpacity(0.5),
                     activeColor: Colors.white,
                   ),
@@ -129,10 +130,11 @@ class _TheObjectState extends State<TheObject> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.white, width: 1),
+                          // ignore: deprecated_member_use
                           color: Colors.white.withOpacity(0.7),
                         ),
                         child: const Center(
-                          child: Text("Guest favorite"),
+                          child: Text("Олонд таалагдсан"),
                         ),
                       ),
                       GestureDetector(
@@ -147,7 +149,7 @@ class _TheObjectState extends State<TheObject> {
                           width: 25,
                           child: SvgPicture.asset(
                               fit: BoxFit.fitHeight,
-                              favorite == true
+                              provider.isExist(widget.propertyData) == true
                                   ? "assets/object/pressedlike.svg"
                                   : "assets/object/Vector.svg"),
                         ),

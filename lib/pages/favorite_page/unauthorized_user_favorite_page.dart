@@ -54,7 +54,7 @@ class _UnauthorizedUserFavoritePageState
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    "Wishlists",
+                    "Хадгалсан",
                     style: TextStyle(
                       color: textDefaultColor,
                       fontSize: 36,
@@ -68,10 +68,10 @@ class _UnauthorizedUserFavoritePageState
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Text(
-                    "Log in to view your wishlists",
+                    "Хүслийн жагсаалтаа үзэхийн тулд нэвтэрнэ үү!",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 24,
+                      fontSize: 22,
                       color: textDefaultColor,
                     ),
                   ),
@@ -82,7 +82,7 @@ class _UnauthorizedUserFavoritePageState
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text(
-                    "You can create, view or edit wishlists once you've logged in.",
+                    "Та нэвтэрсний дараа хүссэн жагсаалт үүсгэх, харах эсвэл засах боломжтой.",
                     style: TextStyle(fontSize: 16, color: textDefaultColor),
                   ),
                 ),
@@ -106,7 +106,7 @@ class _UnauthorizedUserFavoritePageState
                     },
                     height: 55,
                     width: 120,
-                    text: "Log in",
+                    text: "Нэвтрэх",
                   ),
                 ),
               ),

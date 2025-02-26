@@ -23,7 +23,7 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
       width: width * 0.2,
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: mRed,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -36,22 +36,23 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
         ],
       ),
       child: Column(
+        spacing: 2,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(widget.icon, color: textDefaultColor, size: 24),
+          Icon(widget.icon, color: Colors.white, size: 24),
           const SizedBox(height: 8),
           Text(
             widget.value,
-            style: TextStyle(
-              color: Colors.grey[600],
+            style: const TextStyle(
+              color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
           Text(
             widget.label,
-            style: TextStyle(
-              color: Colors.grey[600],
+            style: const TextStyle(
+              color: Colors.white,
               fontSize: 12,
             ),
           ),

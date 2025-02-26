@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -25,22 +26,44 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<int, Map<String, dynamic>> advantages = {
+      0: {
+        "value": "1,225",
+        "label": "sqft",
+        "icon": Icons.square_foot,
+      },
+      1: {
+        "value": "3",
+        "label": "Bedrooms",
+        "icon": Icons.bed,
+      },
+      2: {
+        "value": "2",
+        "label": "Bathrooms",
+        "icon": Icons.bathtub,
+      },
+      3: {
+        "value": "1",
+        "label": "Parking",
+        "icon": Icons.local_parking,
+      }
+    };
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     final provider = Provider.of<PropertyProvider>(context);
 
     return Container(
       padding: const EdgeInsets.all(9),
-      height: height * 0.2,
+      height: height * 0.4,
       decoration: BoxDecoration(
         color: bookingColor,
         borderRadius: BorderRadius.circular(25),
       ),
-      child: Row(
+      child: Column(
         children: [
           SizedBox(
-            height: double.infinity,
-            width: width * 0.5,
+            height: height * 0.2,
+            width: width,
             child: carouselImages(
               width,
               widget.propertyData.images,
@@ -74,17 +97,28 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                     ),
                   ),
                   const Spacer(),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: MyButton(
-                      canPress: true,
-                      onPress: () {},
-                      height: 40,
-                      width: 70,
-                      text: "Түрээслэх",
-                      fontSize: 12,
+                  SizedBox(
+                    height: height * 0.1,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(top: 0, left: 5),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: advantages.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        var advantage = advantages[index];
+                        return TabbarDescription(
+                          label: advantage!["label"] ?? "",
+                          value: advantage["value"] ?? "",
+                          icon: advantage["icon"] as IconData? ?? Icons.error,
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const SizedBox(
+                          width: 12,
+                        );
+                      },
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

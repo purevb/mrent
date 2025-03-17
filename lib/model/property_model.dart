@@ -15,8 +15,9 @@ class PropertyModel {
   final int? addressLine1;
   final int? addressLine2;
   final List<String>? images;
-  final int? rating;
+  final double? rating;
   final String? placeName;
+  final String? placeType;
 
   PropertyModel({
     this.id,
@@ -37,6 +38,7 @@ class PropertyModel {
     this.images,
     this.rating,
     this.placeName,
+    this.placeType,
   });
 
   PropertyModel.fromJson(Map<String, dynamic> json)
@@ -56,8 +58,9 @@ class PropertyModel {
         addressLine1 = json['address_line_1'] as int?,
         addressLine2 = json['address_line_2'] as int?,
         images = (json['images'] as List?)?.map((e) => e as String).toList(),
-        rating = json['rating'] as int?,
-        placeName = json['place_name'] as String?;
+        rating = json['rating'] as double?,
+        placeName = json['place_name'] as String?,
+        placeType = json['place_type'] as String?;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -78,5 +81,6 @@ class PropertyModel {
         'images': images,
         'rating': rating,
         'place_name': placeName,
+        'place_type': placeType,
       };
 }

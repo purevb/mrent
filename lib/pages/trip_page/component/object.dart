@@ -25,7 +25,7 @@ class _TheObjectState extends State<TheObject> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    final provider = Provider.of<PropertyProvider>(context);
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
     // double height = MediaQuery.of(context).size.height;
 
     return Container(

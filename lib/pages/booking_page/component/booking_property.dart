@@ -50,7 +50,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
     };
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    final provider = Provider.of<PropertyProvider>(context);
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
 
     return Container(
       padding: const EdgeInsets.all(9),

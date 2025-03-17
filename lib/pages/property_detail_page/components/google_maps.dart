@@ -47,8 +47,11 @@ class MapSampleState extends State<MapSample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.hasAppBar == true
-          ? const MainAppBar(
+          ? MainAppBar(
               hasLocationBar: false,
+              chooseType: (String) {
+                print("object");
+              },
             )
           : null,
       extendBodyBehindAppBar: true,

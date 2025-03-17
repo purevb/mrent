@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:mrent/model/property_model.dart';
 
 class PropertyProvider extends ChangeNotifier {
-  final List<PropertyModel> _propertyData = [];
-  List<PropertyModel>? get userFavoriteProperties => _propertyData;
+  List<PropertyModel> propertyData = [];
+  List<PropertyModel> get userFavoriteProperties => propertyData;
 
   // bool Authorized = false;
-  void toggleFavorite(PropertyModel propertyData) {
-    final isExist = _propertyData.contains(propertyData);
+  void toggleFavorite(PropertyModel propertyDatas) {
+    final isExist = propertyData.contains(propertyDatas);
     if (isExist) {
-      _propertyData.remove(propertyData);
+      propertyData.remove(propertyDatas);
     } else {
-      _propertyData.add(propertyData);
+      propertyData.add(propertyDatas);
     }
     notifyListeners();
   }
 
-  bool isExist(PropertyModel propertyData) {
-    return _propertyData.contains(propertyData);
+  bool isExist(PropertyModel propertyDatas) {
+    return propertyData.contains(propertyDatas);
   }
 }

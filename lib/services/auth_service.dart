@@ -38,6 +38,7 @@ class AuthService {
         );
 
         String userId = userCredential.user!.uid;
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -163,7 +164,7 @@ class AuthService {
         log(message);
       } else if (e.code == 'invalid-credential') {
         message = 'Wrong password provided for that user.';
-        showToast('Wrong password provided for that user.',
+        showToast('Password эсвэл нэвтрэх нэр буруу байна. ',
             // ignore: use_build_context_synchronously
             context: context,
             axis: Axis.horizontal,

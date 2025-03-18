@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:mrent/pages/profile_page/components/profile_image.dart';
 
 @RoutePage()
 class PersonalInformationPage extends StatefulWidget {

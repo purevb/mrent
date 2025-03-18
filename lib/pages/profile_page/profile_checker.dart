@@ -4,7 +4,6 @@ import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/profile_page/profile_page.dart';
 import 'package:mrent/pages/profile_page/unauthorized_user_profile_page.dart';
 
-@RoutePage()
 class ProfileChecker extends StatefulWidget {
   const ProfileChecker({this.user, super.key});
   final User? user;

@@ -27,17 +27,17 @@ class _ProfilePageState extends State<ProfilePage> {
     1: {
       "iconPath": "assets/profile/Vector-1.svg",
       "description": "Төлбөр төлөлт",
-      "path": ""
+      "path": "/payment"
     },
     2: {
       "iconPath": "assets/profile/Vector-2.svg",
       "description": "Notificattion",
-      "path": ""
+      "path": "/noti"
     },
     3: {
       "iconPath": "assets/profile/Icon.svg",
       "description": "Нууцлал",
-      "path": "",
+      "path": "/privacy",
     }
   };
 
@@ -118,8 +118,8 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
-                  width: 90,
-                  height: 50,
+                  width: 50,
+                  height: 40,
                   child: Image.asset(
                     "assets/profile/money.png",
                   ),
@@ -145,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             const Align(
               alignment: Alignment.topLeft,
@@ -156,9 +156,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemCount: profileListTileDatas.length,

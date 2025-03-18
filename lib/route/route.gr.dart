@@ -12,55 +12,19 @@
 import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:flutter/material.dart' as _i9;
 import 'package:mrent/model/user_model.dart' as _i8;
-import 'package:mrent/pages/favorite_page/favorite_checker.dart' as _i1;
-import 'package:mrent/pages/message_page/message_checker.dart' as _i2;
-import 'package:mrent/pages/naviagation_page.dart' as _i3;
-import 'package:mrent/pages/personal_information/personal_information_page.dart'
+import 'package:mrent/pages/message_page/message_checker.dart' as _i1;
+import 'package:mrent/pages/naviagation_page.dart' as _i2;
+import 'package:mrent/pages/profile_page/pages/pages/notification_page/notification_page.dart'
+    as _i3;
+import 'package:mrent/pages/profile_page/pages/pages/payment_page/payment_page.dart'
     as _i4;
-import 'package:mrent/pages/profile_page/profile_checker.dart' as _i5;
-import 'package:mrent/pages/rent_history_page/rent_checker.dart' as _i6;
+import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart'
+    as _i5;
+import 'package:mrent/pages/profile_page/pages/pages/privacy_page/privacy_page.dart'
+    as _i6;
 
 /// generated route for
-/// [_i1.FavoriteChecker]
-class FavoriteChecker extends _i7.PageRouteInfo<FavoriteCheckerArgs> {
-  FavoriteChecker({
-    _i8.User? user,
-    _i9.Key? key,
-    List<_i7.PageRouteInfo>? children,
-  }) : super(
-          FavoriteChecker.name,
-          args: FavoriteCheckerArgs(user: user, key: key),
-          initialChildren: children,
-        );
-
-  static const String name = 'FavoriteChecker';
-
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<FavoriteCheckerArgs>(
-        orElse: () => const FavoriteCheckerArgs(),
-      );
-      return _i1.FavoriteChecker(user: args.user, key: args.key);
-    },
-  );
-}
-
-class FavoriteCheckerArgs {
-  const FavoriteCheckerArgs({this.user, this.key});
-
-  final _i8.User? user;
-
-  final _i9.Key? key;
-
-  @override
-  String toString() {
-    return 'FavoriteCheckerArgs{user: $user, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i2.MessageChecker]
+/// [_i1.MessageChecker]
 class MessageChecker extends _i7.PageRouteInfo<MessageCheckerArgs> {
   MessageChecker({
     _i8.User? user,
@@ -80,7 +44,7 @@ class MessageChecker extends _i7.PageRouteInfo<MessageCheckerArgs> {
       final args = data.argsAs<MessageCheckerArgs>(
         orElse: () => const MessageCheckerArgs(),
       );
-      return _i2.MessageChecker(user: args.user, key: args.key);
+      return _i1.MessageChecker(user: args.user, key: args.key);
     },
   );
 }
@@ -99,7 +63,7 @@ class MessageCheckerArgs {
 }
 
 /// generated route for
-/// [_i3.NavigationPage]
+/// [_i2.NavigationPage]
 class NavigationRoute extends _i7.PageRouteInfo<NavigationRouteArgs> {
   NavigationRoute({String? id, _i9.Key? key, List<_i7.PageRouteInfo>? children})
       : super(
@@ -116,7 +80,7 @@ class NavigationRoute extends _i7.PageRouteInfo<NavigationRouteArgs> {
       final args = data.argsAs<NavigationRouteArgs>(
         orElse: () => const NavigationRouteArgs(),
       );
-      return _i3.NavigationPage(id: args.id, key: args.key);
+      return _i2.NavigationPage(id: args.id, key: args.key);
     },
   );
 }
@@ -135,7 +99,39 @@ class NavigationRouteArgs {
 }
 
 /// generated route for
-/// [_i4.PersonalInformationPage]
+/// [_i3.NotificationPage]
+class NotificationRoute extends _i7.PageRouteInfo<void> {
+  const NotificationRoute({List<_i7.PageRouteInfo>? children})
+      : super(NotificationRoute.name, initialChildren: children);
+
+  static const String name = 'NotificationRoute';
+
+  static _i7.PageInfo page = _i7.PageInfo(
+    name,
+    builder: (data) {
+      return const _i3.NotificationPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i4.PaymentPage]
+class PaymentRoute extends _i7.PageRouteInfo<void> {
+  const PaymentRoute({List<_i7.PageRouteInfo>? children})
+      : super(PaymentRoute.name, initialChildren: children);
+
+  static const String name = 'PaymentRoute';
+
+  static _i7.PageInfo page = _i7.PageInfo(
+    name,
+    builder: (data) {
+      return const _i4.PaymentPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i5.PersonalInformationPage]
 class PersonalInformationRoute extends _i7.PageRouteInfo<void> {
   const PersonalInformationRoute({List<_i7.PageRouteInfo>? children})
       : super(PersonalInformationRoute.name, initialChildren: children);
@@ -145,82 +141,23 @@ class PersonalInformationRoute extends _i7.PageRouteInfo<void> {
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i4.PersonalInformationPage();
+      return const _i5.PersonalInformationPage();
     },
   );
 }
 
 /// generated route for
-/// [_i5.ProfileChecker]
-class ProfileChecker extends _i7.PageRouteInfo<ProfileCheckerArgs> {
-  ProfileChecker({
-    _i8.User? user,
-    _i9.Key? key,
-    List<_i7.PageRouteInfo>? children,
-  }) : super(
-          ProfileChecker.name,
-          args: ProfileCheckerArgs(user: user, key: key),
-          initialChildren: children,
-        );
+/// [_i6.PrivacyPage]
+class PrivacyRoute extends _i7.PageRouteInfo<void> {
+  const PrivacyRoute({List<_i7.PageRouteInfo>? children})
+      : super(PrivacyRoute.name, initialChildren: children);
 
-  static const String name = 'ProfileChecker';
+  static const String name = 'PrivacyRoute';
 
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<ProfileCheckerArgs>(
-        orElse: () => const ProfileCheckerArgs(),
-      );
-      return _i5.ProfileChecker(user: args.user, key: args.key);
+      return const _i6.PrivacyPage();
     },
   );
-}
-
-class ProfileCheckerArgs {
-  const ProfileCheckerArgs({this.user, this.key});
-
-  final _i8.User? user;
-
-  final _i9.Key? key;
-
-  @override
-  String toString() {
-    return 'ProfileCheckerArgs{user: $user, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i6.RentChecker]
-class RentChecker extends _i7.PageRouteInfo<RentCheckerArgs> {
-  RentChecker({_i8.User? user, _i9.Key? key, List<_i7.PageRouteInfo>? children})
-      : super(
-          RentChecker.name,
-          args: RentCheckerArgs(user: user, key: key),
-          initialChildren: children,
-        );
-
-  static const String name = 'RentChecker';
-
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<RentCheckerArgs>(
-        orElse: () => const RentCheckerArgs(),
-      );
-      return _i6.RentChecker(user: args.user, key: args.key);
-    },
-  );
-}
-
-class RentCheckerArgs {
-  const RentCheckerArgs({this.user, this.key});
-
-  final _i8.User? user;
-
-  final _i9.Key? key;
-
-  @override
-  String toString() {
-    return 'RentCheckerArgs{user: $user, key: $key}';
-  }
 }

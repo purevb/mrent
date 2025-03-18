@@ -6,16 +6,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mrent/pages/naviagation_page.dart';
+import 'package:mrent/utils/constants.dart';
 
 class AuthService {
   final _auth = FirebaseAuth.instance;
   Future<UserCredential?> loginWithGoogle(BuildContext context) async {
     try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(
+            color: mRed,
+          ),
+        ),
+      );
+
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         log("Google Sign-In cancelled by user.");
+        Navigator.pop(context);
         return null;
       }
+
       final googleAuth = await googleUser.authentication;
       final cred = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
@@ -39,25 +52,33 @@ class AuthService {
 
         String userId = userCredential.user!.uid;
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => NavigationPage(
-              id: userId,
+        await Future.delayed(const Duration(seconds: 3));
+
+        if (context.mounted) {
+          Navigator.pop(context);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => NavigationPage(id: userId),
             ),
-          ),
-        );
+          );
+        }
+
         return userCredential;
       } else {
         log("Google Sign-In failed: User is null.");
+        Navigator.pop(context);
         return null;
       }
     } on FirebaseAuthException catch (e) {
-      log("Firebase Auth Error during Google Sign-In: ${e.code} - ${e.message}");
+      log("Firebase Auth Error: ${e.code} - ${e.message}");
+      Navigator.pop(context);
     } on PlatformException catch (e) {
-      log("Platform Exception during Google Sign-In: ${e.code} - ${e.message}");
+      log("Platform Exception: ${e.code} - ${e.message}");
+      Navigator.pop(context);
     } catch (e) {
-      log("Unexpected Error during Google Sign-In: $e");
+      log("Unexpected Error: $e");
+      Navigator.pop(context);
     }
     return null;
   }

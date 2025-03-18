@@ -68,7 +68,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
   }
 
   void _scrollToIndex(int index) {
-    const itemWidth = 85.0;
+    const itemWidth = 170.0;
     final screenWidth = MediaQuery.of(context).size.width;
     const padding = 10.0;
     double targetOffset =

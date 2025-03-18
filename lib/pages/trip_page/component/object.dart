@@ -21,11 +21,18 @@ class TheObject extends StatefulWidget {
 }
 
 class _TheObjectState extends State<TheObject> {
-  bool favorite = false;
+  late bool favorite;
+  @override
+  void initState() {
+    super.initState();
+    favorite = Provider.of<PropertyProvider>(context, listen: false)
+        .isExist(widget.propertyData);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    final provider = Provider.of<PropertyProvider>(context, listen: false);
+    final provider = Provider.of<PropertyProvider>(context, listen: true);
     // double height = MediaQuery.of(context).size.height;
 
     return Container(
@@ -153,7 +160,7 @@ class _TheObjectState extends State<TheObject> {
                                   ? "assets/object/pressedlike.svg"
                                   : "assets/object/Vector.svg"),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

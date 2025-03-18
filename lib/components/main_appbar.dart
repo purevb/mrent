@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,7 +22,7 @@ class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   State<MainAppBar> createState() => _MainAppBarState();
 
   @override
-  Size get preferredSize => const Size.fromHeight(140);
+  Size get preferredSize => const Size.fromHeight(150);
 }
 
 class _MainAppBarState extends State<MainAppBar> {
@@ -86,9 +88,12 @@ class _MainAppBarState extends State<MainAppBar> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return AppBar(
       toolbarHeight: height * (0.1),
       backgroundColor: backgroundColor,
+      automaticallyImplyLeading: false,
       elevation: 0.8,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(65),
@@ -105,7 +110,6 @@ class _MainAppBarState extends State<MainAppBar> {
                       color: backgroundColor,
                       boxShadow: [
                         BoxShadow(
-                          // ignore: deprecated_member_use
                           color: textDefaultColor.withOpacity(0.15),
                           blurRadius: 2,
                           spreadRadius: 0,
@@ -118,65 +122,67 @@ class _MainAppBarState extends State<MainAppBar> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return SearchPage(
-                                      properties: widget.properties!);
-                                },
-                              ),
-                            );
-                          },
-                          child: Row(
-                            spacing: 10,
-                            children: [
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: SvgPicture.asset(
-                                  fit: BoxFit.fitHeight,
-                                  "assets/search/searchbutton.svg",
-                                  // ignore: deprecated_member_use
-                                  color: Colors.black.withOpacity(0.8),
+                        SizedBox(
+                          width: width * 0.8 - 60,
+                          child: GestureDetector(
+                            onTap: () {
+                              print('objex');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return SearchPage(
+                                        properties: widget.properties!);
+                                  },
                                 ),
-                              ),
-                              Text(
-                                "Хайлт",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  // ignore: deprecated_member_use
-                                  color: Colors.black.withOpacity(0.7),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: SvgPicture.asset(
+                                    fit: BoxFit.fitHeight,
+                                    "assets/search/searchbutton.svg",
+                                    color: Colors.black.withOpacity(0.8),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 10),
+                                Text(
+                                  "Хайлт",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black.withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        const Spacer(),
                         if (widget.hasLocationBar == true) ...[
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
                             child: VerticalDivider(),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return const MapSample(
-                                      hasAppBar: true,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Icon(
-                              CupertinoIcons.location,
-                              // ignore: deprecated_member_use
-                              color: Colors.black.withOpacity(0.8),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return const MapSample(
+                                        hasAppBar: true,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Icon(
+                                CupertinoIcons.location,
+                                color: Colors.black.withOpacity(0.8),
+                              ),
                             ),
                           ),
                         ]
@@ -188,7 +194,7 @@ class _MainAppBarState extends State<MainAppBar> {
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 6),
-              height: 65,
+              height: 70,
               alignment: const Alignment(0, 0),
               child: ListView.separated(
                 controller: _scrollController,
@@ -210,12 +216,11 @@ class _MainAppBarState extends State<MainAppBar> {
                       color: backgroundColor.withOpacity(0),
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
-                        spacing: 5,
                         children: [
+                          const SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: 5,
                             children: [
                               FractionalTranslation(
                                 translation: index == 0
@@ -225,13 +230,14 @@ class _MainAppBarState extends State<MainAppBar> {
                                   height: 55,
                                   alignment: Alignment.bottomCenter,
                                   child: Image.asset(
+                                    appbarCategoryIcons[index]!['icon'],
                                     height: index == 0 ? 18 : 25,
                                     fit: BoxFit.contain,
                                     color: textDefaultColor,
-                                    appbarCategoryIcons[index]!['icon'],
                                   ),
                                 ),
                               ),
+                              const SizedBox(width: 5),
                               Container(
                                 alignment: Alignment.bottomCenter,
                                 height: 55,
@@ -245,6 +251,7 @@ class _MainAppBarState extends State<MainAppBar> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 5),
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
                             switchInCurve: Easing.legacy,

@@ -7,7 +7,9 @@ import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/property_detail_page/components/image_swiper.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class PropertyDetailPage extends StatefulWidget {
   const PropertyDetailPage({required this.propertyData, super.key});
@@ -60,6 +62,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -163,12 +166,32 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                         ],
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        "Woodland Apartment",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
+                      Row(
+                        children: [
+                          const Text(
+                            "Woodland Apartment",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {});
+                              provider.toggleFavorite(widget.propertyData);
+                            },
+                            child: SizedBox(
+                              height: 20,
+                              width: 25,
+                              child: SvgPicture.asset(
+                                  fit: BoxFit.fitHeight,
+                                  provider.isExist(widget.propertyData) == true
+                                      ? "assets/object/pressedlike.svg"
+                                      : "assets/object/Vector.svg"),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       const Text(

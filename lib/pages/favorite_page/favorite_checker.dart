@@ -4,7 +4,6 @@ import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_page.dart';
 import 'package:mrent/pages/favorite_page/unauthorized_user_favorite_page.dart';
 
-@RoutePage()
 class FavoriteChecker extends StatefulWidget {
   const FavoriteChecker({this.user, super.key});
   final User? user;

@@ -4,7 +4,6 @@ import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/rent_history_page/unauthorized_rent_history_page.dart';
 import 'package:mrent/pages/rent_history_page/rent_history_page.dart';
 
-@RoutePage()
 class RentChecker extends StatefulWidget {
   const RentChecker({this.user, super.key});
   final User? user;

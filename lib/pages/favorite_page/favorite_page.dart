@@ -106,7 +106,7 @@ class _FavoritePageState extends State<FavoritePage> {
     },
     1: {
       "icon": "assets/search/amazing_views.png",
-      "iconName": "Байгалын сайхан",
+      "iconName": "Байгалийн сайхан",
       "iconType": "Nature",
     },
     2: {

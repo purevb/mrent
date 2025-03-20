@@ -87,7 +87,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
   Map<int, Map<String, dynamic>> appbarCategoryIcons = {
     0: {
       "icon": "assets/search/amazing_views.png",
-      "iconName": "Байгалын сайхан",
+      "iconName": "Байгалийн сайхан",
     },
     1: {
       "icon": "assets/search/house.png",

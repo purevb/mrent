@@ -251,6 +251,7 @@ class _TripPageState extends State<TripPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: MainAppBar(
+        hasLeading: false,
         properties: propertyData,
         hasLocationBar: true,
         chooseType: filterTypes,

@@ -10,11 +10,13 @@ import 'package:mrent/utils/constants.dart';
 
 class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   const MainAppBar({
+    required this.hasLeading,
     required this.chooseType,
     this.properties,
     required this.hasLocationBar,
     super.key,
   });
+  final bool hasLeading;
   final Function(String) chooseType;
   final bool hasLocationBar;
   final List<PropertyModel>? properties;
@@ -60,7 +62,7 @@ class _MainAppBarState extends State<MainAppBar> {
     },
     1: {
       "icon": "assets/search/amazing_views.png",
-      "iconName": "Байгалын сайхан",
+      "iconName": "Байгалийн сайхан",
       "iconType": "Nature",
     },
     2: {
@@ -101,10 +103,18 @@ class _MainAppBarState extends State<MainAppBar> {
           children: [
             Row(
               children: [
+                if (widget.hasLeading)
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(CupertinoIcons.back),
+                  ),
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    margin: const EdgeInsets.only(left: 30, right: 30),
+                    margin: EdgeInsets.only(
+                        left: widget.hasLeading ? 0 : 30, right: 30),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: backgroundColor,
@@ -145,7 +155,7 @@ class _MainAppBarState extends State<MainAppBar> {
                                   child: SvgPicture.asset(
                                     fit: BoxFit.fitHeight,
                                     "assets/search/searchbutton.svg",
-                                    color: Colors.black.withOpacity(0.8),
+                                    // color: Colors.black.withOpacity(0.8),
                                   ),
                                 ),
                                 const SizedBox(width: 10),

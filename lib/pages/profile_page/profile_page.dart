@@ -1,12 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mrent/model/user_model.dart';
+import 'package:mrent/pages/add_property_pages/add_property_details.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
-import 'package:mrent/route/route.gr.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -55,10 +53,16 @@ class _ProfilePageState extends State<ProfilePage> {
       "description": "Захиалгууд",
     },
   };
+
+  String FirstLetterUpper(String name) {
+    if (name.isEmpty) return name;
+    return name[0].toUpperCase() + name.substring(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -73,7 +77,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   "https://cdn-icons-png.flaticon.com/128/4140/4140047.png",
             ),
             Text(
-              widget.user.name,
+              FirstLetterUpper(
+                widget.user.name.replaceAll(" ", ""),
+              ),
               style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -128,12 +134,23 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: RichText(
                     text: TextSpan(
                       style: DefaultTextStyle.of(context).style,
-                      children: const [
-                        TextSpan(
+                      children: [
+                        const TextSpan(
                             text: "Та өөрийн сууцаа түрээсэлж мөнгө олоорой."),
                         TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return AddPropertyDetails(
+                                        name: widget.user.name,
+                                      );
+                                    },
+                                  ),
+                                ),
                           text: "\nДэлгэрэнгүй",
-                          style: TextStyle(
+                          style: const TextStyle(
                             decoration: TextDecoration.underline,
                             fontWeight: FontWeight.bold,
                           ),

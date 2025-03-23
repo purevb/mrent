@@ -3,6 +3,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
@@ -49,10 +50,11 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
         children: [
           Expanded(
             flex: 2,
-            child: carouselImages(
-              width,
-              widget.propertyData.images,
-              provider,
+            child: CarouselSlider(
+              height: height,
+              width: width,
+              images: widget.propertyData.images,
+              provider: provider,
             ),
           ),
           Expanded(
@@ -165,72 +167,6 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  SizedBox carouselImages(
-      double width, List<String>? images, PropertyProvider provider) {
-    return SizedBox(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: AspectRatio(
-          aspectRatio: 2 / 1,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Swiper(
-                pagination: SwiperPagination(
-                  builder: DotSwiperPaginationBuilder(
-                    activeSize: 5,
-                    size: 5,
-                    // ignore: deprecated_member_use
-                    color: Colors.white.withOpacity(0.5),
-                    activeColor: Colors.white,
-                  ),
-                ),
-                itemCount: images?.length ?? 0,
-                itemBuilder: (context, index) {
-                  return CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: images?[index] ?? "",
-                  );
-                },
-              ),
-              Positioned(
-                top: 8,
-                left: 8,
-                child: SizedBox(
-                  width: width - 70,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white, width: 1),
-                          // ignore: deprecated_member_use
-                          color: Colors.white.withOpacity(0.7),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Олонд таалагдсан",
-                            style: TextStyle(
-                              color: textDefaultColor,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
       ),
     );
   }

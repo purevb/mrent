@@ -1,17 +1,21 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/pages/add_property_pages/where_is_location.dart';
 import 'package:mrent/utils/constants.dart';
 
-class AddPropertyDetails extends StatefulWidget {
+@RoutePage()
+class AddPropertyDetailsPage extends StatefulWidget {
   final String name;
-  const AddPropertyDetails({required this.name, super.key});
+  final String id;
+  const AddPropertyDetailsPage(
+      {required this.id, required this.name, super.key});
 
   @override
-  State<AddPropertyDetails> createState() => _AddPropertyDetailsState();
+  State<AddPropertyDetailsPage> createState() => _AddPropertyDetailsState();
 }
 
-class _AddPropertyDetailsState extends State<AddPropertyDetails> {
+class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
   final TextEditingController textController = TextEditingController();
   String? selectedPropertyCategory;
   bool _validate = false;

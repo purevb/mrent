@@ -5,9 +5,11 @@ import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/add_property_pages/add_property_details.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
+import 'package:mrent/route/route.gr.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 
+@RoutePage()
 class ProfilePage extends StatefulWidget {
   const ProfilePage({required this.user, super.key});
   final User user;
@@ -36,6 +38,11 @@ class _ProfilePageState extends State<ProfilePage> {
       "iconPath": "assets/profile/Icon.svg",
       "description": "Нууцлал",
       "path": "/privacy",
+    },
+    4: {
+      "iconPath": "assets/profile/property-svgrepo-com.svg",
+      "description": "Cууц түрээслүүлэх",
+      "path": "/add_property",
     }
   };
 
@@ -43,18 +50,21 @@ class _ProfilePageState extends State<ProfilePage> {
     0: {
       "number": "10",
       "description": "Түрээслүүлж буй",
+      "path": "/my_properties",
     },
     1: {
       "number": "0",
       "description": "Tөлөлтүүд",
+      "path": "/payment",
     },
     2: {
       "number": "20",
       "description": "Захиалгууд",
+      "path": "/orders",
     },
   };
 
-  String FirstLetterUpper(String name) {
+  String firstLetterUpper(String name) {
     if (name.isEmpty) return name;
     return name[0].toUpperCase() + name.substring(1);
   }
@@ -77,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   "https://cdn-icons-png.flaticon.com/128/4140/4140047.png",
             ),
             Text(
-              FirstLetterUpper(
+              firstLetterUpper(
                 widget.user.name.replaceAll(" ", ""),
               ),
               style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -99,7 +109,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return my_containers(
+                  return myContainers(
+                    tiles[index]!['path']!,
                     width,
                     tiles[index]!['number']!,
                     tiles[index]!['description']!,
@@ -107,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(
-                    width: 5,
+                    width: 15,
                   );
                 },
                 itemCount: tiles.length,
@@ -139,14 +150,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             text: "Та өөрийн сууцаа түрээсэлж мөнгө олоорой."),
                         TextSpan(
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return AddPropertyDetails(
-                                        name: widget.user.name,
-                                      );
-                                    },
+                            ..onTap = () => context.router.push(
+                                  AddPropertyDetailsRoute(
+                                    name: widget.user.name,
+                                    id: widget.user.id,
                                   ),
                                 ),
                           text: "\nДэлгэрэнгүй",
@@ -188,7 +195,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     String? path = profileListTileDatas[index]?["path"];
                     if (path != null && path.isNotEmpty) {
-                      context.router.pushNamed(path);
+                      if (path == "/add_property") {
+                        context.router.push(
+                          AddPropertyDetailsRoute(
+                            name: widget.user.name,
+                            id: widget.user.id,
+                          ),
+                        );
+                      } else {
+                        context.router.pushNamed(path);
+                      }
                     } else {
                       debugPrint(
                           "Navigation path is null or empty for index: $index");
@@ -220,35 +236,41 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Container my_containers(double width, String number, String description) {
-    return Container(
-      width: width * 0.33 - 40,
-      height: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          18,
+  GestureDetector myContainers(
+      String path, double width, String number, String description) {
+    return GestureDetector(
+      onTap: () {
+        context.router.pushNamed(path);
+      },
+      child: Container(
+        width: width * 0.33 - 40,
+        height: 100,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            18,
+          ),
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+            ),
+          ],
         ),
-        color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            number,
-            style: const TextStyle(fontSize: 19),
-          ),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12),
-          ),
-        ],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              number,
+              style: const TextStyle(fontSize: 19),
+            ),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
+import 'package:mrent/components/horizontal_property.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -244,37 +246,25 @@ class _OrdersPageState extends State<OrdersPage> {
           shrinkWrap: true,
           itemCount: propertyData.length,
           itemBuilder: (BuildContext context, int index) {
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              height: 200,
-              width: width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                    spreadRadius: 0.5,
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(
-                  25,
+            return Stack(
+              children: [
+                HorizontalProperty(
+                  propertyData: propertyData[index],
                 ),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    height: height,
-                    width: width * 0.5,
-                    child: CarouselSlider(
-                      height: height,
-                      width: width * 0.5,
-                      images: propertyData[index].images,
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 2,
                     ),
+                    decoration: BoxDecoration(
+                        color: mRed, borderRadius: BorderRadius.circular(20)),
+                    child: const Text("5"),
                   ),
-                ],
-              ),
+                )
+              ],
             );
           },
           separatorBuilder: (BuildContext context, int index) {

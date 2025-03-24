@@ -148,7 +148,6 @@ class NotificationRoute extends _i7.PageRouteInfo<void> {
       : super(NotificationRoute.name, initialChildren: children);
 
   static const String name = 'NotificationRoute';
-
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {

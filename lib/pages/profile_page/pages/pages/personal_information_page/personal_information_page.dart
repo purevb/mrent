@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class PersonalInformationPage extends StatefulWidget {
@@ -56,9 +57,9 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 ),
               ),
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 "Choose location",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 16),
               ),
             ),
           ],
@@ -96,7 +97,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
       ),
       onPressed: () {},
       icon: Icon(icon, color: Colors.white),
-      label: Text(label, style: const TextStyle(color: Colors.white)),
+      label: Text(label, style: GoogleFonts.inter(color: Colors.white)),
     );
   }
 }

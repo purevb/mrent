@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mrent/components/button.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
 import 'package:mrent/providers/property_provider.dart';
@@ -83,7 +83,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                 children: [
                   Text(
                     widget.propertyData.placeName ?? "",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: textDefaultColor,
                       fontWeight: FontWeight.w500,
                     ),
@@ -91,7 +91,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                   Text(
                     maxLines: 3,
                     widget.propertyData.description ?? "",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       // ignore: deprecated_member_use
                       color: textDefaultColor.withOpacity(0.6),
                     ),
@@ -101,7 +101,6 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                     height: height * 0.1,
                     child: ListView.separated(
                       shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 0, left: 5),
                       scrollDirection: Axis.horizontal,
                       itemCount: advantages.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -114,7 +113,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return const SizedBox(
-                          width: 12,
+                          width: 2,
                         );
                       },
                     ),

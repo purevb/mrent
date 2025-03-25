@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -72,7 +73,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
         });
       }
     } catch (e) {
-      print("Error picking images from gallery: $e");
+      log("Error picking images from gallery: $e");
     }
   }
 
@@ -95,9 +96,9 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Сууцын мэдээллүүдийг өөрчлөх",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontSize: 18,
           ),
         ),
@@ -163,6 +164,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
                               child: IconButton(
                                 style: IconButton.styleFrom(
                                   backgroundColor:
+                                      // ignore: deprecated_member_use
                                       Colors.white.withOpacity(0.7),
                                   shape: const CircleBorder(),
                                 ),
@@ -199,6 +201,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
                               child: IconButton(
                                 style: IconButton.styleFrom(
                                   backgroundColor:
+                                      // ignore: deprecated_member_use
                                       Colors.white.withOpacity(0.7),
                                   shape: const CircleBorder(),
                                 ),
@@ -279,7 +282,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
               ),
               Text(
                 "Байршлаа оруулна уу.",
-                style: GoogleFonts.lato(fontSize: 14),
+                style: GoogleFonts.inter(fontSize: 14),
               ),
               Row(
                 children: [
@@ -297,7 +300,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
                       _selectedAddress.isEmpty
                           ? "Байршилaa өөрчлөх үү."
                           : _selectedAddress,
-                      style: GoogleFonts.lato(fontSize: 16),
+                      style: GoogleFonts.inter(fontSize: 16),
                     ),
                   ),
                 ],
@@ -330,7 +333,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
                             _selectedAddress.isEmpty
                                 ? "Байршилaa сонго."
                                 : _selectedAddress,
-                            style: GoogleFonts.lato(fontSize: 16),
+                            style: GoogleFonts.inter(fontSize: 16),
                           ),
                         ),
                       ),
@@ -372,8 +375,8 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            color: Color(0xff252B5C),
+          style: GoogleFonts.inter(
+            color: const Color(0xff252B5C),
             fontWeight: FontWeight.w500,
           ),
         ),

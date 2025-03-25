@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class PaymentTypesComponent extends StatefulWidget {
@@ -38,9 +39,9 @@ class _PaymentTypesComponentState extends State<PaymentTypesComponent> {
       spacing: 20,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Төлбөр төлөх сонголтууд",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w500,
             fontSize: 18,
           ),

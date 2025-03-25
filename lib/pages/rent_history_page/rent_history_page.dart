@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/providers/property_provider.dart';
@@ -20,7 +21,6 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
   final ScrollController _scrollController = ScrollController();
 
   final FocusNode _focusNode = FocusNode();
-  List<PropertyModel> _founders = [];
 
   void _runFilter(String enteredKeyword) {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
@@ -36,9 +36,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                   .contains(enteredKeyword.toLowerCase()))
           .toList();
     }
-    setState(() {
-      _founders = results;
-    });
+    setState(() {});
   }
 
   @override
@@ -46,7 +44,6 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<PropertyProvider>(context, listen: false);
-      _founders = provider.userFavoriteProperties;
       setState(() {});
     });
     _focusNode.addListener(_onFocusChange);
@@ -202,7 +199,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                       children: [
                         Text(
                           appbarCategoryIcons[index]!['iconName'],
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mrent/utils/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TabbarDescription extends StatefulWidget {
   const TabbarDescription(
@@ -20,10 +20,12 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Container(
-      width: width * 0.2,
+      margin: const EdgeInsets.all(5),
+      width: width * 0.25 - 35,
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: mRed,
+        // ignore: deprecated_member_use
+        color: Colors.white.withOpacity(0.8),
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -39,20 +41,19 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
         spacing: 2,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(widget.icon, color: Colors.white, size: 24),
-          const SizedBox(height: 8),
+          Icon(widget.icon, color: Colors.black, size: 24),
           Text(
             widget.value,
-            style: const TextStyle(
-              color: Colors.white,
+            style: GoogleFonts.inter(
+              color: Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
           Text(
             widget.label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: GoogleFonts.inter(
+              color: Colors.black,
               fontSize: 12,
             ),
           ),

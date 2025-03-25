@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/favorite_page/components/favorite_property.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
@@ -70,9 +71,9 @@ class _SearchPageState extends State<SearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Хайлт",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -120,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
               Text(
                 "${widget.properties.length} илэрц",
-                style: const TextStyle(
+                style: GoogleFonts.inter(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
                   fontSize: 18,

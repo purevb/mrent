@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/register_dropback/components/mForm.dart';
@@ -130,14 +131,15 @@ class _RegisterState extends State<Register> {
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      style: const TextStyle(fontSize: 10, color: Colors.black),
+                      style:
+                          GoogleFonts.inter(fontSize: 10, color: Colors.black),
                       children: [
                         const TextSpan(
                           text: 'Та ',
                         ),
                         TextSpan(
                           text: 'шаардлага',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: mRed,
                             decoration: TextDecoration.underline,
                           ),
@@ -145,7 +147,7 @@ class _RegisterState extends State<Register> {
                         const TextSpan(text: ' ба '),
                         TextSpan(
                           text: 'нөхцөлийг',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: mRed,
                             decoration: TextDecoration.underline,
                           ),

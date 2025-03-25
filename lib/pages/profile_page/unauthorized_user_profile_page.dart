@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/utils/constants.dart';
@@ -24,14 +25,14 @@ class _UnauthorizedUserState extends State<UnauthorizedUserProfilePage> {
             children: [
               Text(
                 "Профайл",
-                style: TextStyle(
+                style: GoogleFonts.inter(
                     fontWeight: FontWeight.bold,
                     fontSize: 36,
                     color: textDefaultColor),
               ),
               Text(
                 "Дараагийн аялалаа эхлэхийн тулд нэвтэрнэ үү!",
-                style: TextStyle(color: textDefaultColor, fontSize: 16),
+                style: GoogleFonts.inter(color: textDefaultColor, fontSize: 16),
               ),
               MyButton(
                 canPress: true,

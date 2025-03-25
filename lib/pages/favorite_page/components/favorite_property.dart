@@ -1,12 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/providers/property_provider.dart';
-import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteProperty extends StatefulWidget {
@@ -68,7 +66,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                     children: [
                       Text(
                         widget.propertyData.placeName ?? "",
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -95,7 +93,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                   Text(
                     widget.propertyData.description ?? "",
                     maxLines: 3,
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.w300,
                       fontSize: 11,
                     ),
@@ -127,33 +125,33 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                     alignment: Alignment.bottomLeft,
                     child: RichText(
                       text: TextSpan(
-                        style:
-                            const TextStyle(fontSize: 10, color: Colors.black),
+                        style: GoogleFonts.inter(
+                            fontSize: 10, color: Colors.black),
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: '\$',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 12,
                             ),
                           ),
                           TextSpan(
                             text: widget.propertyData.nightlyPrice.toString(),
-                            style: const TextStyle(
+                            style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 14,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: '/',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 14,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: 'month',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 12,
                             ),

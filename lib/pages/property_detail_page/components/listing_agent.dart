@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class ListingAgent extends StatefulWidget {
@@ -33,18 +34,29 @@ class _ListingAgentState extends State<ListingAgent> {
           //   },
           // ),
         ),
-        const Text(
+        Text(
           "Sandeep S.",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            // ignore: deprecated_member_use
+            color: textDefaultColor.withOpacity(0.7),
+          ),
         ),
         const Spacer(),
         SvgPicture.asset(
           "assets/property_detail/eva_email-fill.svg",
-          colorFilter: ColorFilter.mode(mRed, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+              // ignore: deprecated_member_use
+              textDefaultColor.withOpacity(0.7),
+              BlendMode.srcIn),
         ),
         SvgPicture.asset(
           "assets/property_detail/mingcute_phone-fill.svg",
-          colorFilter: ColorFilter.mode(mRed, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+              // ignore: deprecated_member_use
+              textDefaultColor.withOpacity(0.7),
+              BlendMode.srcIn),
         ),
       ],
     );

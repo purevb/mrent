@@ -31,7 +31,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
       appBar: AppBar(
         title: Text(
           "Tүрээслүүлэх сууц нэмэх",
-          style: GoogleFonts.lato(
+          style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w500,
           ),
@@ -45,7 +45,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
           children: [
             Text(
               "Байршлаа оруулна уу.",
-              style: GoogleFonts.lato(fontSize: 24),
+              style: GoogleFonts.inter(fontSize: 24),
             ),
             const SizedBox(height: 10),
             Row(
@@ -64,7 +64,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                     _selectedAddress.isEmpty
                         ? "Байршилaa сонгоно уу."
                         : _selectedAddress,
-                    style: GoogleFonts.lato(fontSize: 16),
+                    style: GoogleFonts.inter(fontSize: 16),
                   ),
                 ),
               ],
@@ -97,7 +97,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                           _selectedAddress.isEmpty
                               ? "Байршилaa сонго."
                               : _selectedAddress,
-                          style: GoogleFonts.lato(fontSize: 16),
+                          style: GoogleFonts.inter(fontSize: 16),
                         ),
                       ),
                     ),
@@ -140,7 +140,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                 alignment: Alignment.center,
                 child: Text(
                   "Дараах",
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     color: Colors.white,
                   ),

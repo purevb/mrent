@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/booking_page/component/booking_period_chooser.dart';
@@ -45,7 +46,7 @@ class _BookingPageState extends State<BookingPage> {
         ),
         title: Text(
           "Түрээсийн хүсэлт",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: textDefaultColor,
             fontWeight: FontWeight.w500,
             fontSize: 18,

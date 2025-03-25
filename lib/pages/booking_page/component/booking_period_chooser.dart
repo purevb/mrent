@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/pages/booking_page/component/table_calendar.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
@@ -34,9 +35,9 @@ class _BookingPeriodChooserComponentState
       spacing: 20,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Хугацаа сонгох",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w500,
             fontSize: 18,
           ),
@@ -78,7 +79,7 @@ class _BookingPeriodChooserComponentState
                         _firstSelectedDay != null
                             ? formatDate(_firstSelectedDay)
                             : "Ирэх",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           // ignore: deprecated_member_use
                           color: textDefaultColor.withOpacity(
                             0.6,
@@ -124,7 +125,7 @@ class _BookingPeriodChooserComponentState
                         _secondSelectedDay != null
                             ? formatDate(_secondSelectedDay)
                             : "Гарах",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           // ignore: deprecated_member_use
                           color: textDefaultColor.withOpacity(
                             0.6,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MappBar extends StatelessWidget {
   const MappBar({
@@ -33,9 +34,10 @@ class MappBar extends StatelessWidget {
           height: 18,
         ),
       ),
-      title: const Text(
+      title: Text(
         "Нэвтрэх эсвэл бүртгүүлэх",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        style: GoogleFonts.racingSansOne(
+            fontWeight: FontWeight.bold, fontSize: 18),
       ),
       centerTitle: true,
     );

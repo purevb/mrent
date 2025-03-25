@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class AddListingScreen extends StatefulWidget {
@@ -35,11 +36,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   @override
   void initState() {
-    print(widget.text);
-    print(widget.type);
-    print(widget.lattitude);
-    print(widget.longtitude);
-    print(widget.photos);
+    log(widget.text);
+    log(widget.type);
+    log(widget.lattitude);
+    log(widget.longtitude);
+    log(widget.photos.toString());
 
     super.initState();
   }
@@ -83,9 +84,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
               });
             }),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               "Бусад",
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -121,9 +122,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
               },
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               "Нэмэлт тайлбар",
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -158,7 +159,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       isScrollControlled: true,
                       context: context,
                       builder: (BuildContext context) {
-                        return Container(
+                        return SizedBox(
                           height: height * 0.5,
                           child: Column(
                             children: [
@@ -191,9 +192,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   "Дуусгах",
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     fontSize: 18,
                     color: Colors.white,
                   ),
@@ -213,7 +214,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -244,9 +245,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   onChanged: onChanged,
                 ),
               ),
-              const Text(
+              Text(
                 "₮",
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.w400,
                   fontSize: 20,
                 ),

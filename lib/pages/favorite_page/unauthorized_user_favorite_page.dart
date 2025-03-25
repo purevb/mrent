@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
@@ -37,7 +38,7 @@ class _UnauthorizedUserFavoritePageState
                       onTap: () {},
                       child: Text(
                         "Edit",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontWeight: FontWeight.bold,
                           color: textDefaultColor,
                           fontSize: 18,
@@ -55,7 +56,7 @@ class _UnauthorizedUserFavoritePageState
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
                     "Хадгалсан",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: textDefaultColor,
                       fontSize: 36,
                       fontWeight: FontWeight.w500,
@@ -69,7 +70,7 @@ class _UnauthorizedUserFavoritePageState
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Text(
                     "Хүслийн жагсаалтаа үзэхийн тулд нэвтэрнэ үү!",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
                       color: textDefaultColor,
@@ -83,7 +84,10 @@ class _UnauthorizedUserFavoritePageState
                   padding: const EdgeInsets.only(left: 20),
                   child: Text(
                     "Та нэвтэрсний дараа хүссэн жагсаалт үүсгэх, харах эсвэл засах боломжтой.",
-                    style: TextStyle(fontSize: 16, color: textDefaultColor),
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      color: textDefaultColor,
+                    ),
                   ),
                 ),
               ),

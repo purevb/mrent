@@ -1,4 +1,3 @@
-import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/rent_history_page/unauthorized_rent_history_page.dart';

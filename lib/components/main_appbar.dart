@@ -1,8 +1,9 @@
-import 'dart:ui';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/search_page/search_page.dart';
@@ -120,6 +121,7 @@ class _MainAppBarState extends State<MainAppBar> {
                       color: backgroundColor,
                       boxShadow: [
                         BoxShadow(
+                          // ignore: deprecated_member_use
                           color: textDefaultColor.withOpacity(0.15),
                           blurRadius: 2,
                           spreadRadius: 0,
@@ -136,7 +138,7 @@ class _MainAppBarState extends State<MainAppBar> {
                           width: width * 0.8 - 60,
                           child: GestureDetector(
                             onTap: () {
-                              print('objex');
+                              log('objex');
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -161,8 +163,9 @@ class _MainAppBarState extends State<MainAppBar> {
                                 const SizedBox(width: 10),
                                 Text(
                                   "Хайлт",
-                                  style: TextStyle(
+                                  style: GoogleFonts.inter(
                                     fontSize: 18,
+                                    // ignore: deprecated_member_use
                                     color: Colors.black.withOpacity(0.7),
                                   ),
                                 ),
@@ -191,6 +194,7 @@ class _MainAppBarState extends State<MainAppBar> {
                               },
                               child: Icon(
                                 CupertinoIcons.location,
+                                // ignore: deprecated_member_use
                                 color: Colors.black.withOpacity(0.8),
                               ),
                             ),
@@ -253,7 +257,7 @@ class _MainAppBarState extends State<MainAppBar> {
                                 height: 55,
                                 child: Text(
                                   appbarCategoryIcons[index]!['iconName'],
-                                  style: const TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500,
                                   ),

@@ -1,6 +1,12 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mrent/main.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
@@ -147,10 +153,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                             size: 22,
                           ),
                           const SizedBox(width: 5),
-                          const Text(
+                          Text(
                             "4.9(6.8K review)",
-                            style: TextStyle(
-                              color: Color(0xff8997A9),
+                            style: GoogleFonts.inter(
+                              color: const Color(0xff8997A9),
                               fontSize: 16,
                             ),
                           ),
@@ -168,14 +174,14 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             "Woodland Apartment",
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           GestureDetector(
                             onTap: () {
                               setState(() {});
@@ -194,10 +200,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                         ],
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         "1012 Ocean Avenue, New York, USA",
-                        style: TextStyle(
-                          color: Color(0xff8C8C8C),
+                        style: GoogleFonts.inter(
+                          color: const Color(0xff8C8C8C),
                           fontSize: 14,
                         ),
                       ),
@@ -245,10 +251,61 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
   }
 }
 
-class ReviewTab extends StatelessWidget {
+class ReviewTab extends StatefulWidget {
   const ReviewTab({
     super.key,
   });
+
+  @override
+  State<ReviewTab> createState() => _ReviewTabState();
+}
+
+class _ReviewTabState extends State<ReviewTab> {
+  List<File> _selectedImages = [];
+  final TextEditingController _reviewController = TextEditingController();
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final List<XFile> pickedFiles = await picker.pickMultiImage();
+
+      if (pickedFiles.isNotEmpty) {
+        setState(() {
+          _selectedImages
+              .addAll(pickedFiles.map((file) => File(file.path)).toList());
+        });
+      }
+    } catch (e) {
+      print("Error picking images from gallery: $e");
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _selectedImages.removeAt(index);
+    });
+  }
+
+  void _submitReview() {
+    if (_reviewController.text.trim().isNotEmpty) {
+      log('Review submitted: ${_reviewController.text}');
+      log('Images: ${_selectedImages.length}');
+      _selectedImages.clear();
+      setState(() {
+        _reviewController.clear();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Please enter a review'),
+        backgroundColor: Colors.orange,
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,13 +313,145 @@ class ReviewTab extends StatelessWidget {
     return SizedBox(
       height: height,
       child: Column(
+        spacing: 10,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Reviews',
-            style: TextStyle(
+            style: GoogleFonts.inter(
               fontWeight: FontWeight.bold,
               fontSize: 20,
+            ),
+          ),
+          AnimatedContainer(
+            height: _selectedImages.isEmpty ? height * 0.2 : height * 0.28,
+            duration: const Duration(
+              milliseconds: 200,
+            ),
+            curve: Curves.linear,
+            child: Row(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 40,
+                  width: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                  ),
+                  // child: CachedNetworkImage(
+                  //   imageUrl: "imageUrl",
+                  //   errorWidget: (context, url, error) {
+                  //     return const SizedBox();
+                  //   },
+                  // ),
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextField(
+                          controller: _reviewController,
+                          decoration: const InputDecoration(
+                            hintText: "Санал бодлоо хүваалцаарай :)",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          maxLines: 2,
+                        ),
+                        Expanded(
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.file(
+                                        _selectedImages[index],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 5,
+                                      right: 5,
+                                      child: GestureDetector(
+                                        onTap: () => _removeImage(index),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                // ignore: deprecated_member_use
+                                                Colors.black.withOpacity(0.5),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(
+                                width: 10,
+                              );
+                            },
+                            itemCount: _selectedImages.length,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: _pickImageFromGallery,
+                              icon: const Icon(
+                                CupertinoIcons.camera,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                _submitReview();
+                              },
+                              icon: Icon(
+                                Icons.send,
+                                color: mRed,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           ListView.builder(
@@ -310,9 +499,9 @@ class ReviewComponent extends StatelessWidget {
                 //   },
                 // ),
               ),
-              const Text(
+              Text(
                 "Sandeep S.",
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -320,7 +509,7 @@ class ReviewComponent extends StatelessWidget {
               const Spacer(),
               Text(
                 "2 months ago",
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   fontSize: 18,
                   // ignore: deprecated_member_use
                   color: Colors.black.withOpacity(
@@ -334,9 +523,10 @@ class ReviewComponent extends StatelessWidget {
             padding: const EdgeInsets.only(left: 0.0, top: 10),
             child: Text(
               "Lorem Ipsum is simply dummy text of the printing.Lorem Ipsum is simply dummy text of the printing.",
-              style:
+              style: GoogleFonts.inter(
                   // ignore: deprecated_member_use
-                  TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 15),
+                  color: Colors.black.withOpacity(0.6),
+                  fontSize: 15),
             ),
           )
         ],
@@ -388,18 +578,18 @@ class DescriptionTab extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               "Address",
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
             ),
             GestureDetector(
               onTap: () {},
-              child: const Text(
+              child: Text(
                 "View on Map",
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   color: Colors.black,
                   decoration: TextDecoration.underline,
                   decorationColor: Colors.black,
@@ -429,9 +619,9 @@ class DescriptionTab extends StatelessWidget {
             ),
           ),
         ),
-        const Text(
+        Text(
           "Additional things",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const Text(
             "Additional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional things"),

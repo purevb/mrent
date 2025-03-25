@@ -25,6 +25,7 @@ class AuthService {
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         log("Google Sign-In cancelled by user.");
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
         return null;
       }
@@ -67,17 +68,21 @@ class AuthService {
         return userCredential;
       } else {
         log("Google Sign-In failed: User is null.");
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
         return null;
       }
     } on FirebaseAuthException catch (e) {
       log("Firebase Auth Error: ${e.code} - ${e.message}");
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } on PlatformException catch (e) {
       log("Platform Exception: ${e.code} - ${e.message}");
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
       log("Unexpected Error: $e");
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     }
     return null;
@@ -101,11 +106,13 @@ class AuthService {
         );
         showToast(
           'Registration successful!',
+          // ignore: use_build_context_synchronously
           context: context,
           axis: Axis.horizontal,
           alignment: Alignment.center,
           position: StyledToastPosition.bottom,
         );
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
@@ -124,6 +131,7 @@ class AuthService {
         message = 'An account already exists with that email.';
         showToast(
           message.isNotEmpty ? message : 'An error occurred during signup',
+          // ignore: use_build_context_synchronously
           context: context,
           axis: Axis.horizontal,
           alignment: Alignment.center,
@@ -133,6 +141,7 @@ class AuthService {
 
       showToast(
           message.isNotEmpty ? message : 'An error occurred during signup',
+          // ignore: use_build_context_synchronously
           context: context,
           axis: Axis.horizontal,
           alignment: Alignment.center,
@@ -171,6 +180,7 @@ class AuthService {
       await Future.delayed(const Duration(seconds: 1));
 
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => NavigationPage(

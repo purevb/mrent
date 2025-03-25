@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/booking_page/booking_page.dart';
@@ -43,38 +44,39 @@ class BottomBookingBar extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   "Нийт үнэ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(fontSize: 10, color: Colors.black),
+                    style: GoogleFonts.inter(fontSize: 10, color: Colors.black),
                     children: [
-                      const TextSpan(
+                      TextSpan(
                         text: '\$',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 24,
                         ),
                       ),
                       TextSpan(
                         text: propertyData.nightlyPrice.toString(),
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 24,
                         ),
                       ),
-                      const TextSpan(
+                      TextSpan(
                         text: '/',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 24,
                         ),
                       ),
-                      const TextSpan(
+                      TextSpan(
                         text: 'сард',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 20,
                         ),

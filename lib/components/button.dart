@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class MyButton extends StatefulWidget {
@@ -42,7 +43,7 @@ class _MyButtonState extends State<MyButton> {
         child: Center(
           child: Text(
             widget.text,
-            style: TextStyle(
+            style: GoogleFonts.inter(
               color: widget.canPress ? Colors.white : Colors.black,
               fontSize: widget.fontSize ?? 18,
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/pages/login_dropback/component/continue_with.dart';
@@ -101,9 +102,9 @@ class _LoginState extends State<Login> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Танд бүртгэл байгаа юу? ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: GoogleFonts.inter(fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -120,7 +121,7 @@ class _LoginState extends State<Login> {
                         },
                         child: Text(
                           "Бүртгүүлэх",
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                               color: mRed, fontWeight: FontWeight.bold),
                         ),
                       )

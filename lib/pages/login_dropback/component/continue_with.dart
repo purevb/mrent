@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class ContinueWith extends StatelessWidget {
@@ -41,7 +42,7 @@ class ContinueWith extends StatelessWidget {
                 ),
                 Text(
                   text,
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                       fontWeight: FontWeight.w500, fontSize: 16),
                 ),
                 const SizedBox(
@@ -59,9 +60,9 @@ class ContinueWith extends StatelessWidget {
                   color: mRed,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text(
+                child: Text(
                   "Working",
-                  style: TextStyle(fontSize: 10),
+                  style: GoogleFonts.inter(fontSize: 10),
                 ),
               ),
             ),
@@ -77,7 +78,7 @@ class ContinueWith extends StatelessWidget {
           //       ),
           //       child: const Text(
           //         "Not working",
-          //         style: TextStyle(color: Colors.white),
+          //         style: GoogleFonts. Inter(color: Colors.white),
           //       ),
           //     ),
           //   ),

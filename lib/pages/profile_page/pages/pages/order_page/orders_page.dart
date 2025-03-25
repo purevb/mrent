@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/components/horizontal_property.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/pages/profile_page/pages/pages/order_page/order_detail_page.dart';
 import 'package:mrent/utils/constants.dart';
 
 @RoutePage()
@@ -246,24 +245,45 @@ class _OrdersPageState extends State<OrdersPage> {
           shrinkWrap: true,
           itemCount: propertyData.length,
           itemBuilder: (BuildContext context, int index) {
-            return Stack(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HorizontalProperty(
-                  propertyData: propertyData[index],
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                        color: mRed, borderRadius: BorderRadius.circular(20)),
-                    child: const Text("5"),
+                const Text("2025.07.09"),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return OrderDetailPage(
+                            propertyData: propertyData[index],
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      HorizontalProperty(
+                        propertyData: propertyData[index],
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                              color: mRed,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: const Text("5"),
+                        ),
+                      )
+                    ],
                   ),
-                )
+                ),
               ],
             );
           },

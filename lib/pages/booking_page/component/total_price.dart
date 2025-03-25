@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class TotalPriceComponent extends StatefulWidget {
@@ -18,9 +19,9 @@ class _TotalPriceComponentState extends State<TotalPriceComponent> {
       spacing: 20,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Нийт төлбөр",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w500,
             fontSize: 18,
           ),

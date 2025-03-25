@@ -2,6 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 @RoutePage()
@@ -50,10 +51,10 @@ class _NotificationPageState extends State<NotificationPage> {
         ],
       ),
       body: notifications.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 "No notifications",
-                style: TextStyle(fontSize: 16),
+                style: GoogleFonts.inter(fontSize: 16),
               ),
             )
           : ListView.builder(
@@ -134,7 +135,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                 children: [
                                   Text(
                                     notifications[index]["name"],
-                                    style: const TextStyle(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -142,7 +143,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   Text(
                                     notifications[index]["text"],
                                     maxLines: 4,
-                                    style: const TextStyle(
+                                    style: GoogleFonts.inter(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w300,
                                     ),
@@ -150,7 +151,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   Text(
                                     notifications[index]["time"],
                                     maxLines: 4,
-                                    style: TextStyle(
+                                    style: GoogleFonts.inter(
                                       fontSize: 16,
                                       color: textDefaultColor.withOpacity(0.5),
                                     ),

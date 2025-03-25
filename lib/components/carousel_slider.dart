@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -66,7 +67,7 @@ class CarouselSlider extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "Олонд таалагдсан",
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: textDefaultColor,
                               fontSize: 10,
                             ),

@@ -175,14 +175,14 @@ class _TheObjectState extends State<TheObject> {
   Text nightlyPrice(String price) {
     return Text(
       price,
-      style: GoogleFonts.roboto(fontSize: 15, fontWeight: FontWeight.bold),
+      style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
     );
   }
 
   Text datet(String rentDate) {
     return Text(
       rentDate,
-      style: GoogleFonts.roboto(
+      style: GoogleFonts.inter(
         fontSize: 15,
         color: const Color(0XFF717171),
       ),
@@ -193,7 +193,7 @@ class _TheObjectState extends State<TheObject> {
     return Text(
       maxLines: 2,
       descriptionText,
-      style: GoogleFonts.roboto(
+      style: GoogleFonts.inter(
         color: const Color(0XFF717171),
         fontSize: 15,
       ),
@@ -203,7 +203,7 @@ class _TheObjectState extends State<TheObject> {
   Text rating(String rate) {
     return Text(
       rate,
-      style: GoogleFonts.roboto(
+      style: GoogleFonts.inter(
         fontWeight: FontWeight.bold,
         fontSize: 15,
       ),
@@ -213,7 +213,7 @@ class _TheObjectState extends State<TheObject> {
   Text title(String title) {
     return Text(
       title,
-      style: GoogleFonts.roboto(
+      style: GoogleFonts.inter(
         fontWeight: FontWeight.bold,
         fontSize: 15,
       ),

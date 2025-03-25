@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/favorite_page/components/favorite_property.dart';
@@ -251,7 +252,7 @@ class _FavoritePageState extends State<FavoritePage> {
                       children: [
                         Text(
                           appbarCategoryIcons[index]!['iconName'],
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
@@ -318,7 +319,7 @@ class _FavoritePageState extends State<FavoritePage> {
                       onSearch
                           ? "Хайлтад тохирох сууц олдсонгүй."
                           : "Танд одоогоор таалагдсан сууц алга байна.",
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         color: textDefaultColor,
                       ),
                     ),

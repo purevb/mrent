@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
@@ -35,7 +36,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                       onTap: () {},
                       child: Text(
                         "Edit",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: textDefaultColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -53,7 +54,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
                     "Аялалууд",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontSize: 36,
                       color: textDefaultColor,
                       fontWeight: FontWeight.w500,
@@ -67,7 +68,7 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Text(
                     "Одоохондоо аялал алга",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
                       color: textDefaultColor,
@@ -81,7 +82,8 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
                   padding: const EdgeInsets.only(left: 20),
                   child: Text(
                     "Хэрвээ та аялалд бэлэн болсон бол бид танд туслахд бэлэн.",
-                    style: TextStyle(fontSize: 16, color: textDefaultColor),
+                    style: GoogleFonts.inter(
+                        fontSize: 16, color: textDefaultColor),
                   ),
                 ),
               ),

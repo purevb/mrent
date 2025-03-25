@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class NotesForOwnerComponent extends StatefulWidget {
@@ -37,9 +38,9 @@ class _NotesForOwnerComponentState extends State<NotesForOwnerComponent> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
-        const Text(
+        Text(
           "Түрээслэгчид ",
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w500,
             fontSize: 18,
           ),
@@ -74,7 +75,7 @@ class _NotesForOwnerComponentState extends State<NotesForOwnerComponent> {
                       hintText: "Нэмэлт хүсэлт илгээх",
                       border: InputBorder.none,
                     ),
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       // ignore: deprecated_member_use
                       color: textDefaultColor.withOpacity(
                         0.6,

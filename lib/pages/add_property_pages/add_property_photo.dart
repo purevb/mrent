@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mrent/pages/add_property_pages/add_listing_screen_details.dart';
 
@@ -62,17 +63,17 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "Add Listing",
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
+            Text(
               "Add photos to your listing",
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 fontSize: 16,
                 color: Colors.grey,
               ),
@@ -177,9 +178,9 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   "Дараах",
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     fontSize: 18,
                     color: Colors.white,
                   ),

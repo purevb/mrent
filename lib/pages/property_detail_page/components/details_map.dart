@@ -13,7 +13,7 @@
 //       children: [
 //         const Text(
 //           "Address",
-//           style: TextStyle(
+//           style: GoogleFonts. Inter(
 //             fontWeight: FontWeight.bold,
 //             fontSize: 18,
 //           ),
@@ -22,7 +22,7 @@
 //           onTap: () {},
 //           child: Text(
 //             "View on Map",
-//             style: TextStyle(
+//             style: GoogleFonts. Inter(
 //               color: mRed,
 //               decoration: TextDecoration.underline,
 //               decorationColor: mRed,

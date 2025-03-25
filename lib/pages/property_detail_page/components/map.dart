@@ -72,7 +72,7 @@ class MapSampleState extends State<MapSample> {
         widget.onLocationSelected!(_selectedLocation, _selectedAddress);
       }
     } catch (e) {
-      print("Error updating location: $e");
+      log("Error updating location: $e");
       setState(() {
         _isLoading = false;
       });

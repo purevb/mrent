@@ -66,14 +66,14 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    // double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: backgroundColor,
         title: Text(
           "Tүрээслүүлэх сууц нэмэх",
-          style: GoogleFonts.lato(
+          style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w500,
           ),
@@ -90,13 +90,13 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
               text: TextSpan(
                 text:
                     "Сайн байна уу ? ${capitalizeFirstLetter(widget.name.replaceAll(" ", ""))} ,Та түрээслэх cууцын мэдээлэлүүдээ оруулна уу.",
-                style: GoogleFonts.lato(fontSize: 16, color: Colors.black),
+                style: GoogleFonts.inter(fontSize: 16, color: Colors.black),
               ),
             ),
             const SizedBox(height: 20),
             Text(
               "Нэр",
-              style: GoogleFonts.lato(
+              style: GoogleFonts.inter(
                 fontSize: 22,
                 color: Colors.black,
               ),
@@ -135,7 +135,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
             const SizedBox(height: 20),
             Text(
               "Сууцын төрлүүд",
-              style: GoogleFonts.lato(
+              style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -191,7 +191,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                 alignment: Alignment.center,
                 child: Text(
                   "Дараах",
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     color: Colors.white,
                   ),
@@ -221,7 +221,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: selectedPropertyCategory == text
                 ? const Color(0xffF5F4F8)
                 : const Color(0xff252B5C),

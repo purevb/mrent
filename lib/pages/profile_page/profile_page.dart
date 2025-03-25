@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/user_model.dart';
-import 'package:mrent/pages/add_property_pages/add_property_details.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
 import 'package:mrent/route/route.gr.dart';
@@ -90,11 +90,12 @@ class _ProfilePageState extends State<ProfilePage> {
               firstLetterUpper(
                 widget.user.name.replaceAll(" ", ""),
               ),
-              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              style:
+                  GoogleFonts.inter(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             Text(
               widget.user.email,
-              style: const TextStyle(
+              style: GoogleFonts.inter(
                 fontSize: 15,
                 decoration: TextDecoration.underline,
                 fontWeight: FontWeight.w400,
@@ -157,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                           text: "\nДэлгэрэнгүй",
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             decoration: TextDecoration.underline,
                             fontWeight: FontWeight.bold,
                           ),
@@ -171,12 +172,13 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 10,
             ),
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Text(
                 "Бүртгэлийн тохиргоо",
                 textAlign: TextAlign.start,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.bold, fontSize: 22),
               ),
             ),
             const SizedBox(
@@ -223,9 +225,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     AuthService authService = AuthService();
                     await authService.signout(context);
                   },
-                  child: const Text(
+                  child: Text(
                     "Гарах",
-                    style: TextStyle(decoration: TextDecoration.underline),
+                    style:
+                        GoogleFonts.inter(decoration: TextDecoration.underline),
                   ),
                 ),
               ),
@@ -243,6 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
         context.router.pushNamed(path);
       },
       child: Container(
+        padding: const EdgeInsets.all(2),
         width: width * 0.33 - 40,
         height: 100,
         decoration: BoxDecoration(
@@ -262,12 +266,12 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Text(
               number,
-              style: const TextStyle(fontSize: 19),
+              style: GoogleFonts.inter(fontSize: 19),
             ),
             Text(
               description,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
+              style: GoogleFonts.inter(fontSize: 12),
             ),
           ],
         ),

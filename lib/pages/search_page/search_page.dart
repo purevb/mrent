@@ -8,157 +8,181 @@ import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, required this.properties});
   final List<PropertyModel> properties;
+
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  bool onSearch = false;
-  List<PropertyModel> _founders = [];
-
-  void _runFilter(String enteredKeyword) {
-    List<PropertyModel> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = widget.properties;
-    } else {
-      results = widget.properties
-          .where((property) =>
-              property.placeName != null &&
-              property.placeName!
-                  .toLowerCase()
-                  .contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
-    setState(() {
-      onSearch = !onSearch;
-      _founders = results;
-    });
-  }
-
-  final FocusNode _focusNode = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  List<PropertyModel> _searchResults = [];
+  bool _isSearching = false;
 
   @override
   void initState() {
     super.initState();
-    _founders = [];
-    _focusNode.addListener(_onFocusChange);
+    _searchResults = List.from(widget.properties);
+    _searchFocusNode.requestFocus();
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
-  void _onFocusChange() {
-    if (!_focusNode.hasFocus && onSearch) {
+  void _performSearch(String query) {
+    if (query.isEmpty) {
       setState(() {
-        onSearch = false;
-        _founders = [];
+        _isSearching = false;
+        _searchResults = List.from(widget.properties);
       });
+      return;
     }
+
+    final results = widget.properties.where((property) {
+      final nameMatch =
+          property.propertyName?.toLowerCase().contains(query.toLowerCase()) ??
+              false;
+      final placeMatch =
+          property.placeName?.toLowerCase().contains(query.toLowerCase()) ??
+              false;
+      return nameMatch || placeMatch;
+    }).toList();
+
+    setState(() {
+      _isSearching = true;
+      _searchResults = results;
+    });
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    _performSearch('');
+  }
+
+  void _navigateToPropertyDetail(PropertyModel property) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PropertyDetailPage(propertyData: property),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    final properties = widget.properties;
-
-    final displayItems =
-        (onSearch && _founders.isNotEmpty) ? _founders : properties;
+    final size = MediaQuery.of(context).size;
+    final displayItems = _isSearching ? _searchResults : widget.properties;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Хайлт",
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.w500,
-          ),
+          style: GoogleFonts.inter(fontWeight: FontWeight.w500),
         ),
+        actions: [
+          if (_isSearching)
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: _clearSearch,
+            ),
+        ],
       ),
-      body: SizedBox(
-        child: Container(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
-          child: Column(
-            spacing: 20,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: width,
-                height: 70,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 237, 235, 242),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {});
-                      },
-                      icon: const Icon(
-                        CupertinoIcons.search,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        focusNode: _focusNode,
-                        onChanged: (value) => _runFilter(value),
-                        decoration: const InputDecoration(
-                          hintText: 'Хайх...',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                        autofocus: true,
-                      ),
-                    ),
-                  ],
-                ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            // Search Bar
+            Container(
+              width: size.width,
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: const Color.fromARGB(255, 237, 235, 242),
               ),
-              Text(
-                "${widget.properties.length} илэрц",
-                style: GoogleFonts.inter(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PropertyDetailPage(
-                                propertyData: displayItems[index],
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child: FavoriteProperty(
-                        propertyData: displayItems[index],
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16, right: 8),
+                    child: Icon(CupertinoIcons.search, color: Colors.black87),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      onChanged: _performSearch,
+                      decoration: const InputDecoration(
+                        hintText: 'Хайх...',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8),
                       ),
-                    );
-                  },
-                  itemCount: displayItems.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: height * 0.3,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
-                    crossAxisCount: 2,
+                      textInputAction: TextInputAction.search,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Results Count
+            Row(
+              children: [
+                Text(
+                  "${_searchResults.length} илэрц",
+                  style: GoogleFonts.inter(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
                   ),
                 ),
-              ),
-            ],
-          ),
+                if (_isSearching && _searchResults.isEmpty)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "Илэрц олдсонгүй",
+                        style: GoogleFonts.inter(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Properties Grid
+            Expanded(
+              child: displayItems.isEmpty
+                  ? Center(
+                      child: Text(
+                        "Хайлтын үр дүн олдсонгүй",
+                        style: GoogleFonts.inter(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                    )
+                  : GridView.builder(
+                      itemCount: displayItems.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        mainAxisExtent: size.height * 0.3,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        final property = displayItems[index];
+                        return GestureDetector(
+                          onTap: () => _navigateToPropertyDetail(property),
+                          child: FavoriteProperty(propertyData: property),
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
     );

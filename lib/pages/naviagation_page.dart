@@ -65,6 +65,7 @@ class _NavigationPageState extends State<NavigationPage> {
               user: user,
             ),
             const MapSample(
+              hasFloatButton: false,
               hasAppBar: true,
             ),
             RentChecker(

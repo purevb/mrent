@@ -14,11 +14,13 @@ class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
     required this.hasLeading,
     required this.chooseType,
     this.properties,
+    this.onSearchPressed,
     required this.hasLocationBar,
     super.key,
   });
   final bool hasLeading;
   final Function(String) chooseType;
+  final Function()? onSearchPressed;
   final bool hasLocationBar;
   final List<PropertyModel>? properties;
   @override
@@ -186,6 +188,7 @@ class _MainAppBarState extends State<MainAppBar> {
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return const MapSample(
+                                        hasFloatButton: true,
                                         hasAppBar: true,
                                       );
                                     },

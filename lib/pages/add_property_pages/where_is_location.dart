@@ -80,6 +80,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                     SizedBox(
                       height: height * 0.43,
                       child: MapSample(
+                        hasFloatButton: true,
                         hasAppBar: false,
                         onLocationSelected: (LatLng location, String address) {
                           setState(() {

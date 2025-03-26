@@ -54,6 +54,8 @@ class _SearchPageState extends State<SearchPage> {
 
     setState(() {
       _isSearching = true;
+      _isSearching = true;
+
       _searchResults = results;
     });
   }

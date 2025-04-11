@@ -82,7 +82,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.propertyData.placeName ?? "",
+                    widget.propertyData.propertyName ?? "",
                     style: GoogleFonts.inter(
                       color: textDefaultColor,
                       fontWeight: FontWeight.w500,

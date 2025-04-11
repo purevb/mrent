@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/user_model.dart';
+import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/property_detail_page/components/image_swiper.dart';
@@ -17,8 +20,9 @@ import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class PropertyDetailPage extends StatefulWidget {
-  const PropertyDetailPage({required this.propertyData, super.key});
+  const PropertyDetailPage({this.user, required this.propertyData, super.key});
   final PropertyModel propertyData;
+  final User? user;
 
   @override
   State<PropertyDetailPage> createState() => _PropertyDetailPageState();
@@ -27,27 +31,24 @@ class PropertyDetailPage extends StatefulWidget {
 class _PropertyDetailPageState extends State<PropertyDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Api api = Api();
 
   final Map<int, Map<String, dynamic>> advantages = {
     0: {
-      "value": "1,225",
-      "label": "sqft",
-      "icon": Icons.square_foot,
+      "label": "Хүн",
+      "icon": Icons.people,
     },
     1: {
-      "value": "3",
-      "label": "Bedrooms",
+      "label": "Ор",
       "icon": Icons.bed,
     },
     2: {
-      "value": "2",
-      "label": "Bathrooms",
+      "label": "Угаалгын өрөө",
       "icon": Icons.bathtub,
     },
     3: {
-      "value": "1",
-      "label": "Parking",
-      "icon": Icons.local_parking,
+      "label": "Унтлагын өрөө",
+      "icon": Icons.meeting_room,
     }
   };
 
@@ -73,8 +74,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
       backgroundColor: backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         automaticallyImplyLeading: false,
         actions: [
           GestureDetector(
@@ -86,6 +90,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
               height: 40,
               width: 40,
               decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 0.1,
+                  )
+                ],
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
@@ -103,6 +113,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
               width: 40,
               padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 0.1,
+                  )
+                ],
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
@@ -116,6 +132,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black,
+                  blurRadius: 0.1,
+                )
+              ],
             ),
             child: IconButton(
               onPressed: () {},
@@ -166,25 +188,49 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               color: const Color(0xffF4F6F9),
                               borderRadius: BorderRadius.circular(3),
                             ),
-                            child: const Text("Apartment"),
+                            child: Text(
+                                widget.propertyData.propertyTypeId.toString()),
                           ),
                         ],
                       ),
                       const SizedBox(height: 8),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Woodland Apartment",
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
+                          Flexible(
+                            flex: 3,
+                            child: Text(
+                              "${widget.propertyData.propertyName}",
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
                             ),
                           ),
-                          const Spacer(),
                           GestureDetector(
                             onTap: () {
-                              setState(() {});
-                              provider.toggleFavorite(widget.propertyData);
+                              if (widget.user != null) {
+                                setState(() {});
+                                provider.toggleFavorite(widget.propertyData);
+                                if (provider.isExist(widget.propertyData) ==
+                                    true) {
+                                  api.postFavorites(
+                                      widget.user!.id, widget.propertyData.id!);
+                                } else {
+                                  api.postFavorites(
+                                      widget.user!.id, widget.propertyData.id!);
+                                }
+                              } else {
+                                showModalBottomSheet(
+                                  elevation: 0,
+                                  backgroundColor: Colors.transparent,
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return const Login();
+                                  },
+                                );
+                              }
                             },
                             child: SizedBox(
                               height: 20,
@@ -200,7 +246,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "1012 Ocean Avenue, New York, USA",
+                        widget.propertyData.placeTypeId.toString(),
                         style: GoogleFonts.inter(
                           color: const Color(0xff8C8C8C),
                           fontSize: 14,
@@ -231,8 +277,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
           indicatorColor: textDefaultColor,
           indicatorWeight: 2,
           tabs: const [
-            Tab(text: 'Description'),
-            Tab(text: 'Review'),
+            Tab(text: 'Тайлбар'),
+            Tab(text: 'Сэтгэгдэл'),
           ],
         ),
         SizedBox(
@@ -240,7 +286,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
           child: TabBarView(
             controller: _tabController,
             children: [
-              DescriptionTab(advantages: advantages),
+              DescriptionTab(
+                propertyData: widget.propertyData,
+                advantages: advantages,
+              ),
               const ReviewTab(),
             ],
           ),
@@ -538,28 +587,51 @@ class DescriptionTab extends StatelessWidget {
   const DescriptionTab({
     super.key,
     required this.advantages,
+    required this.propertyData,
   });
 
+  final PropertyModel propertyData;
   final Map<int, Map<String, dynamic>> advantages;
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
+    final Map<int, Map<String, dynamic>> filledAdvantages = {
+      0: {
+        "label": advantages[0]!["label"],
+        "value": "${propertyData.numGuests}",
+        "icon": advantages[0]!["icon"],
+      },
+      1: {
+        "label": advantages[1]!["label"],
+        "value": "${propertyData.numBeds}",
+        "icon": advantages[1]!["icon"],
+      },
+      2: {
+        "label": advantages[2]!["label"],
+        "value": "${propertyData.numBathrooms}",
+        "icon": advantages[2]!["icon"],
+      },
+      3: {
+        "label": advantages[3]!["label"],
+        "value": "${propertyData.numBedrooms}",
+        "icon": advantages[3]!["icon"],
+      },
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
         SizedBox(
-          height: height * 0.12,
+          height: height * 0.128,
           child: ListView.separated(
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 20, left: 5),
             scrollDirection: Axis.horizontal,
-            itemCount: advantages.length,
+            itemCount: filledAdvantages.length,
             itemBuilder: (BuildContext context, int index) {
-              var advantage = advantages[index];
+              var advantage = filledAdvantages[index];
               return TabbarDescription(
                 label: advantage!["label"] ?? "",
                 value: advantage["value"] ?? "",
@@ -578,7 +650,7 @@ class DescriptionTab extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Address",
+              "Байршил",
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
@@ -587,7 +659,7 @@ class DescriptionTab extends StatelessWidget {
             GestureDetector(
               onTap: () {},
               child: Text(
-                "View on Map",
+                "Газрын зураг дээр үзэх",
                 style: GoogleFonts.inter(
                   color: Colors.black,
                   decoration: TextDecoration.underline,
@@ -605,7 +677,7 @@ class DescriptionTab extends StatelessWidget {
               CupertinoIcons.placemark,
               size: 25,
             ),
-            Text("Gazarzuin bairshil")
+            Text("Газарзүйн байршил")
           ],
         ),
         SizedBox(
@@ -620,7 +692,7 @@ class DescriptionTab extends StatelessWidget {
           ),
         ),
         Text(
-          "Additional things",
+          "Нэмэлт мэдээлэл",
           style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const Text(

@@ -4,6 +4,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_checker.dart';
 import 'package:mrent/pages/profile_page/profile_checker.dart';
@@ -24,10 +25,13 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
   User? user;
+  DataController dataController = DataController();
+
   @override
   void initState() {
     super.initState();
     fetchUserById(widget.id ?? "");
+    dataController.getPropertiesData();
   }
 
   Future<void> fetchUserById(String? userId) async {
@@ -58,26 +62,33 @@ class _NavigationPageState extends State<NavigationPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        body: IndexedStack(
-          index: _currentIndex,
-          children: [
-            TripPage(
-              user: user,
-            ),
-            const MapSample(
-              hasFloatButton: false,
-              hasAppBar: true,
-            ),
-            RentChecker(
-              user: user,
-            ),
-            FavoriteChecker(
-              user: user,
-            ),
-            ProfileChecker(
-              user: user,
-            ),
-          ],
+        body: ValueListenableBuilder(
+          builder: (context, propertyData, child) {
+            return IndexedStack(
+              index: _currentIndex,
+              children: [
+                TripPage(
+                  propertyDatas: propertyData ?? [],
+                  user: user,
+                ),
+                MapSample(
+                  propertyData: propertyData ?? [],
+                  hasFloatButton: false,
+                  hasAppBar: true,
+                ),
+                RentChecker(
+                  user: user,
+                ),
+                FavoriteChecker(
+                  user: user,
+                ),
+                ProfileChecker(
+                  user: user,
+                ),
+              ],
+            );
+          },
+          valueListenable: dataController.propertyDataNotifier,
         ),
         bottomNavigationBar: Theme(
           data: ThemeData(

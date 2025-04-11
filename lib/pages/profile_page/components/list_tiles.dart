@@ -6,12 +6,10 @@ class ProfileListTiles extends StatelessWidget {
   const ProfileListTiles({
     required this.iconPath,
     required this.description,
-    required this.onPressed,
     super.key,
   });
   final String iconPath;
   final String description;
-  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +26,8 @@ class ProfileListTiles extends StatelessWidget {
         ),
         Text(description),
         const Spacer(),
-        IconButton(
-          onPressed: onPressed,
-          icon: const Icon(CupertinoIcons.right_chevron),
+        const Icon(
+          CupertinoIcons.right_chevron,
         )
       ],
     );

@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/user_model.dart';
+import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -12,15 +15,18 @@ import 'package:provider/provider.dart';
 class TheObject extends StatefulWidget {
   const TheObject({
     required this.propertyData,
+    this.user,
     super.key,
   });
   final PropertyModel propertyData;
+  final User? user;
 
   @override
   State<TheObject> createState() => _TheObjectState();
 }
 
 class _TheObjectState extends State<TheObject> {
+  Api api = Api();
   late bool favorite;
   @override
   void initState() {
@@ -42,7 +48,7 @@ class _TheObjectState extends State<TheObject> {
         right: 20,
       ),
       padding: const EdgeInsets.only(
-        bottom: 15,
+        bottom: 10,
       ),
       width: width,
       // height: 440,
@@ -74,18 +80,22 @@ class _TheObjectState extends State<TheObject> {
                 Row(
                   spacing: 4,
                   children: [
-                    title(widget.propertyData.placeName ?? ""),
+                    title(widget.propertyData.propertyName ?? ""),
                     const Spacer(),
                     const Icon(
                       CupertinoIcons.star_fill,
                       size: 15,
                     ),
-                    rating(widget.propertyData.rating.toString())
+                    rating("5")
                   ],
                 ),
                 description(widget.propertyData.description ?? ""),
-                datet("24–29 Jul"),
-                nightlyPrice("\$${widget.propertyData.nightlyPrice} night "),
+                datet(
+                    "${widget.propertyData.startDate!.split("T")[0].replaceAll("-", "/")}-${widget.propertyData.endDate!.split("T")[0].replaceAll("-", "/")}"),
+                const SizedBox(
+                  height: 5,
+                ),
+                nightlyPrice("₮${widget.propertyData.nightlyPrice} өдөрт"),
               ],
             ),
           ),
@@ -146,10 +156,29 @@ class _TheObjectState extends State<TheObject> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          setState(() {
-                            favorite = !favorite;
-                          });
-                          provider.toggleFavorite(widget.propertyData);
+                          if (widget.user != null) {
+                            setState(() {
+                              favorite = !favorite;
+                            });
+                            provider.toggleFavorite(widget.propertyData);
+                            if (provider.isExist(widget.propertyData) == true) {
+                              api.postFavorites(
+                                  widget.user!.id, widget.propertyData.id!);
+                            } else {
+                              api.postFavorites(
+                                  widget.user!.id, widget.propertyData.id!);
+                            }
+                          } else {
+                            showModalBottomSheet(
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const Login();
+                              },
+                            );
+                          }
                         },
                         child: SizedBox(
                           height: 20,
@@ -184,7 +213,7 @@ class _TheObjectState extends State<TheObject> {
       rentDate,
       style: GoogleFonts.inter(
         fontSize: 15,
-        color: const Color(0XFF717171),
+        color: const Color.fromARGB(255, 2, 2, 2),
       ),
     );
   }

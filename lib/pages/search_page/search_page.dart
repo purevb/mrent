@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/favorite_page/components/favorite_property.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key, required this.properties});
+  const SearchPage({super.key, required this.properties, this.user});
   final List<PropertyModel> properties;
+  final User? user;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -47,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
           property.propertyName?.toLowerCase().contains(query.toLowerCase()) ??
               false;
       final placeMatch =
-          property.placeName?.toLowerCase().contains(query.toLowerCase()) ??
+          property.propertyName?.toLowerCase().contains(query.toLowerCase()) ??
               false;
       return nameMatch || placeMatch;
     }).toList();
@@ -69,7 +71,8 @@ class _SearchPageState extends State<SearchPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PropertyDetailPage(propertyData: property),
+        builder: (context) =>
+            PropertyDetailPage(user: widget.user, propertyData: property),
       ),
     );
   }
@@ -179,7 +182,10 @@ class _SearchPageState extends State<SearchPage> {
                         final property = displayItems[index];
                         return GestureDetector(
                           onTap: () => _navigateToPropertyDetail(property),
-                          child: FavoriteProperty(propertyData: property),
+                          child: FavoriteProperty(
+                            user: widget.user,
+                            propertyData: property,
+                          ),
                         );
                       },
                     ),

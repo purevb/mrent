@@ -21,16 +21,16 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
     double width = MediaQuery.of(context).size.width;
     return Container(
       margin: const EdgeInsets.all(5),
-      width: width * 0.25 - 35,
+      width: width * 0.176,
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         // ignore: deprecated_member_use
-        color: Colors.white.withOpacity(0.8),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
             // ignore: deprecated_member_use
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.grey.withOpacity(0.4),
             spreadRadius: 2,
             blurRadius: 1,
             offset: const Offset(0, 1),
@@ -38,7 +38,7 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
         ],
       ),
       child: Column(
-        spacing: 2,
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(widget.icon, color: Colors.black, size: 24),
@@ -47,14 +47,17 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
             style: GoogleFonts.inter(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 15,
             ),
           ),
-          Text(
-            widget.label,
-            style: GoogleFonts.inter(
-              color: Colors.black,
-              fontSize: 12,
+          Flexible(
+            child: Text(
+              widget.label,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                color: Colors.black,
+                fontSize: 13,
+              ),
             ),
           ),
         ],

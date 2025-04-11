@@ -3,22 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/user_model.dart';
+import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteProperty extends StatefulWidget {
   const FavoriteProperty({
     required this.propertyData,
+    this.user,
     super.key,
   });
   final PropertyModel propertyData;
+  final User? user;
 
   @override
   State<FavoriteProperty> createState() => _FavoritePropertyState();
 }
 
 class _FavoritePropertyState extends State<FavoriteProperty> {
+  Api api = Api();
   bool favorite = true;
 
   @override
@@ -64,18 +70,42 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        widget.propertyData.placeName ?? "",
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.bold,
+                      Flexible(
+                        child: Text(
+                          maxLines: 1,
+                          widget.propertyData.propertyName ?? "",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          setState(() {
-                            favorite = !favorite;
-                          });
-                          provider.toggleFavorite(widget.propertyData);
+                          if (widget.user != null) {
+                            setState(() {});
+                            provider.toggleFavorite(widget.propertyData);
+                            if (provider.isExist(widget.propertyData) == true) {
+                              api.postFavorites(
+                                widget.propertyData.id!,
+                                widget.user!.id,
+                              );
+                            } else {
+                              api.postFavorites(
+                                widget.propertyData.id!,
+                                widget.user!.id,
+                              );
+                            }
+                          } else {
+                            showModalBottomSheet(
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const Login();
+                              },
+                            );
+                          }
                         },
                         child: SizedBox(
                           height: 20,
@@ -129,10 +159,11 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                             fontSize: 10, color: Colors.black),
                         children: [
                           TextSpan(
-                            text: '\$',
+                            text: '₮',
                             style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 12,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           TextSpan(
@@ -140,6 +171,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                             style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           TextSpan(
@@ -147,13 +179,15 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                             style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 14,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           TextSpan(
-                            text: 'month',
+                            text: 'өдөр',
                             style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 12,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],

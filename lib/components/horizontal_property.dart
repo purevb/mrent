@@ -53,7 +53,7 @@ class HorizontalProperty extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  propertyData.placeName.toString(),
+                  propertyData.propertyName.toString(),
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

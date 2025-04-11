@@ -30,8 +30,8 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
     } else {
       results = provider.userFavoriteProperties
           .where((property) =>
-              property.placeName != null &&
-              property.placeName!
+              property.propertyName != null &&
+              property.propertyName!
                   .toLowerCase()
                   .contains(enteredKeyword.toLowerCase()))
           .toList();

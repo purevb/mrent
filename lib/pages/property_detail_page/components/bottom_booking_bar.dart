@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/booking_page/booking_page.dart';
+import 'package:mrent/pages/login_dropback/login.dart';
 
 class BottomBookingBar extends StatelessWidget {
   const BottomBookingBar({
     super.key,
+    this.user,
     required this.width,
     required this.propertyData,
   });
   final PropertyModel propertyData;
+  final User? user;
 
   final double width;
 
@@ -54,7 +58,7 @@ class BottomBookingBar extends StatelessWidget {
                     style: GoogleFonts.inter(fontSize: 10, color: Colors.black),
                     children: [
                       TextSpan(
-                        text: '\$',
+                        text: '₮',
                         style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 24,
@@ -75,7 +79,7 @@ class BottomBookingBar extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: 'сард',
+                        text: 'өдөрт',
                         style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 20,
@@ -92,16 +96,28 @@ class BottomBookingBar extends StatelessWidget {
                 borderRadius: 16,
                 canPress: true,
                 onPress: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return BookingPage(
-                          propertyData: propertyData,
-                        );
+                  if (user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return BookingPage(
+                            propertyData: propertyData,
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    showModalBottomSheet(
+                      elevation: 0,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const Login();
                       },
-                    ),
-                  );
+                    );
+                  }
                 },
                 height: 60,
                 width: 150,

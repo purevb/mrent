@@ -184,17 +184,14 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 10,
             ),
-            ListView.builder(
+            ListView.separated(
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemCount: profileListTileDatas.length,
               itemBuilder: (BuildContext context, int index) {
-                return ProfileListTiles(
-                  iconPath: profileListTileDatas[index]!["iconPath"].toString(),
-                  description:
-                      profileListTileDatas[index]!["description"].toString(),
-                  onPressed: () {
+                return GestureDetector(
+                  onTap: () {
                     String? path = profileListTileDatas[index]?["path"];
                     if (path != null && path.isNotEmpty) {
                       if (path == "/add_property") {
@@ -212,6 +209,17 @@ class _ProfilePageState extends State<ProfilePage> {
                           "Navigation path is null or empty for index: $index");
                     }
                   },
+                  child: ProfileListTiles(
+                    iconPath:
+                        profileListTileDatas[index]!["iconPath"].toString(),
+                    description:
+                        profileListTileDatas[index]!["description"].toString(),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(
+                  height: 20,
                 );
               },
             ),

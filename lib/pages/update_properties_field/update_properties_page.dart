@@ -237,7 +237,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
               ),
               TextEditingComponent(
                 title: "Сууцын нэр өөрчлөх",
-                hintText: widget.propertyData.placeName.toString(),
+                hintText: widget.propertyData.propertyName.toString(),
               ),
               TextEditingComponent(
                 title: "Сууцын тайлбар өөрчлөх",

@@ -39,8 +39,8 @@ class _FavoritePageState extends State<FavoritePage> {
     } else {
       results = provider.userFavoriteProperties
           .where((property) =>
-              property.placeName != null &&
-              property.placeName!
+              property.propertyName != null &&
+              property.propertyName!
                   .toLowerCase()
                   .contains(enteredKeyword.toLowerCase()))
           .toList();
@@ -145,7 +145,7 @@ class _FavoritePageState extends State<FavoritePage> {
       typeFiltered = List.from(provider);
     } else {
       typeFiltered = provider
-          .where((property) => property.placeType == selectedType)
+          .where((property) => property.propertyName == selectedType)
           .toList();
     }
 
@@ -293,12 +293,14 @@ class _FavoritePageState extends State<FavoritePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => PropertyDetailPage(
+                              user: widget.user,
                               propertyData: displayItems[index],
                             ),
                           ),
                         );
                       },
                       child: FavoriteProperty(
+                        user: widget.user,
                         propertyData: displayItems[index],
                       ),
                     );

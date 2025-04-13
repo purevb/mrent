@@ -12,6 +12,7 @@ class AddListingScreen extends StatefulWidget {
     required this.type,
     required this.longtitude,
     required this.lattitude,
+    required this.provinceName,
     required this.photos,
     super.key,
   });
@@ -20,6 +21,7 @@ class AddListingScreen extends StatefulWidget {
   final String longtitude;
   final String lattitude;
   final List<File> photos;
+  final String provinceName;
 
   @override
   State<AddListingScreen> createState() => _AddListingScreenState();

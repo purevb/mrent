@@ -25,6 +25,7 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
   User? user;
+  bool dataArrived = false;
   DataController dataController = DataController();
 
   @override
@@ -32,6 +33,21 @@ class _NavigationPageState extends State<NavigationPage> {
     super.initState();
     fetchUserById(widget.id ?? "");
     dataController.getPropertiesData();
+    dataController.propertyDataNotifier.addListener(_onPropertyDataChanged);
+  }
+
+  @override
+  void dispose() {
+    dataController.propertyDataNotifier.removeListener(_onPropertyDataChanged);
+    super.dispose();
+  }
+
+  void _onPropertyDataChanged() {
+    if (!dataArrived && dataController.propertyDataNotifier.value != null) {
+      setState(() {
+        dataArrived = true;
+      });
+    }
   }
 
   Future<void> fetchUserById(String? userId) async {
@@ -47,10 +63,14 @@ class _NavigationPageState extends State<NavigationPage> {
           .get();
 
       if (documentSnapshot.exists) {
-        user = User.fromFirestore(documentSnapshot);
+        if (mounted) {
+          setState(() {
+            user = User.fromFirestore(documentSnapshot);
+          });
+        }
         log('User Data: ${user!.name}, ${user!.email}, ${user!.phone}, ${user!.createdAt}');
       } else {
-        log('User  not found');
+        log('User not found');
       }
     } catch (e) {
       log('Error fetching user: $e');
@@ -68,6 +88,7 @@ class _NavigationPageState extends State<NavigationPage> {
               index: _currentIndex,
               children: [
                 TripPage(
+                  getData: dataArrived,
                   propertyDatas: propertyData ?? [],
                   user: user,
                 ),

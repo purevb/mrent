@@ -12,9 +12,11 @@ class TripPage extends StatefulWidget {
     required this.propertyDatas,
     this.user,
     super.key,
+    required this.getData,
   });
   final User? user;
   final List<PropertyModel> propertyDatas;
+  final bool getData;
   @override
   State<TripPage> createState() => _TripPageState();
 }
@@ -22,47 +24,27 @@ class TripPage extends StatefulWidget {
 class _TripPageState extends State<TripPage> {
   List<PropertyModel> filteredPropertyData = [];
   String selectedCategory = "Бүгд";
-  bool _isLoading = true;
 
   void filterTypes(String categoryType) {
     setState(() {
-      _isLoading = true;
+      selectedCategory = categoryType;
+
+      if (categoryType == "Бүгд") {
+        filteredPropertyData = List.from(widget.propertyDatas);
+      } else {
+        filteredPropertyData = widget.propertyDatas
+            .where(
+                (property) => property.propertyTypeId!.typeName == categoryType)
+            .toList();
+      }
     });
-
-    if (mounted) {
-      setState(() {
-        selectedCategory = categoryType;
-
-        if (categoryType == "Бүгд") {
-          filteredPropertyData = List.from(widget.propertyDatas);
-        } else {
-          filteredPropertyData = widget.propertyDatas
-              .where((property) =>
-                  property.propertyTypeId!.typeName == categoryType)
-              .toList();
-        }
-        _isLoading = false;
-      });
-    }
   }
 
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 4), () {
-      if (mounted) {
-        setState(() {
-          filteredPropertyData = List.from(widget.propertyDatas);
-          _isLoading = false;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    filteredPropertyData = List.from(widget.propertyDatas);
   }
 
   @override
@@ -81,7 +63,7 @@ class _TripPageState extends State<TripPage> {
       ),
       body: Builder(
         builder: (context) {
-          if (_isLoading == true) {
+          if (widget.getData == false) {
             return Shimmer.fromColors(
               // ignore: deprecated_member_use
               baseColor: Colors.grey.withOpacity(0.1),

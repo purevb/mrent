@@ -1,6 +1,7 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/utils/constants.dart';
 
 @RoutePage()
 class PrivacyPage extends StatefulWidget {
@@ -14,12 +15,13 @@ class _PrivacyPageState extends State<PrivacyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
+        backgroundColor: backgroundColor,
         title: Text(
           'Түрээсийн нөхцөл',
           style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w600),
         ),
-        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),

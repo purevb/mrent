@@ -2,6 +2,7 @@ import 'package:mrent/core/services/api_dio.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
+import 'package:mrent/model/province_model.dart';
 
 class Api {
   final api = ApiDio();
@@ -43,5 +44,11 @@ class Api {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<List<ProvinceModel>> getProvinces() async {
+    final res = await api.get("/province");
+    final List data = res.data;
+    return data.map((json) => ProvinceModel.fromJson(json)).toList();
   }
 }

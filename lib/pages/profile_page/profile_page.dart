@@ -76,172 +76,178 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.only(right: 20, left: 20, top: 60),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const ProfileImage(
-              proImage:
-                  "https://cdn-icons-png.flaticon.com/128/4140/4140047.png",
-            ),
-            Text(
-              firstLetterUpper(
-                widget.user.name.replaceAll(" ", ""),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 20, left: 20, top: 60),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const ProfileImage(
+                proImage:
+                    "https://cdn-icons-png.flaticon.com/128/4140/4140047.png",
               ),
-              style:
-                  GoogleFonts.inter(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              widget.user.email,
-              style: GoogleFonts.inter(
-                fontSize: 15,
-                decoration: TextDecoration.underline,
-                fontWeight: FontWeight.w400,
+              Text(
+                firstLetterUpper(
+                  widget.user.name.replaceAll(" ", ""),
+                ),
+                style: GoogleFonts.inter(
+                    fontSize: 30, fontWeight: FontWeight.bold),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                top: 10,
+              Text(
+                widget.user.email,
+                style: GoogleFonts.inter(
+                  fontSize: 15,
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-              height: 100,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
+              Container(
+                margin: const EdgeInsets.only(
+                  top: 10,
+                ),
+                height: 100,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return myContainers(
+                      tiles[index]!['path']!,
+                      width,
+                      tiles[index]!['number']!,
+                      tiles[index]!['description']!,
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      width: 15,
+                    );
+                  },
+                  itemCount: tiles.length,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Divider(),
+              ),
+              Row(
+                spacing: 10,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 40,
+                    child: Image.asset(
+                      "assets/profile/money.png",
+                    ),
+                  ),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: [
+                          const TextSpan(
+                              text:
+                                  "Та өөрийн сууцаа түрээсэлж мөнгө олоорой."),
+                          TextSpan(
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => context.router.push(
+                                    AddPropertyDetailsRoute(
+                                      name: widget.user.name,
+                                      id: widget.user.id,
+                                    ),
+                                  ),
+                            text: "\nДэлгэрэнгүй",
+                            style: GoogleFonts.inter(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Бүртгэлийн тохиргоо",
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.bold, fontSize: 22),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                itemCount: profileListTileDatas.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return myContainers(
-                    tiles[index]!['path']!,
-                    width,
-                    tiles[index]!['number']!,
-                    tiles[index]!['description']!,
+                  return GestureDetector(
+                    onTap: () {
+                      String? path = profileListTileDatas[index]?["path"];
+                      if (path != null && path.isNotEmpty) {
+                        if (path == "/add_property") {
+                          context.router.push(
+                            AddPropertyDetailsRoute(
+                              name: widget.user.name,
+                              id: widget.user.id,
+                            ),
+                          );
+                        } else {
+                          context.router.pushNamed(path);
+                        }
+                      } else {
+                        debugPrint(
+                            "Navigation path is null or empty for index: $index");
+                      }
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: ProfileListTiles(
+                        iconPath:
+                            profileListTileDatas[index]!["iconPath"].toString(),
+                        description: profileListTileDatas[index]!["description"]
+                            .toString(),
+                      ),
+                    ),
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(
-                    width: 15,
+                    height: 10,
                   );
                 },
-                itemCount: tiles.length,
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Divider(),
-            ),
-            Row(
-              spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 50,
-                  height: 40,
-                  child: Image.asset(
-                    "assets/profile/money.png",
-                  ),
-                ),
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: [
-                        const TextSpan(
-                            text: "Та өөрийн сууцаа түрээсэлж мөнгө олоорой."),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => context.router.push(
-                                  AddPropertyDetailsRoute(
-                                    name: widget.user.name,
-                                    id: widget.user.id,
-                                  ),
-                                ),
-                          text: "\nДэлгэрэнгүй",
-                          style: GoogleFonts.inter(
-                            decoration: TextDecoration.underline,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20, right: 10.0, bottom: 20),
+                  child: GestureDetector(
+                    onTap: () async {
+                      AuthService authService = AuthService();
+                      await authService.signout(context);
+                    },
+                    child: Text(
+                      "Гарах",
+                      style: GoogleFonts.inter(
+                          decoration: TextDecoration.underline),
                     ),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Бүртгэлийн тохиргоо",
-                textAlign: TextAlign.start,
-                style: GoogleFonts.inter(
-                    fontWeight: FontWeight.bold, fontSize: 22),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              itemCount: profileListTileDatas.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    String? path = profileListTileDatas[index]?["path"];
-                    if (path != null && path.isNotEmpty) {
-                      if (path == "/add_property") {
-                        context.router.push(
-                          AddPropertyDetailsRoute(
-                            name: widget.user.name,
-                            id: widget.user.id,
-                          ),
-                        );
-                      } else {
-                        context.router.pushNamed(path);
-                      }
-                    } else {
-                      debugPrint(
-                          "Navigation path is null or empty for index: $index");
-                    }
-                  },
-                  child: ProfileListTiles(
-                    iconPath:
-                        profileListTileDatas[index]!["iconPath"].toString(),
-                    description:
-                        profileListTileDatas[index]!["description"].toString(),
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(
-                  height: 20,
-                );
-              },
-            ),
-            const Spacer(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 20.0, bottom: 20),
-                child: GestureDetector(
-                  onTap: () async {
-                    AuthService authService = AuthService();
-                    await authService.signout(context);
-                  },
-                  child: Text(
-                    "Гарах",
-                    style:
-                        GoogleFonts.inter(decoration: TextDecoration.underline),
-                  ),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

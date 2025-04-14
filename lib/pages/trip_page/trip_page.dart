@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/components/main_appbar.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 import 'package:mrent/pages/trip_page/component/object.dart';
 import 'package:mrent/utils/constants.dart';
@@ -14,7 +14,7 @@ class TripPage extends StatefulWidget {
     super.key,
     required this.getData,
   });
-  final User? user;
+  final FbUserModel? user;
   final List<PropertyModel> propertyDatas;
   final bool getData;
   @override
@@ -128,7 +128,6 @@ class _TripPageState extends State<TripPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PropertyDetailPage(
-                            user: widget.user,
                             propertyData: displayData[index],
                           ),
                         ),

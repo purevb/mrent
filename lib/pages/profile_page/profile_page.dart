@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
 import 'package:mrent/route/route.gr.dart';
@@ -12,7 +12,7 @@ import 'package:mrent/utils/constants.dart';
 @RoutePage()
 class ProfilePage extends StatefulWidget {
   const ProfilePage({required this.user, super.key});
-  final User user;
+  final FbUserModel user;
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }

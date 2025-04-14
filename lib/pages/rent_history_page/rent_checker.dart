@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/rent_history_page/unauthorized_rent_history_page.dart';
 import 'package:mrent/pages/rent_history_page/rent_history_page.dart';
 
 class RentChecker extends StatefulWidget {
   const RentChecker({this.user, super.key});
-  final User? user;
+  final FbUserModel? user;
 
   @override
   State<RentChecker> createState() => _RentCheckerState();

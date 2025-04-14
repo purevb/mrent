@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -10,7 +10,7 @@ class UnauthorizedRentHistory extends StatefulWidget {
     this.user,
     super.key,
   });
-  final User? user;
+  final FbUserModel? user;
 
   @override
   State<UnauthorizedRentHistory> createState() => _RentHistoryPageState();

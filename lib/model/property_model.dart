@@ -1,8 +1,10 @@
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/model/property_type.dart';
+import 'package:mrent/model/province_model.dart';
 
 class PropertyModel {
   final String? id;
-  final String? placeTypeId;
+  final ProvinceModel? placeType;
   final PropertyType? propertyTypeId;
   final String? userId;
   final int? nightlyPrice;
@@ -24,7 +26,7 @@ class PropertyModel {
 
   PropertyModel({
     this.id,
-    this.placeTypeId,
+    this.placeType,
     this.propertyTypeId,
     this.userId,
     this.nightlyPrice,
@@ -47,13 +49,16 @@ class PropertyModel {
 
   PropertyModel.fromJson(Map<String, dynamic> json)
       : id = json['_id'] as String?,
-        placeTypeId = json['placeTypeId'] as String?,
+        placeType = (json['placeTypeId'] as Map<String, dynamic>?) != null
+            ? ProvinceModel.fromJson(
+                json['placeTypeId'] as Map<String, dynamic>)
+            : null,
         propertyTypeId =
             (json['propertyTypeId'] as Map<String, dynamic>?) != null
                 ? PropertyType.fromJson(
                     json['propertyTypeId'] as Map<String, dynamic>)
                 : null,
-        userId = json['userId'] as String?,
+        userId = json['userId'] as String,
         nightlyPrice = json['nightlyPrice'] as int?,
         propertyName = json['propertyName'] as String?,
         numGuests = json['numGuests'] as int?,
@@ -74,7 +79,7 @@ class PropertyModel {
 
   Map<String, dynamic> toJson() => {
         '_id': id,
-        'placeTypeId': placeTypeId,
+        'placeType': placeType?.toJson(),
         'propertyTypeId': propertyTypeId?.toJson(),
         'userId': userId,
         'nightlyPrice': nightlyPrice,

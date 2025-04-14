@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_page.dart';
 import 'package:mrent/pages/favorite_page/unauthorized_user_favorite_page.dart';
 
 class FavoriteChecker extends StatefulWidget {
   const FavoriteChecker({this.user, super.key});
-  final User? user;
+  final FbUserModel? user;
 
   @override
   State<FavoriteChecker> createState() => _ProfileCheckerState();
@@ -20,7 +20,7 @@ class _ProfileCheckerState extends State<FavoriteChecker> {
   @override
   Widget build(BuildContext context) {
     return widget.user != null
-        ? FavoritePage(user: widget.user!)
+        ? const FavoritePage()
         : const UnauthorizedUserFavoritePage();
   }
 }

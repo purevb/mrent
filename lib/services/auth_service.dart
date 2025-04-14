@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/naviagation_page.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 
 class AuthService {

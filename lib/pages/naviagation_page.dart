@@ -5,13 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mrent/controller/data_controller.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_checker.dart';
 import 'package:mrent/pages/profile_page/profile_checker.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/rent_history_page/rent_checker.dart';
 import 'package:mrent/pages/trip_page/trip_page.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class NavigationPage extends StatefulWidget {
@@ -24,10 +26,10 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
-  User? user;
+  FbUserModel? user;
   bool dataArrived = false;
   DataController dataController = DataController();
-
+  PropertyProvider provider = PropertyProvider();
   @override
   void initState() {
     super.initState();
@@ -63,12 +65,17 @@ class _NavigationPageState extends State<NavigationPage> {
           .get();
 
       if (documentSnapshot.exists) {
+        final userData = FbUserModel.fromFirestore(documentSnapshot);
         if (mounted) {
           setState(() {
-            user = User.fromFirestore(documentSnapshot);
+            user = userData;
           });
+          final provider =
+              Provider.of<PropertyProvider>(context, listen: false);
+          provider.authenticatedUser(userData);
+
+          log('User Data: ${userData.name}, ${userData.email}, ${userData.phone}, ${userData.createdAt}');
         }
-        log('User Data: ${user!.name}, ${user!.email}, ${user!.phone}, ${user!.createdAt}');
       } else {
         log('User not found');
       }

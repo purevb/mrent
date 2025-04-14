@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/favorite_page/components/favorite_property.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, required this.properties, this.user});
   final List<PropertyModel> properties;
-  final User? user;
+  final FbUserModel? user;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -71,8 +71,7 @@ class _SearchPageState extends State<SearchPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            PropertyDetailPage(user: widget.user, propertyData: property),
+        builder: (context) => PropertyDetailPage(propertyData: property),
       ),
     );
   }
@@ -183,7 +182,6 @@ class _SearchPageState extends State<SearchPage> {
                         return GestureDetector(
                           onTap: () => _navigateToPropertyDetail(property),
                           child: FavoriteProperty(
-                            user: widget.user,
                             propertyData: property,
                           ),
                         );

@@ -8,10 +8,13 @@ import 'package:intl/intl.dart';
 import 'package:mrent/utils/constants.dart';
 
 class BookingPeriodChooserComponent extends StatefulWidget {
-  const BookingPeriodChooserComponent(
-      {super.key, required this.onDatesSelected});
+  const BookingPeriodChooserComponent({
+    super.key,
+    required this.forAddProperties,
+    required this.onDatesSelected,
+  });
   final Function(DateTime?, DateTime?) onDatesSelected;
-
+  final bool forAddProperties;
   @override
   State<BookingPeriodChooserComponent> createState() =>
       _BookingPeriodChooserComponentState();
@@ -38,8 +41,10 @@ class _BookingPeriodChooserComponentState
         Text(
           "Хугацаа сонгох",
           style: GoogleFonts.inter(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
+            fontSize: widget.forAddProperties == true ? 16 : 18,
+            fontWeight: widget.forAddProperties == true
+                ? FontWeight.bold
+                : FontWeight.w500,
           ),
         ),
         Row(
@@ -66,7 +71,11 @@ class _BookingPeriodChooserComponentState
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   height: 65,
                   decoration: BoxDecoration(
-                    color: bookingColor,
+                    // color: bookingColor,
+                    color: widget.forAddProperties == true
+                        ? const Color.fromARGB(255, 227, 226, 230)
+                        : bookingColor,
+
                     borderRadius: BorderRadius.circular(
                       20,
                     ),
@@ -112,7 +121,10 @@ class _BookingPeriodChooserComponentState
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   height: 65,
                   decoration: BoxDecoration(
-                    color: bookingColor,
+                    // color: bookingColor,
+                    color: widget.forAddProperties == true
+                        ? const Color.fromARGB(255, 227, 226, 230)
+                        : bookingColor,
                     borderRadius: BorderRadius.circular(
                       20,
                     ),

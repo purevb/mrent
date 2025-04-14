@@ -17,9 +17,7 @@ class _OrdersPageState extends State<OrdersPage> {
   List<PropertyModel> propertyData = [
     PropertyModel(
       id: "prop_001",
-      placeTypeId: "place_apt",
       // propertyTypeId: "prop_type_modern",
-      userId: "host_abc123",
       nightlyPrice: 120,
       propertyName: "Modern City Apartment",
       numGuests: 4,
@@ -39,9 +37,7 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_002",
-      placeTypeId: "loc_102",
       // propertyTypeId: "prop_type_luxury",
-      userId: "host_xyz789",
       nightlyPrice: 250,
       propertyName: "Luxury Beachfront Villa",
       numGuests: 6,
@@ -61,9 +57,7 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_003",
-      placeTypeId: "loc_103",
       // propertyTypeId: "prop_type_rustic",
-      userId: "host_lmn456",
       nightlyPrice: 90,
       propertyName: "Cozy Mountain Cabin",
       numGuests: 2,
@@ -83,9 +77,7 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_002",
-      placeTypeId: "loc_102",
       // propertyTypeId: "prop_type_villa",
-      userId: "host_xyz789",
       nightlyPrice: 250,
       propertyName: "Luxury Beachfront Villa",
       numGuests: 6,
@@ -105,9 +97,7 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_003",
-      placeTypeId: "loc_103",
       // propertyTypeId: "prop_type_rustic",
-      userId: "host_pqr456",
       nightlyPrice: 90,
       propertyName: "Cozy Mountain Cabin",
       numGuests: 3,
@@ -127,9 +117,7 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_004",
-      placeTypeId: "loc_104",
       // propertyTypeId: "prop_type_luxury",
-      userId: "host_lmn222",
       nightlyPrice: 180,
       propertyName: "Skyline Penthouse",
       numGuests: 5,
@@ -148,9 +136,7 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_005",
-      placeTypeId: "loc_105",
       // propertyTypeId: "prop_type_vintage",
-      userId: "host_def567",
       nightlyPrice: 110,
       propertyName: "Charming Lakeside Cottage",
       numGuests: 4,
@@ -170,9 +156,8 @@ class _OrdersPageState extends State<OrdersPage> {
     ),
     PropertyModel(
       id: "prop_006",
-      placeTypeId: "loc_106",
+      // placeType: "loc_106",
       // propertyTypeId: "prop_type_modern",
-      userId: "host_ghi345",
       nightlyPrice: 75,
       propertyName: "Minimalist Tiny Home",
       numGuests: 2,

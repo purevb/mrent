@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class RentHistoryPage extends StatefulWidget {
   const RentHistoryPage({required this.user, super.key});
-  final User user;
+  final FbUserModel user;
 
   @override
   State<RentHistoryPage> createState() => _RentHistoryPageState();

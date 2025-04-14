@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
@@ -20,9 +20,8 @@ import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class PropertyDetailPage extends StatefulWidget {
-  const PropertyDetailPage({this.user, required this.propertyData, super.key});
+  const PropertyDetailPage({required this.propertyData, super.key});
   final PropertyModel propertyData;
-  final User? user;
 
   @override
   State<PropertyDetailPage> createState() => _PropertyDetailPageState();
@@ -188,8 +187,9 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               color: const Color(0xffF4F6F9),
                               borderRadius: BorderRadius.circular(3),
                             ),
-                            child: Text(
-                                widget.propertyData.propertyTypeId.toString()),
+                            child: Text(widget
+                                .propertyData.propertyTypeId!.typeName
+                                .toString()),
                           ),
                         ],
                       ),
@@ -209,16 +209,16 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                           ),
                           GestureDetector(
                             onTap: () {
-                              if (widget.user != null) {
+                              if (provider.getUser != null) {
                                 setState(() {});
                                 provider.toggleFavorite(widget.propertyData);
                                 if (provider.isExist(widget.propertyData) ==
                                     true) {
-                                  api.postFavorites(
-                                      widget.user!.id, widget.propertyData.id!);
+                                  api.postFavorites(provider.getUser!.id,
+                                      widget.propertyData.id!);
                                 } else {
-                                  api.postFavorites(
-                                      widget.user!.id, widget.propertyData.id!);
+                                  api.postFavorites(provider.getUser!.id,
+                                      widget.propertyData.id!);
                                 }
                               } else {
                                 showModalBottomSheet(
@@ -246,7 +246,9 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        widget.propertyData.placeTypeId.toString(),
+                        widget.propertyData.placeType?.provinceName
+                                .toString() ??
+                            "",
                         style: GoogleFonts.inter(
                           color: const Color(0xff8C8C8C),
                           fontSize: 14,

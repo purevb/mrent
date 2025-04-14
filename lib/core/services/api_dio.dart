@@ -6,7 +6,7 @@ class ApiDio {
   ApiDio()
       : _dio = Dio(
           BaseOptions(
-            // http://localhost:3106/api/
+            //http://localhost:3106/api/
             baseUrl: 'https://backend-for-diplom.vercel.app/api',
             contentType: 'application/json',
           ),

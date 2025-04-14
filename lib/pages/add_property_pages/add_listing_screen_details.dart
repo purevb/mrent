@@ -1,49 +1,60 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/core/services/api.dart';
+import 'package:mrent/pages/booking_page/component/booking_period_chooser.dart';
+import 'package:mrent/pages/naviagation_page.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class AddListingScreen extends StatefulWidget {
   const AddListingScreen({
-    required this.text,
-    required this.type,
+    required this.propertyName,
+    required this.propertyTypeId,
     required this.longtitude,
     required this.lattitude,
-    required this.provinceName,
+    required this.provinceID,
     required this.photos,
     super.key,
   });
-  final String type;
-  final String text;
-  final String longtitude;
-  final String lattitude;
-  final List<File> photos;
-  final String provinceName;
+  final String propertyTypeId;
+  final String propertyName;
+  final double longtitude;
+  final double lattitude;
+  final List<String> photos;
+  final String provinceID;
 
   @override
   State<AddListingScreen> createState() => _AddListingScreenState();
 }
 
 class _AddListingScreenState extends State<AddListingScreen> {
+  DateTime? _firstSelectedDay;
+  DateTime? _secondSelectedDay;
+  Api api = Api();
+
   final TextEditingController rentController = TextEditingController();
   final TextEditingController additionalController = TextEditingController();
   bool _validate = false;
   int bedRoomsCount = 0;
-  int bathroomCount = 3;
+  int bathroomCount = 0;
+  int humanCount = 0;
+  int bedCount = 0;
+
   String sellPrice = '';
   String rentPrice = '';
+  int getSelectedDaysDifference() {
+    if (_firstSelectedDay != null && _secondSelectedDay != null) {
+      return _secondSelectedDay!.difference(_firstSelectedDay!).inDays;
+    }
+    return 0;
+  }
 
   @override
   void initState() {
-    log(widget.text);
-    log(widget.type);
-    log(widget.lattitude);
-    log(widget.longtitude);
-    log(widget.photos.toString());
-
     super.initState();
   }
 
@@ -52,6 +63,94 @@ class _AddListingScreenState extends State<AddListingScreen> {
     rentController.dispose();
     additionalController.dispose();
     super.dispose();
+  }
+
+  Future<void> postPropertyAndShowDialog({
+    required String provinceId,
+    required String propertyTypeId,
+    required String userId,
+    required TextEditingController rentController,
+    required String propertyName,
+    required int humanCount,
+    required int bedCount,
+    required int bedRoomsCount,
+    required int bathroomCount,
+    required TextEditingController additionalController,
+    required double lattitude,
+    required double longtitude,
+    required DateTime? firstSelectedDay,
+    required DateTime? secondSelectedDay,
+    required List<String> photos,
+    required BuildContext context,
+  }) async {
+    try {
+      final nightlyPrice = int.tryParse(rentController.text) ?? 0;
+      final startDate = firstSelectedDay!;
+      final endDate = secondSelectedDay!;
+
+      await api.postProperties(
+        provinceId: provinceId,
+        propertyTypeId: propertyTypeId,
+        userId: userId,
+        nightlyPrice: nightlyPrice,
+        propertyName: propertyName,
+        numGuests: humanCount,
+        numBeds: bedCount,
+        numBedrooms: bedRoomsCount,
+        numBathrooms: bathroomCount,
+        description: additionalController.text,
+        latitude: lattitude,
+        longitude: longtitude,
+        startDate: startDate,
+        endDate: endDate,
+        images: photos,
+      );
+
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Амжилттай!"),
+            content: const Text("Үл хөдлөх хөрөнгө амжилттай нэмэгдлээ."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return NavigationPage(
+                          id: Provider.of<PropertyProvider>(context).fbUser!.id,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (error) {
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Алдаа гарлаа"),
+            content: Text("Хадгалах үед алдаа гарлаа:\n$error"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   final Map<String, int> propertyFeatures = {
@@ -77,8 +176,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
           top: 10,
           bottom: 40,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             _buildPriceField("Өдрийн түрээс", "₮ 30000", (value) {
               setState(() {
@@ -123,6 +221,46 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 });
               },
             ),
+            const SizedBox(height: 10),
+            _buildPropertyFeatures(
+              "Хүн хүлээн авах чадал",
+              humanCount,
+              onDecrement: () {
+                setState(() {
+                  if (humanCount > 0) humanCount--;
+                });
+              },
+              onIncrement: () {
+                setState(() {
+                  humanCount++;
+                });
+              },
+            ),
+            const SizedBox(height: 10),
+            _buildPropertyFeatures(
+              "Ор",
+              bedCount,
+              onDecrement: () {
+                setState(() {
+                  if (bedCount > 0) bedCount--;
+                });
+              },
+              onIncrement: () {
+                setState(() {
+                  bedCount++;
+                });
+              },
+            ),
+            const SizedBox(height: 10),
+            BookingPeriodChooserComponent(
+              forAddProperties: true,
+              onDatesSelected: (start, end) {
+                setState(() {
+                  _firstSelectedDay = start;
+                  _secondSelectedDay = end;
+                });
+              },
+            ),
             const SizedBox(height: 20),
             Text(
               "Нэмэлт тайлбар",
@@ -146,8 +284,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
                 filled: true,
               ),
             ),
-            const Spacer(),
-            SizedBox(
+            Container(
+              margin: const EdgeInsets.only(top: 20),
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
@@ -157,27 +295,23 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   });
                   if (rentController.text.isNotEmpty &&
                       additionalController.text.isNotEmpty) {
-                    showModalBottomSheet(
-                      isScrollControlled: true,
+                    postPropertyAndShowDialog(
+                      provinceId: widget.provinceID,
+                      propertyTypeId: widget.propertyTypeId,
+                      userId: "67f5e5ab0a73101c4561a05f",
+                      rentController: rentController,
+                      propertyName: widget.propertyName,
+                      humanCount: humanCount,
+                      bedCount: bedCount,
+                      bedRoomsCount: bedRoomsCount,
+                      bathroomCount: bathroomCount,
+                      additionalController: additionalController,
+                      lattitude: widget.lattitude,
+                      longtitude: widget.longtitude,
+                      firstSelectedDay: _firstSelectedDay!,
+                      secondSelectedDay: _secondSelectedDay!,
+                      photos: widget.photos,
                       context: context,
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          height: height * 0.5,
-                          child: Column(
-                            children: [
-                              Text("Sell Price: $sellPrice"),
-                              Text("Rent Price: $rentPrice"),
-                              Text(widget.text),
-                              Text(widget.type),
-                              Text(widget.lattitude),
-                              Text(widget.longtitude),
-                              Text(widget.photos.toString()),
-                              Text(rentController.text),
-                              Text(additionalController.text),
-                            ],
-                          ),
-                        );
-                      },
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
@@ -19,7 +19,7 @@ class TheObject extends StatefulWidget {
     super.key,
   });
   final PropertyModel propertyData;
-  final User? user;
+  final FbUserModel? user;
 
   @override
   State<TheObject> createState() => _TheObjectState();
@@ -156,14 +156,14 @@ class _TheObjectState extends State<TheObject> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (widget.user != null) {
+                          if (provider.getUser != null) {
                             setState(() {
                               favorite = !favorite;
                             });
                             provider.toggleFavorite(widget.propertyData);
                             if (provider.isExist(widget.propertyData) == true) {
-                              api.postFavorites(
-                                  widget.user!.id, widget.propertyData.id!);
+                              api.postFavorites(provider.getUser!.id,
+                                  widget.propertyData.id!);
                             } else {
                               api.postFavorites(
                                   widget.user!.id, widget.propertyData.id!);

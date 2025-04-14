@@ -4,8 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/core/services/api.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:provider/provider.dart';
@@ -13,11 +14,9 @@ import 'package:provider/provider.dart';
 class FavoriteProperty extends StatefulWidget {
   const FavoriteProperty({
     required this.propertyData,
-    this.user,
     super.key,
   });
   final PropertyModel propertyData;
-  final User? user;
 
   @override
   State<FavoriteProperty> createState() => _FavoritePropertyState();
@@ -81,18 +80,18 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (widget.user != null) {
+                          if (provider.getUser != null) {
                             setState(() {});
                             provider.toggleFavorite(widget.propertyData);
                             if (provider.isExist(widget.propertyData) == true) {
                               api.postFavorites(
                                 widget.propertyData.id!,
-                                widget.user!.id,
+                                provider.getUser!.id,
                               );
                             } else {
                               api.postFavorites(
                                 widget.propertyData.id!,
-                                widget.user!.id,
+                                provider.getUser!.id,
                               );
                             }
                           } else {

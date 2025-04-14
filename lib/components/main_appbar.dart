@@ -1,12 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
+import 'package:mrent/model/fb_user_model.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
 import 'package:mrent/pages/search_page/search_page.dart';
 import 'package:mrent/utils/constants.dart';
@@ -22,7 +21,7 @@ class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.user,
     super.key,
   });
-  final User? user;
+  final FbUserModel? user;
   final bool hasLeading;
   final Function(String) chooseType;
   final Function()? onSearchPressed;

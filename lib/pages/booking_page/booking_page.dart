@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/booking_page/component/booking_period_chooser.dart';
 import 'package:mrent/pages/booking_page/component/booking_property.dart';
 import 'package:mrent/pages/booking_page/component/notes_for_owner.dart';
@@ -12,8 +14,10 @@ import 'package:mrent/pages/booking_page/component/total_price.dart';
 import 'package:mrent/utils/constants.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage({required this.propertyData, super.key});
+  const BookingPage(
+      {required this.user, required this.propertyData, super.key});
   final PropertyModel propertyData;
+  final FbUserModel user;
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -54,7 +58,7 @@ class _BookingPageState extends State<BookingPage> {
         ),
       ),
       body: Container(
-        padding: const EdgeInsets.only(left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 20, right: 20),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.only(bottom: 50),
@@ -66,6 +70,7 @@ class _BookingPageState extends State<BookingPage> {
                 propertyData: widget.propertyData,
               ),
               BookingPeriodChooserComponent(
+                forAddProperties: false,
                 onDatesSelected: (start, end) {
                   setState(() {
                     _firstSelectedDay = start;

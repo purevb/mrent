@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
 
 class PropertyProvider extends ChangeNotifier {
-  bool _auth = false;
   List<PropertyModel> propertyData = [];
   List<PropertyModel> get userFavoriteProperties => propertyData;
-  bool get isAuthenticated => _auth;
-  void updateAuthStatus(User? user) {
-    _auth = user?.id != null;
+  FbUserModel? fbUser;
+  FbUserModel? get getUser => fbUser;
+  void authenticatedUser(FbUserModel? user) {
+    fbUser = user;
     notifyListeners();
   }
 

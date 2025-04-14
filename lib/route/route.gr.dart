@@ -11,7 +11,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:flutter/material.dart' as _i8;
-import 'package:mrent/model/user_model.dart' as _i9;
+import 'package:mrent/model/fb_user_model.dart' as _i9;
+import 'package:mrent/model/mongo_user_model.dart' as _i9;
 import 'package:mrent/pages/add_property_pages/add_property_details.dart'
     as _i1;
 import 'package:mrent/pages/naviagation_page.dart';
@@ -79,7 +80,7 @@ class AddPropertyDetailsRouteArgs {
 class MessageCheckerArgs {
   const MessageCheckerArgs({this.user, this.key});
 
-  final _i9.User? user;
+  final _i9.FbUserModel? user;
 
   final _i8.Key? key;
 
@@ -224,7 +225,7 @@ class PrivacyRoute extends _i7.PageRouteInfo<void> {
 /// [_i6.ProfilePage]
 class ProfileRoute extends _i7.PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
-    required _i9.User user,
+    required _i9.FbUserModel user,
     _i8.Key? key,
     List<_i7.PageRouteInfo>? children,
   }) : super(
@@ -247,7 +248,7 @@ class ProfileRoute extends _i7.PageRouteInfo<ProfileRouteArgs> {
 class ProfileRouteArgs {
   const ProfileRouteArgs({required this.user, this.key});
 
-  final _i9.User user;
+  final _i9.FbUserModel user;
 
   final _i8.Key? key;
 

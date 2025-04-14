@@ -9,12 +9,12 @@ import 'package:mrent/utils/constants.dart';
 
 class WhereIsLocation extends StatefulWidget {
   const WhereIsLocation({
-    required this.text,
-    required this.type,
+    required this.propertyName,
+    required this.propertyTypeId,
     super.key,
   });
-  final String type;
-  final String text;
+  final String propertyTypeId;
+  final String propertyName;
 
   @override
   State<WhereIsLocation> createState() => _WhereIsLocationState();
@@ -204,13 +204,11 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return AddPropertyPhoto(
-                                  text: widget.text,
-                                  type: widget.type,
-                                  longtitude:
-                                      _selectedLocation!.longitude.toString(),
-                                  lattitude:
-                                      _selectedLocation!.latitude.toString(),
-                                  provinceName: _selectedProvince ?? "",
+                                  propertyName: widget.propertyName,
+                                  propertyTypeId: widget.propertyTypeId,
+                                  longtitude: _selectedLocation!.longitude,
+                                  lattitude: _selectedLocation!.latitude,
+                                  provinceID: _selectedProvince ?? "",
                                 );
                               },
                             ),

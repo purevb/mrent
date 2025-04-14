@@ -20,7 +20,7 @@ class AddPropertyDetailsPage extends StatefulWidget {
 }
 
 class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
-  final TextEditingController textController = TextEditingController();
+  final TextEditingController propertyNameController = TextEditingController();
   PropertyType? selectedPropertyCategory;
   bool _validate = false;
   DataController dataController = DataController();
@@ -32,7 +32,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
 
   @override
   void dispose() {
-    textController.dispose();
+    propertyNameController.dispose();
     super.dispose();
   }
 
@@ -102,7 +102,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                       children: [
                         Expanded(
                           child: TextField(
-                            controller: textController,
+                            controller: propertyNameController,
                             decoration: InputDecoration(
                               errorText:
                                   _validate ? "Хоосон байж болохгүй" : null,
@@ -146,10 +146,10 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        _validate = textController.text.isEmpty;
+                        _validate = propertyNameController.text.isEmpty;
                       });
 
-                      if (textController.text.isEmpty ||
+                      if (propertyNameController.text.isEmpty ||
                           selectedPropertyCategory == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -163,8 +163,9 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                           MaterialPageRoute(
                             builder: (context) {
                               return WhereIsLocation(
-                                text: textController.text,
-                                type: selectedPropertyCategory?.id ?? "",
+                                propertyName: propertyNameController.text,
+                                propertyTypeId:
+                                    selectedPropertyCategory?.id ?? "",
                               );
                             },
                           ),

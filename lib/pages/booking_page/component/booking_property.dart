@@ -52,77 +52,78 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
     double width = MediaQuery.of(context).size.width;
     final provider = Provider.of<PropertyProvider>(context, listen: false);
 
-    return Container(
-      padding: const EdgeInsets.all(9),
-      height: height * 0.4,
-      decoration: BoxDecoration(
-        color: bookingColor,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            height: height * 0.2,
-            width: width,
-            child: carouselImages(
-              width,
-              widget.propertyData.images,
-              provider,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 10.0,
-                top: 5,
-                bottom: 5,
-                right: 5,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.propertyData.propertyName ?? "",
-                    style: GoogleFonts.inter(
-                      color: textDefaultColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    maxLines: 3,
-                    widget.propertyData.description ?? "",
-                    style: GoogleFonts.inter(
-                      // ignore: deprecated_member_use
-                      color: textDefaultColor.withOpacity(0.6),
-                    ),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    height: height * 0.1,
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: advantages.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var advantage = advantages[index];
-                        return TabbarDescription(
-                          label: advantage!["label"] ?? "",
-                          value: advantage["value"] ?? "",
-                          icon: advantage["icon"] as IconData? ?? Icons.error,
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(
-                          width: 2,
-                        );
-                      },
-                    ),
-                  ),
-                ],
+    return IntrinsicHeight(
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: bookingColor,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: height * 0.2,
+              width: width,
+              child: carouselImages(
+                width,
+                widget.propertyData.images,
+                provider,
               ),
             ),
-          )
-        ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 10.0,
+                  top: 5,
+                  bottom: 5,
+                  right: 5,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.propertyData.propertyName ?? "",
+                      style: GoogleFonts.inter(
+                        color: textDefaultColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      maxLines: 3,
+                      widget.propertyData.description ?? "",
+                      style: GoogleFonts.inter(
+                        // ignore: deprecated_member_use
+                        color: textDefaultColor.withOpacity(0.6),
+                      ),
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                      height: height * 0.1,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: advantages.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var advantage = advantages[index];
+                          return TabbarDescription(
+                            label: advantage!["label"] ?? "",
+                            value: advantage["value"] ?? "",
+                            icon: advantage["icon"] as IconData? ?? Icons.error,
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const SizedBox(
+                            width: 2,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

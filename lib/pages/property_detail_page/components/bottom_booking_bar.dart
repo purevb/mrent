@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/user_model.dart';
+import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/booking_page/booking_page.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 
@@ -14,7 +14,7 @@ class BottomBookingBar extends StatelessWidget {
     required this.propertyData,
   });
   final PropertyModel propertyData;
-  final User? user;
+  final FbUserModel? user;
 
   final double width;
 
@@ -51,7 +51,7 @@ class BottomBookingBar extends StatelessWidget {
                 Text(
                   "Нийт үнэ",
                   style: GoogleFonts.inter(
-                      fontWeight: FontWeight.bold, fontSize: 20),
+                      fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 RichText(
                   text: TextSpan(
@@ -61,28 +61,28 @@ class BottomBookingBar extends StatelessWidget {
                         text: '₮',
                         style: GoogleFonts.inter(
                           color: Colors.black,
-                          fontSize: 24,
+                          fontSize: 20,
                         ),
                       ),
                       TextSpan(
                         text: propertyData.nightlyPrice.toString(),
                         style: GoogleFonts.inter(
                           color: Colors.black,
-                          fontSize: 24,
+                          fontSize: 20,
                         ),
                       ),
                       TextSpan(
                         text: '/',
                         style: GoogleFonts.inter(
                           color: Colors.black,
-                          fontSize: 24,
+                          fontSize: 20,
                         ),
                       ),
                       TextSpan(
                         text: 'өдөрт',
                         style: GoogleFonts.inter(
                           color: Colors.black,
-                          fontSize: 20,
+                          fontSize: 16,
                         ),
                       ),
                     ],
@@ -102,6 +102,7 @@ class BottomBookingBar extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) {
                           return BookingPage(
+                            user: user!,
                             propertyData: propertyData,
                           );
                         },

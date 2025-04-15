@@ -15,11 +15,9 @@ import 'package:provider/provider.dart';
 class TheObject extends StatefulWidget {
   const TheObject({
     required this.propertyData,
-    this.user,
     super.key,
   });
   final PropertyModel propertyData;
-  final FbUserModel? user;
 
   @override
   State<TheObject> createState() => _TheObjectState();
@@ -32,7 +30,7 @@ class _TheObjectState extends State<TheObject> {
   void initState() {
     super.initState();
     favorite = Provider.of<PropertyProvider>(context, listen: false)
-        .isExist(widget.propertyData);
+        .isFavorite(widget.propertyData);
   }
 
   @override
@@ -161,13 +159,6 @@ class _TheObjectState extends State<TheObject> {
                               favorite = !favorite;
                             });
                             provider.toggleFavorite(widget.propertyData);
-                            if (provider.isExist(widget.propertyData) == true) {
-                              api.postFavorites(provider.getUser!.id,
-                                  widget.propertyData.id!);
-                            } else {
-                              api.postFavorites(
-                                  widget.user!.id, widget.propertyData.id!);
-                            }
                           } else {
                             showModalBottomSheet(
                               elevation: 0,
@@ -185,7 +176,7 @@ class _TheObjectState extends State<TheObject> {
                           width: 25,
                           child: SvgPicture.asset(
                               fit: BoxFit.fitHeight,
-                              provider.isExist(widget.propertyData) == true
+                              provider.isFavorite(widget.propertyData) == true
                                   ? "assets/object/pressedlike.svg"
                                   : "assets/object/Vector.svg"),
                         ),

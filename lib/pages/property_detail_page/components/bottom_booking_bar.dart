@@ -5,21 +5,23 @@ import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/booking_page/booking_page.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/providers/property_provider.dart';
+import 'package:provider/provider.dart';
 
 class BottomBookingBar extends StatelessWidget {
   const BottomBookingBar({
     super.key,
-    this.user,
     required this.width,
     required this.propertyData,
   });
   final PropertyModel propertyData;
-  final FbUserModel? user;
 
   final double width;
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PropertyProvider>(context, listen: true);
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -96,13 +98,12 @@ class BottomBookingBar extends StatelessWidget {
                 borderRadius: 16,
                 canPress: true,
                 onPress: () {
-                  if (user != null) {
+                  if (provider.fbUser != null) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) {
                           return BookingPage(
-                            user: user!,
                             propertyData: propertyData,
                           );
                         },

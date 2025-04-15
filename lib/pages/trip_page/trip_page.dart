@@ -10,11 +10,9 @@ import 'package:shimmer/shimmer.dart';
 class TripPage extends StatefulWidget {
   const TripPage({
     required this.propertyDatas,
-    this.user,
     super.key,
     required this.getData,
   });
-  final FbUserModel? user;
   final List<PropertyModel> propertyDatas;
   final bool getData;
   @override
@@ -55,7 +53,6 @@ class _TripPageState extends State<TripPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: MainAppBar(
-        user: widget.user,
         hasLeading: false,
         properties: widget.propertyDatas,
         hasLocationBar: true,
@@ -134,7 +131,6 @@ class _TripPageState extends State<TripPage> {
                       );
                     },
                     child: TheObject(
-                      user: widget.user,
                       propertyData: displayData[index],
                     ),
                   );

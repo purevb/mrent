@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mrent/controller/data_controller.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/fb_user_model.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_checker.dart';
 import 'package:mrent/pages/profile_page/profile_checker.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
@@ -26,61 +28,65 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
-  FbUserModel? user;
-  bool dataArrived = false;
-  DataController dataController = DataController();
-  PropertyProvider provider = PropertyProvider();
+  bool _isLoading = true;
+  bool _dataArrived = false;
+  late final DataController _dataController;
+  late final Api _api;
+  MongoUserModel? _mongoUser;
+
   @override
   void initState() {
     super.initState();
-    fetchUserById(widget.id ?? "");
-    dataController.getPropertiesData();
-    dataController.propertyDataNotifier.addListener(_onPropertyDataChanged);
+    _dataController = DataController();
+    _api = Api();
+    _initializeApp();
   }
 
-  @override
-  void dispose() {
-    dataController.propertyDataNotifier.removeListener(_onPropertyDataChanged);
-    super.dispose();
-  }
+  Future<void> _initializeApp() async {
+    try {
+      // Load properties first
+      await _dataController.getPropertiesData();
 
-  void _onPropertyDataChanged() {
-    if (!dataArrived && dataController.propertyDataNotifier.value != null) {
+      // Then load user if ID exists
+      if (widget.id != null && widget.id!.isNotEmpty) {
+        await _loadUserData(widget.id!);
+      }
+
       setState(() {
-        dataArrived = true;
+        _dataArrived = true;
+        _isLoading = false;
+      });
+    } catch (e) {
+      log('Initialization error: $e');
+      setState(() {
+        _isLoading = false;
       });
     }
   }
 
-  Future<void> fetchUserById(String? userId) async {
-    if (userId!.isEmpty) {
-      log('Nevtreegu bn');
-      return;
-    }
-
+  Future<void> _loadUserData(String userId) async {
     try {
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+      final document = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
 
-      if (documentSnapshot.exists) {
-        final userData = FbUserModel.fromFirestore(documentSnapshot);
+      if (document.exists) {
+        final fbUser = FbUserModel.fromFirestore(document);
+        final mongoUser = await _api.getMongoUser(userId);
+
         if (mounted) {
-          setState(() {
-            user = userData;
-          });
           final provider =
               Provider.of<PropertyProvider>(context, listen: false);
-          provider.authenticatedUser(userData);
+          provider.authenticatedUser(mongoUser);
 
-          log('User Data: ${userData.name}, ${userData.email}, ${userData.phone}, ${userData.createdAt}');
+          setState(() {
+            _mongoUser = mongoUser;
+          });
         }
-      } else {
-        log('User not found');
       }
     } catch (e) {
-      log('Error fetching user: $e');
+      log('Error loading user: $e');
     }
   }
 
@@ -95,9 +101,8 @@ class _NavigationPageState extends State<NavigationPage> {
               index: _currentIndex,
               children: [
                 TripPage(
-                  getData: dataArrived,
+                  getData: _dataArrived,
                   propertyDatas: propertyData ?? [],
-                  user: user,
                 ),
                 MapSample(
                   propertyData: propertyData ?? [],
@@ -105,18 +110,18 @@ class _NavigationPageState extends State<NavigationPage> {
                   hasAppBar: true,
                 ),
                 RentChecker(
-                  user: user,
+                  user: _mongoUser,
                 ),
                 FavoriteChecker(
-                  user: user,
+                  user: _mongoUser,
                 ),
                 ProfileChecker(
-                  user: user,
+                  user: _mongoUser,
                 ),
               ],
             );
           },
-          valueListenable: dataController.propertyDataNotifier,
+          valueListenable: _dataController.propertyDataNotifier,
         ),
         bottomNavigationBar: Theme(
           data: ThemeData(

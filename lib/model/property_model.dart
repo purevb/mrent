@@ -4,7 +4,7 @@ import 'package:mrent/model/province_model.dart';
 
 class PropertyModel {
   final String? id;
-  final ProvinceModel? placeType;
+  final ProvinceModel? placeTypeId;
   final PropertyType? propertyTypeId;
   final String? userId;
   final int? nightlyPrice;
@@ -26,7 +26,7 @@ class PropertyModel {
 
   PropertyModel({
     this.id,
-    this.placeType,
+    this.placeTypeId,
     this.propertyTypeId,
     this.userId,
     this.nightlyPrice,
@@ -49,7 +49,7 @@ class PropertyModel {
 
   PropertyModel.fromJson(Map<String, dynamic> json)
       : id = json['_id'] as String?,
-        placeType = (json['placeTypeId'] as Map<String, dynamic>?) != null
+        placeTypeId = (json['placeTypeId'] as Map<String, dynamic>?) != null
             ? ProvinceModel.fromJson(
                 json['placeTypeId'] as Map<String, dynamic>)
             : null,
@@ -79,7 +79,7 @@ class PropertyModel {
 
   Map<String, dynamic> toJson() => {
         '_id': id,
-        'placeType': placeType?.toJson(),
+        'placeType': placeTypeId?.toJson(),
         'propertyTypeId': propertyTypeId?.toJson(),
         'userId': userId,
         'nightlyPrice': nightlyPrice,
@@ -100,5 +100,3 @@ class PropertyModel {
         'updatedAt': updatedAt
       };
 }
-
-class PropertyTypeId {}

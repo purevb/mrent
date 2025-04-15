@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:mrent/core/services/api_dio.dart';
 import 'package:mrent/model/favorite_model.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
@@ -23,16 +24,15 @@ class Api {
     try {
       final res = await api.get("/property_types");
       final List data = res.data;
-
       return data.map((e) => PropertyType.fromJson(e)).toList();
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<FavoriteModel>> getFavorites() async {
+  Future<List<FavoriteModel>> getFavorites(String userId) async {
     try {
-      final res = await api.get("/favorites");
+      final res = await api.get("/favorites/user/$userId");
       final List data = res.data;
       return data.map((e) => FavoriteModel.fromJson(e)).toList();
     } catch (e) {
@@ -46,6 +46,16 @@ class Api {
       {
         "property_id": propertyId,
         "user_id": userId,
+      },
+    );
+  }
+
+  Future<void> deleteFavorites(String userId, String propertyId) async {
+    final response = await api.delete(
+      "/favorites",
+      {
+        "user_id": userId,
+        "property_id": propertyId,
       },
     );
   }
@@ -115,6 +125,17 @@ class Api {
       throw Exception('Network error: ${e.message}');
     } catch (e) {
       throw Exception('Failed to post property: $e');
+    }
+  }
+
+  Future<MongoUserModel> getMongoUser(String firebaseId) async {
+    try {
+      final res = await api.get("users/firebase/$firebaseId");
+      return MongoUserModel.fromJson(
+        res.data,
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 }

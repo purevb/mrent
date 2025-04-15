@@ -212,14 +212,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               if (provider.getUser != null) {
                                 setState(() {});
                                 provider.toggleFavorite(widget.propertyData);
-                                if (provider.isExist(widget.propertyData) ==
-                                    true) {
-                                  api.postFavorites(provider.getUser!.id,
-                                      widget.propertyData.id!);
-                                } else {
-                                  api.postFavorites(provider.getUser!.id,
-                                      widget.propertyData.id!);
-                                }
                               } else {
                                 showModalBottomSheet(
                                   elevation: 0,
@@ -237,7 +229,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               width: 25,
                               child: SvgPicture.asset(
                                   fit: BoxFit.fitHeight,
-                                  provider.isExist(widget.propertyData) == true
+                                  provider.isFavorite(widget.propertyData) ==
+                                          true
                                       ? "assets/object/pressedlike.svg"
                                       : "assets/object/Vector.svg"),
                             ),
@@ -246,7 +239,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        widget.propertyData.placeType?.provinceName
+                        widget.propertyData.placeTypeId?.provinceName
                                 .toString() ??
                             "",
                         style: GoogleFonts.inter(

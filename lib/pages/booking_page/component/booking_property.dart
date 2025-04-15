@@ -175,7 +175,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                   },
                   child: SvgPicture.asset(
                     fit: BoxFit.fitHeight,
-                    provider.isExist(widget.propertyData) == true
+                    provider.isFavorite(widget.propertyData) == true
                         ? "assets/object/pressedlike.svg"
                         : "assets/object/Vector.svg",
                   ),

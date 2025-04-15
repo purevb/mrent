@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mrent/core/services/api.dart';
+import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
@@ -14,10 +15,23 @@ class DataController with ChangeNotifier {
       ValueNotifier(null);
   final ValueNotifier<List<ProvinceModel>?> proviceNotifier =
       ValueNotifier(null);
+  final ValueNotifier<List<FavoriteModel>?> getFavoriteNotifier =
+      ValueNotifier(null);
   Future<void> getPropertyTypeDatas() async {
     try {
       var res = await api.getPropertyTypes();
       propertyTypeNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> getFavoritesDatas(String userId) async {
+    try {
+      var res = await api.getFavorites(userId);
+      print(res);
+      getFavoriteNotifier.value = res;
       notifyListeners();
     } catch (e) {
       log(e.toString());

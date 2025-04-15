@@ -6,8 +6,8 @@ class ApiDio {
   ApiDio()
       : _dio = Dio(
           BaseOptions(
-            //http://localhost:3106/api/
-            baseUrl: 'https://backend-for-diplom.vercel.app/api',
+            //https://backend-for-diplom.vercel.app/api
+            baseUrl: 'http://localhost:3106/api/',
             contentType: 'application/json',
           ),
         );
@@ -46,19 +46,19 @@ class ApiDio {
     }
   }
 
-  Future<FavoriteModel> toggleFavorite(
-      String userId, String propertyId, bool isCurrentlyFavorite) async {
-    try {
-      const endpoint = "/favorites";
-      final data = {"property_id": propertyId, "user_id": userId};
+  // Future<FavoriteModel> toggleFavorite(
+  //     String userId, String propertyId, bool isCurrentlyFavorite) async {
+  //   try {
+  //     const endpoint = "/favorites";
+  //     final data = {"property_id": propertyId, "user_id": userId};
 
-      final response = isCurrentlyFavorite
-          ? await delete(endpoint, data)
-          : await post(endpoint, data);
+  //     final response = isCurrentlyFavorite
+  //         ? await delete(endpoint, data)
+  //         : await post(endpoint, data);
 
-      return FavoriteModel.fromJson(response.data);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  //     return FavoriteModel.fromJson(response.data);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }

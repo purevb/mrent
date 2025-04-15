@@ -225,7 +225,7 @@ class PrivacyRoute extends _i7.PageRouteInfo<void> {
 /// [_i6.ProfilePage]
 class ProfileRoute extends _i7.PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
-    required _i9.FbUserModel user,
+    required _i9.MongoUserModel user,
     _i8.Key? key,
     List<_i7.PageRouteInfo>? children,
   }) : super(
@@ -248,7 +248,7 @@ class ProfileRoute extends _i7.PageRouteInfo<ProfileRouteArgs> {
 class ProfileRouteArgs {
   const ProfileRouteArgs({required this.user, this.key});
 
-  final _i9.FbUserModel user;
+  final _i9.MongoUserModel user;
 
   final _i8.Key? key;
 

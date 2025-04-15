@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/favorite_page/components/favorite_property.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 import 'package:mrent/providers/property_provider.dart';
@@ -13,9 +13,11 @@ import 'package:shimmer/shimmer.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({
+    required this.user,
     super.key,
   });
 
+  final MongoUserModel user;
   @override
   State<FavoritePage> createState() => _FavoritePageState();
 }
@@ -53,19 +55,21 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   void initState() {
+    super.initState();
     dataController.getPropertyTypeDatas();
     _searchController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = Provider.of<PropertyProvider>(context, listen: false);
-      setState(() {
-        filteredPropertyDatas = List.from(provider.userFavoriteProperties);
-        _founders = List.from(provider.userFavoriteProperties);
-      });
-    });
-    super.initState();
-
     _founders = [];
     _focusNode.addListener(_onFocusChange);
+    getFavoriteData();
+  }
+
+  Future<void> getFavoriteData() async {
+    try {
+      final userId = widget.user.id;
+      await dataController.getFavoritesDatas(userId!);
+    } catch (e) {
+      debugPrint("Error fetching favorites: $e");
+    }
   }
 
   @override
@@ -126,18 +130,18 @@ class _FavoritePageState extends State<FavoritePage> {
 
     List<PropertyModel> typeFiltered = [];
 
-    if (selectedType.isEmpty || selectedType == "All") {
+    if (selectedType.isEmpty || selectedType == "Бүгд") {
       typeFiltered = List.from(provider.userFavoriteProperties);
     } else {
       typeFiltered = provider.userFavoriteProperties
           .where((property) =>
-              property.propertyName != null &&
-              getIconPath(property.propertyName!) == selectedType)
+              property.propertyTypeId != null &&
+              property.propertyTypeId!.typeName == selectedType)
           .toList();
     }
 
     final displayItems =
-        (onSearch && _founders.isNotEmpty) ? _founders : typeFiltered;
+        (onSearch == true && _founders.isNotEmpty) ? _founders : typeFiltered;
 
     return ValueListenableBuilder(
       valueListenable: dataController.propertyTypeNotifier,
@@ -166,7 +170,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           shape: BoxShape.circle,
                         ),
                       ),
-                      const SizedBox(width: 10), // Fixed spacing
+                      const SizedBox(width: 10),
                       Container(
                         height: 30,
                         width: 100,
@@ -227,8 +231,10 @@ class _FavoritePageState extends State<FavoritePage> {
                             }
                           });
                         },
-                        icon: const Icon(
-                          CupertinoIcons.search,
+                        icon: Icon(
+                          onSearch == false
+                              ? CupertinoIcons.search
+                              : CupertinoIcons.xmark,
                           color: Colors.black87,
                         ),
                       ),
@@ -267,9 +273,9 @@ class _FavoritePageState extends State<FavoritePage> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            selectedType = getIconPath(
-                              propertyTypeData[index].typeName ?? "",
-                            );
+                            selectedType =
+                                propertyTypeData[index].typeName ?? "";
+
                             currentIndex = index;
                             if (onSearch) {
                               _focusNode.requestFocus();
@@ -295,7 +301,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              const SizedBox(width: 3), // Fixed spacing
+                              const SizedBox(width: 3),
                               Image.asset(
                                 height: 15,
                                 fit: BoxFit.contain,
@@ -319,59 +325,111 @@ class _FavoritePageState extends State<FavoritePage> {
                 ),
               ),
             ),
-            body: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                child: Column(
-                  children: [
-                    if (displayItems.isNotEmpty) ...[
-                      GridView.builder(
+            body: ValueListenableBuilder(
+              valueListenable: dataController.getFavoriteNotifier,
+              builder: (context, favoriteData, child) {
+                if (favoriteData == null) {
+                  return SizedBox(
+                    height: height,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.withOpacity(0.2),
+                      highlightColor: Colors.white,
+                      child: GridView.builder(
+                        padding:
+                            const EdgeInsets.only(left: 20, top: 20, right: 20),
                         shrinkWrap: true,
-                        physics:
-                            const NeverScrollableScrollPhysics(), // Added to prevent scrolling issues
                         itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PropertyDetailPage(
-                                    propertyData: displayItems[index],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: FavoriteProperty(
-                              propertyData: displayItems[index],
+                          return Container(
+                            height: height * 0.35,
+                            width: width * 0.4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              color: Colors.black,
                             ),
                           );
                         },
-                        itemCount: displayItems.length,
+                        itemCount: 10,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          mainAxisExtent: height * 0.3,
+                          mainAxisExtent: height * 0.25,
                           mainAxisSpacing: 20,
                           crossAxisSpacing: 20,
                           crossAxisCount: 2,
                         ),
                       ),
-                    ] else ...[
-                      SizedBox(
-                        height: height - 185,
-                        child: Center(
-                          child: Text(
-                            onSearch
-                                ? "Хайлтад тохирох сууц олдсонгүй."
-                                : "Танд одоогоор таалагдсан сууц алга байна.",
-                            style: GoogleFonts.inter(
-                              color: textDefaultColor,
+                    ),
+                  );
+                } else {
+                  List<PropertyModel> properties = [];
+                  for (var favorite in favoriteData) {
+                    if (favorite.propertyId != null) {
+                      properties.add(favorite.propertyId!);
+                    }
+                  }
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    final propertyProvider =
+                        Provider.of<PropertyProvider>(context, listen: false);
+                    propertyProvider.propertyData = [];
+                    propertyProvider.propertyData.addAll(properties);
+                  });
+
+                  return SingleChildScrollView(
+                    child: Container(
+                      padding:
+                          const EdgeInsets.only(left: 20, top: 20, right: 20),
+                      child: Column(
+                        children: [
+                          if (displayItems.isNotEmpty) ...[
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PropertyDetailPage(
+                                          propertyData: displayItems[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: FavoriteProperty(
+                                    propertyData: displayItems[index],
+                                  ),
+                                );
+                              },
+                              itemCount: displayItems.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                mainAxisExtent: height * 0.3,
+                                mainAxisSpacing: 20,
+                                crossAxisSpacing: 20,
+                                crossAxisCount: 2,
+                              ),
                             ),
-                          ),
-                        ),
-                      )
-                    ]
-                  ],
-                ),
-              ),
+                          ] else ...[
+                            SizedBox(
+                              height: height - 185,
+                              child: Center(
+                                child: Text(
+                                  onSearch
+                                      ? "Хайлтад тохирох сууц олдсонгүй."
+                                      : "Танд одоогоор таалагдсан сууц алга байна.",
+                                  style: GoogleFonts.inter(
+                                    color: textDefaultColor,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
           );
         }

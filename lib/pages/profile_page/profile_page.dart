@@ -2,22 +2,28 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/fb_user_model.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/route/route.gr.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget {
   const ProfilePage({required this.user, super.key});
-  final FbUserModel user;
+  final MongoUserModel user;
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  Api api = Api();
+
   final Map<int, Map<String, String>> profileListTileDatas = {
     0: {
       "iconPath": "assets/profile/Vector.svg",
@@ -63,6 +69,10 @@ class _ProfilePageState extends State<ProfilePage> {
       "path": "/orders",
     },
   };
+  @override
+  void initState() {
+    super.initState();
+  }
 
   String firstLetterUpper(String name) {
     if (name.isEmpty) return name;
@@ -73,6 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     // double height = MediaQuery.of(context).size.height;
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -89,13 +100,13 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Text(
                 firstLetterUpper(
-                  widget.user.name.replaceAll(" ", ""),
+                  provider.fbUser?.name?.replaceAll(" ", "") ?? "",
                 ),
                 style: GoogleFonts.inter(
                     fontSize: 30, fontWeight: FontWeight.bold),
               ),
               Text(
-                widget.user.email,
+                provider.fbUser?.email ?? "",
                 style: GoogleFonts.inter(
                   fontSize: 15,
                   decoration: TextDecoration.underline,
@@ -155,8 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => context.router.push(
                                     AddPropertyDetailsRoute(
-                                      name: widget.user.name,
-                                      id: widget.user.id,
+                                      name: provider.fbUser?.name ?? "",
+                                      id: provider.fbUser?.id ?? "",
                                     ),
                                   ),
                             text: "\nДэлгэрэнгүй",
@@ -199,8 +210,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         if (path == "/add_property") {
                           context.router.push(
                             AddPropertyDetailsRoute(
-                              name: widget.user.name,
-                              id: widget.user.id,
+                              name: widget.user.name!,
+                              id: widget.user.id!,
                             ),
                           );
                         } else {

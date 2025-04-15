@@ -81,19 +81,10 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                       GestureDetector(
                         onTap: () {
                           if (provider.getUser != null) {
-                            setState(() {});
-                            provider.toggleFavorite(widget.propertyData);
-                            if (provider.isExist(widget.propertyData) == true) {
-                              api.postFavorites(
-                                widget.propertyData.id!,
-                                provider.getUser!.id,
-                              );
-                            } else {
-                              api.postFavorites(
-                                widget.propertyData.id!,
-                                provider.getUser!.id,
-                              );
-                            }
+                            print("object");
+                            setState(() {
+                              provider.toggleFavorite(widget.propertyData);
+                            });
                           } else {
                             showModalBottomSheet(
                               elevation: 0,
@@ -111,7 +102,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                           width: 25,
                           child: SvgPicture.asset(
                             fit: BoxFit.fitHeight,
-                            provider.isExist(widget.propertyData) == true
+                            provider.isFavorite(widget.propertyData) == true
                                 ? "assets/object/pressedlike.svg"
                                 : "assets/object/Vector.svg",
                           ),

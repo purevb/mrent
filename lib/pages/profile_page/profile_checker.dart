@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mrent/model/fb_user_model.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/pages/profile_page/profile_page.dart';
 import 'package:mrent/pages/profile_page/unauthorized_user_profile_page.dart';
 
 class ProfileChecker extends StatefulWidget {
   const ProfileChecker({this.user, super.key});
-  final FbUserModel? user;
+  final MongoUserModel? user;
 
   @override
   State<ProfileChecker> createState() => _ProfileCheckerState();

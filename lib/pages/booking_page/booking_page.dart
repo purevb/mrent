@@ -11,13 +11,13 @@ import 'package:mrent/pages/booking_page/component/booking_property.dart';
 import 'package:mrent/pages/booking_page/component/notes_for_owner.dart';
 import 'package:mrent/pages/booking_page/component/payment_types.dart';
 import 'package:mrent/pages/booking_page/component/total_price.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage(
-      {required this.user, required this.propertyData, super.key});
+  const BookingPage({required this.propertyData, super.key});
   final PropertyModel propertyData;
-  final FbUserModel user;
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -35,6 +35,7 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PropertyProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -84,20 +85,22 @@ class _BookingPageState extends State<BookingPage> {
                 totalDays: getSelectedDaysDifference(),
               ),
               MyButton(
-                  canPress: true,
-                  onPress: () {
-                    Fluttertoast.showToast(
-                        msg: "See u soon",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: mRed,
-                        textColor: Colors.white,
-                        fontSize: 30.0);
-                  },
-                  height: 60,
-                  width: double.infinity,
-                  text: "Түрээслэх"),
+                canPress: true,
+                onPress: () {
+                  Fluttertoast.showToast(
+                    msg: "See u soon",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: mRed,
+                    textColor: Colors.white,
+                    fontSize: 30.0,
+                  );
+                },
+                height: 60,
+                width: double.infinity,
+                text: "Түрээслэх",
+              ),
             ],
           ),
         ),

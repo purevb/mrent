@@ -2,11 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
-import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
+import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
+import 'package:mrent/pages/profile_page/pages/pages/my_properties.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/route/route.gr.dart';
 import 'package:mrent/services/auth_service.dart';
@@ -23,7 +25,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   Api api = Api();
-
+  DataController dataController = DataController();
   final Map<int, Map<String, String>> profileListTileDatas = {
     0: {
       "iconPath": "assets/profile/Vector.svg",
@@ -56,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
     0: {
       "number": "10",
       "description": "Түрээслүүлж буй",
-      "path": "/my_properties",
+      "path": "",
     },
     1: {
       "number": "0",
@@ -71,6 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
   };
   @override
   void initState() {
+    dataController.getUserPropertiesData(widget.user.id!);
     super.initState();
   }
 
@@ -118,23 +121,51 @@ class _ProfilePageState extends State<ProfilePage> {
                   top: 10,
                 ),
                 height: 100,
-                child: ListView.separated(
+                child: ListView(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return myContainers(
-                      tiles[index]!['path']!,
-                      width,
-                      tiles[index]!['number']!,
-                      tiles[index]!['description']!,
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(
+                  children: [
+                    ValueListenableBuilder<List<PropertyModel>?>(
+                      valueListenable: dataController.usePropertyDataNotifier,
+                      builder: (context, userProperties, child) {
+                        if (userProperties == null) {
+                          return const SizedBox();
+                        } else {
+                          return myContainers(
+                            () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MyPropertiesPage(
+                                  userPropertyDatas: userProperties,
+                                );
+                              }));
+                            },
+                            width,
+                            userProperties.length.toString(),
+                            "Түрээслүүлж буй",
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(
                       width: 15,
-                    );
-                  },
-                  itemCount: tiles.length,
+                    ),
+                    myContainers(
+                      () {},
+                      width,
+                      tiles[1]!['number']!,
+                      tiles[1]!['description']!,
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    myContainers(
+                      () {},
+                      width,
+                      tiles[2]!['number']!,
+                      tiles[2]!['description']!,
+                    ),
+                  ],
                 ),
               ),
               const Padding(
@@ -265,11 +296,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   GestureDetector myContainers(
-      String path, double width, String number, String description) {
+      VoidCallback onTap, double width, String number, String description) {
     return GestureDetector(
-      onTap: () {
-        context.router.pushNamed(path);
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(2),
         width: width * 0.33 - 40,

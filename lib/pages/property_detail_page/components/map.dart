@@ -67,7 +67,6 @@ class MapSampleState extends State<MapSample> {
         _isLoading = false;
       });
 
-      // Pass the selected location and address back to the parent widget
       if (widget.onLocationSelected != null) {
         widget.onLocationSelected!(_selectedLocation, _selectedAddress);
       }
@@ -93,8 +92,7 @@ class MapSampleState extends State<MapSample> {
       body: Stack(
         children: [
           GoogleMap(
-            key: const ValueKey(
-                'google_map'), // Unique key for the GoogleMap widget
+            key: const ValueKey('google_map'),
             mapType: MapType.normal,
             initialCameraPosition: _kUlaanbaatar,
             onMapCreated: (GoogleMapController controller) {

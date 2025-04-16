@@ -11,11 +11,14 @@ class DataController with ChangeNotifier {
   var api = Api();
   final ValueNotifier<List<PropertyModel>?> propertyDataNotifier =
       ValueNotifier(null);
+  final ValueNotifier<List<PropertyModel>?> usePropertyDataNotifier =
+      ValueNotifier(null);
   final ValueNotifier<List<PropertyType>?> propertyTypeNotifier =
       ValueNotifier(null);
   final ValueNotifier<List<ProvinceModel>?> proviceNotifier =
       ValueNotifier(null);
-  final ValueNotifier<List<FavoriteModel>?> getFavoriteNotifier =
+
+  final ValueNotifier<List<FavoriteModel>?> favoriteNotifier =
       ValueNotifier(null);
   Future<void> getPropertyTypeDatas() async {
     try {
@@ -27,11 +30,22 @@ class DataController with ChangeNotifier {
     }
   }
 
+  Future<void> getUserPropertiesData(String userId) async {
+    try {
+      var res = await api.getUserProperties(userId);
+
+      usePropertyDataNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+//
   Future<void> getFavoritesDatas(String userId) async {
     try {
       var res = await api.getFavorites(userId);
-      print(res);
-      getFavoriteNotifier.value = res;
+      favoriteNotifier.value = res;
       notifyListeners();
     } catch (e) {
       log(e.toString());

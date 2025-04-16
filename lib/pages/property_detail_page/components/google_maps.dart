@@ -79,8 +79,8 @@ class MapSampleState extends State<MapSample> {
 
     _markers = {};
     for (var property in widget.propertyData ?? []) {
-      debugPrint('Adding marker for property: ${property.propertyName}');
-      debugPrint('Coordinates: ${property.latitude}, ${property.longitude}');
+      // debugPrint('Adding marker for property: ${property.propertyName}');
+      // debugPrint('Coordinates: ${property.latitude}, ${property.longitude}');
 
       if (property.latitude != null && property.longitude != null) {
         if (property.latitude! >= -90 &&

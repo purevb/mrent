@@ -22,22 +22,22 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
 
   final FocusNode _focusNode = FocusNode();
 
-  void _runFilter(String enteredKeyword) {
-    final provider = Provider.of<PropertyProvider>(context, listen: false);
-    List<PropertyModel> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = provider.userFavoriteProperties;
-    } else {
-      results = provider.userFavoriteProperties
-          .where((property) =>
-              property.propertyName != null &&
-              property.propertyName!
-                  .toLowerCase()
-                  .contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
-    setState(() {});
-  }
+  // void _runFilter(String enteredKeyword) {
+  //   final provider = Provider.of<PropertyProvider>(context, listen: false);
+  //   List<PropertyModel> results = [];
+  //   if (enteredKeyword.isEmpty) {
+  //     results = provider.userFavoriteProperties;
+  //   } else {
+  //     results = provider.userFavoriteProperties
+  //         .where((property) =>
+  //             property.propertyName != null &&
+  //             property.propertyName!
+  //                 .toLowerCase()
+  //                 .contains(enteredKeyword.toLowerCase()))
+  //         .toList();
+  //   }
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
@@ -154,7 +154,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                   Expanded(
                     child: TextField(
                       focusNode: _focusNode,
-                      onChanged: (value) => _runFilter(value),
+                      // onChanged: (value) => _runFilter(value),
                       decoration: const InputDecoration(
                         hintText: 'Хайх...',
                         border: InputBorder.none,

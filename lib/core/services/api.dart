@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:mrent/core/services/api_dio.dart';
 import 'package:mrent/model/favorite_model.dart';
@@ -14,6 +13,14 @@ class Api {
   Future<List<PropertyModel>> getProperties() async {
     final res = await api.get("/properties");
 
+    final List<dynamic> data = res.data;
+    return data.map((json) {
+      return PropertyModel.fromJson(json);
+    }).toList();
+  }
+
+  Future<List<PropertyModel>> getUserProperties(String userId) async {
+    final res = await api.get("/properties/user/$userId");
     final List<dynamic> data = res.data;
     return data.map((json) {
       return PropertyModel.fromJson(json);
@@ -48,6 +55,7 @@ class Api {
         "user_id": userId,
       },
     );
+    log("${response.statusCode} post favorite");
   }
 
   Future<void> deleteFavorites(String userId, String propertyId) async {
@@ -58,6 +66,7 @@ class Api {
         "property_id": propertyId,
       },
     );
+    log("${response.statusCode} delete favorite");
   }
 
   Future<List<ProvinceModel>> getProvinces() async {

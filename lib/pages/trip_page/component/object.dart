@@ -6,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
@@ -16,8 +15,10 @@ class TheObject extends StatefulWidget {
   const TheObject({
     required this.propertyData,
     super.key,
+    required this.favoriteProperty,
   });
   final PropertyModel propertyData;
+  final bool favoriteProperty;
 
   @override
   State<TheObject> createState() => _TheObjectState();
@@ -25,12 +26,11 @@ class TheObject extends StatefulWidget {
 
 class _TheObjectState extends State<TheObject> {
   Api api = Api();
-  late bool favorite;
+  bool favorite = false;
   @override
   void initState() {
     super.initState();
-    favorite = Provider.of<PropertyProvider>(context, listen: false)
-        .isFavorite(widget.propertyData);
+    favorite = widget.favoriteProperty;
   }
 
   @override
@@ -155,10 +155,17 @@ class _TheObjectState extends State<TheObject> {
                       GestureDetector(
                         onTap: () {
                           if (provider.getUser != null) {
+                            if (favorite == true) {
+                              api.deleteFavorites(provider.getUser!.id!,
+                                  widget.propertyData.id!);
+                            } else {
+                              api.postFavorites(provider.getUser!.id!,
+                                  widget.propertyData.id!);
+                            }
                             setState(() {
                               favorite = !favorite;
                             });
-                            provider.toggleFavorite(widget.propertyData);
+                            // provider.toggleFavorite(widget.propertyData);
                           } else {
                             showModalBottomSheet(
                               elevation: 0,
@@ -176,7 +183,7 @@ class _TheObjectState extends State<TheObject> {
                           width: 25,
                           child: SvgPicture.asset(
                               fit: BoxFit.fitHeight,
-                              provider.isFavorite(widget.propertyData) == true
+                              favorite == true
                                   ? "assets/object/pressedlike.svg"
                                   : "assets/object/Vector.svg"),
                         ),

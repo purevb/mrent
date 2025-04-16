@@ -171,13 +171,13 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                     setState(() {
                       favorite = !favorite;
                     });
-                    provider.toggleFavorite(widget.propertyData);
                   },
                   child: SvgPicture.asset(
                     fit: BoxFit.fitHeight,
-                    provider.isFavorite(widget.propertyData) == true
-                        ? "assets/object/pressedlike.svg"
-                        : "assets/object/Vector.svg",
+                    // provider.isFavorite(widget.propertyData) == true
+                    // ? "assets/object/pressedlike.svg"
+                    // :
+                    "assets/object/Vector.svg",
                   ),
                 ),
               )

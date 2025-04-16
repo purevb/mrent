@@ -61,6 +61,7 @@ class HorizontalProperty extends StatelessWidget {
                 ),
                 Text(
                   propertyData.description.toString(),
+                  maxLines: 4,
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -70,7 +71,7 @@ class HorizontalProperty extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "\$${propertyData.nightlyPrice.toString()}",
+                    "₮${propertyData.nightlyPrice.toString()}",
                     style: GoogleFonts.inter(
                       fontSize: 19,
                       fontWeight: FontWeight.w600,

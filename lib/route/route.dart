@@ -16,7 +16,7 @@ class AppRouter extends RootStackRouter {
         CupertinoRoute(page: PrivacyRoute.page, path: '/privacy'),
         CupertinoRoute(
             page: AddPropertyDetailsRoute.page, path: '/add_property'),
-        CupertinoRoute(page: MyPropertiesRoute.page, path: '/my_properties'),
+        // CupertinoRoute(page: MyPropertiesRoute.page, path: '/my_properties'),
         CupertinoRoute(page: OrdersRoute.page, path: '/orders'),
       ];
 }

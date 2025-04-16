@@ -21,7 +21,6 @@ class CarouselSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height * 0.2,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
         child: AspectRatio(

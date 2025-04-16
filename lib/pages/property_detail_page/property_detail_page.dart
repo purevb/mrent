@@ -211,7 +211,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                             onTap: () {
                               if (provider.getUser != null) {
                                 setState(() {});
-                                provider.toggleFavorite(widget.propertyData);
                               } else {
                                 showModalBottomSheet(
                                   elevation: 0,
@@ -229,10 +228,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               width: 25,
                               child: SvgPicture.asset(
                                   fit: BoxFit.fitHeight,
-                                  provider.isFavorite(widget.propertyData) ==
-                                          true
-                                      ? "assets/object/pressedlike.svg"
-                                      : "assets/object/Vector.svg"),
+                                  // provider.isFavorite(widget.propertyData) ==
+                                  //     true
+                                  // ? "assets/object/pressedlike.svg"
+                                  // :
+                                  "assets/object/Vector.svg"),
                             ),
                           ),
                         ],

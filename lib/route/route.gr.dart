@@ -90,21 +90,21 @@ class MessageCheckerArgs {
   }
 }
 
-/// generated route for
-/// [MyPropertiesPage]
-class MyPropertiesRoute extends _i7.PageRouteInfo<void> {
-  const MyPropertiesRoute({List<_i7.PageRouteInfo>? children})
-      : super(MyPropertiesRoute.name, initialChildren: children);
+// /// generated route for
+// /// [MyPropertiesPage]
+// class MyPropertiesRoute extends _i7.PageRouteInfo<void> {
+//   const MyPropertiesRoute({List<_i7.PageRouteInfo>? children})
+//       : super(MyPropertiesRoute.name, initialChildren: children);
 
-  static const String name = 'MyPropertiesRoute';
+//   static const String name = 'MyPropertiesRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const MyPropertiesPage();
-    },
-  );
-}
+//   static _i7.PageInfo page = _i7.PageInfo(
+//     name,
+//     builder: (data) {
+//       return MyPropertiesPage();
+//     },
+//   );
+// }
 
 /// generated route for
 /// [NavigationPage]

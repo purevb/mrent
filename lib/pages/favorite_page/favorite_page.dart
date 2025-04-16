@@ -34,20 +34,30 @@ class _FavoritePageState extends State<FavoritePage> {
   String selectedType = "";
 
   void _runFilter(String enteredKeyword) {
-    final provider = Provider.of<PropertyProvider>(context, listen: false);
-
-    List<PropertyModel> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = provider.userFavoriteProperties;
-    } else {
-      results = provider.userFavoriteProperties
-          .where((property) =>
-              property.propertyName != null &&
-              property.propertyName!
-                  .toLowerCase()
-                  .contains(enteredKeyword.toLowerCase()))
+    ValueNotifier<List<PropertyModel>?> properties =
+        ValueNotifier<List<PropertyModel>?>([]);
+    if (dataController.favoriteNotifier.value != null) {
+      properties.value = dataController.favoriteNotifier.value!
+          .where((favorite) => favorite.propertyId != null)
+          .map((favorite) => favorite.propertyId!)
           .toList();
     }
+
+    List<PropertyModel> results = [];
+    if (properties.value != null) {
+      if (enteredKeyword.isEmpty) {
+        results = properties.value!;
+      } else {
+        results = properties.value!
+            .where((property) =>
+                property.propertyName != null &&
+                property.propertyName!
+                    .toLowerCase()
+                    .contains(enteredKeyword.toLowerCase()))
+            .toList();
+      }
+    }
+
     setState(() {
       _founders = results;
     });
@@ -60,17 +70,17 @@ class _FavoritePageState extends State<FavoritePage> {
     _searchController = TextEditingController();
     _founders = [];
     _focusNode.addListener(_onFocusChange);
-    getFavoriteData();
+    // getFavoriteData();
   }
 
-  Future<void> getFavoriteData() async {
-    try {
-      final userId = widget.user.id;
-      await dataController.getFavoritesDatas(userId!);
-    } catch (e) {
-      debugPrint("Error fetching favorites: $e");
-    }
-  }
+  // Future<void> getFavoriteData() async {
+  //   try {
+  //     final userId = widget.user.id;
+  //     await dataController.getFavoritesDatas(userId!);
+  //   } catch (e) {
+  //     debugPrint("Error fetching favorites: $e");
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -122,147 +132,162 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    final provider = Provider.of<PropertyProvider>(context, listen: true);
+  List<PropertyModel> _getFilteredProperties() {
+    List<PropertyModel> properties = [];
 
-    List<PropertyModel> typeFiltered = [];
+    if (dataController.favoriteNotifier.value != null) {
+      properties = dataController.favoriteNotifier.value!
+          .where((favorite) => favorite.propertyId != null)
+          .map((favorite) => favorite.propertyId!)
+          .toList();
+    }
 
-    if (selectedType.isEmpty || selectedType == "Бүгд") {
-      typeFiltered = List.from(provider.userFavoriteProperties);
-    } else {
-      typeFiltered = provider.userFavoriteProperties
+    if (selectedType.isNotEmpty && selectedType != "Бүгд") {
+      properties = properties
           .where((property) =>
               property.propertyTypeId != null &&
               property.propertyTypeId!.typeName == selectedType)
           .toList();
     }
 
-    final displayItems =
-        (onSearch == true && _founders.isNotEmpty) ? _founders : typeFiltered;
+    return properties;
+  }
 
-    return ValueListenableBuilder(
-      valueListenable: dataController.propertyTypeNotifier,
-      builder: (context, propertyTypeData, child) {
-        if (propertyTypeData == null) {
-          return SizedBox(
-            height: 70.0,
-            child: Shimmer.fromColors(
-              // ignore: deprecated_member_use
-              baseColor: Colors.grey.withOpacity(0.2),
-              highlightColor: Colors.white,
-              child: ListView.separated(
-                padding: const EdgeInsets.only(
-                  left: 30,
-                ),
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 30,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Container(
-                        height: 30,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(
-                    width: 10,
-                  );
-                },
-              ),
+  Future<void> _refreshData() async {
+    // await getFavoriteData();
+    await dataController.getPropertyTypeDatas();
+    setState(() {
+      if (onSearch) {
+        _runFilter(_searchController.text);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
+    final displayItems = (onSearch == true && _founders.isNotEmpty)
+        ? _founders
+        : _getFilteredProperties();
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        title: onSearch == false ? const Text("Таалагдсан") : const Text(""),
+        centerTitle: true,
+        actions: [
+          AnimatedContainer(
+            margin: const EdgeInsets.only(
+              bottom: 10,
+              left: 20,
+              right: 20,
             ),
-          );
-        } else {
-          return Scaffold(
-            backgroundColor: backgroundColor,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: backgroundColor,
-              elevation: 0,
-              title:
-                  onSearch == false ? const Text("Таалагдсан") : const Text(""),
-              centerTitle: true,
-              actions: [
-                AnimatedContainer(
-                  margin: const EdgeInsets.only(
-                    bottom: 10,
-                    left: 20,
-                    right: 20,
-                  ),
-                  curve: Curves.linear,
-                  duration: const Duration(milliseconds: 300),
-                  width: onSearch == false ? 56 : width - 40,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(onSearch ? 12 : 28),
-                    color:
-                        onSearch == false ? Colors.grey.shade200 : Colors.white,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            onSearch = !onSearch;
-                            if (onSearch) {
-                              _focusNode.requestFocus();
-                            } else {
-                              _founders = [];
-                              _searchController.clear();
-                            }
-                          });
-                        },
-                        icon: Icon(
-                          onSearch == false
-                              ? CupertinoIcons.search
-                              : CupertinoIcons.xmark,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      if (onSearch)
-                        Expanded(
-                          child: TextField(
-                            controller: _searchController,
-                            focusNode: _focusNode,
-                            onChanged: (value) => _runFilter(value),
-                            onSubmitted: (value) {
-                              _runFilter(value);
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Хайх...',
-                              border: InputBorder.none,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 8),
-                            ),
-                            autofocus: true,
-                          ),
-                        ),
-                    ],
+            curve: Curves.linear,
+            duration: const Duration(milliseconds: 300),
+            width: onSearch == false ? 56 : width - 40,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(onSearch ? 12 : 28),
+              color: onSearch == false ? Colors.grey.shade200 : Colors.white,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      onSearch = !onSearch;
+                      if (onSearch) {
+                        _focusNode.requestFocus();
+                      } else {
+                        _founders = [];
+                        _searchController.clear();
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    onSearch == false
+                        ? CupertinoIcons.search
+                        : CupertinoIcons.xmark,
+                    color: Colors.black87,
                   ),
                 ),
+                if (onSearch)
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _focusNode,
+                      onChanged: (value) => _runFilter(value),
+                      onSubmitted: (value) {
+                        _runFilter(value);
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Хайх...',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                      autofocus: true,
+                    ),
+                  ),
               ],
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(35),
-                child: SizedBox(
+            ),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(35),
+          child: ValueListenableBuilder(
+            valueListenable: dataController.propertyTypeNotifier,
+            builder: (context, propertyTypeData, child) {
+              if (propertyTypeData == null) {
+                return SizedBox(
+                  height: 70.0,
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey.withOpacity(0.2),
+                    highlightColor: Colors.white,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.only(
+                        left: 30,
+                      ),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          children: [
+                            Container(
+                              height: 30,
+                              width: 30,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Container(
+                              height: 30,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const SizedBox(
+                          width: 10,
+                        );
+                      },
+                    ),
+                  ),
+                );
+              } else {
+                return SizedBox(
                   height: 35,
                   child: ListView.separated(
                     padding: const EdgeInsets.only(left: 20),
@@ -275,7 +300,6 @@ class _FavoritePageState extends State<FavoritePage> {
                           setState(() {
                             selectedType =
                                 propertyTypeData[index].typeName ?? "";
-
                             currentIndex = index;
                             if (onSearch) {
                               _focusNode.requestFocus();
@@ -322,118 +346,106 @@ class _FavoritePageState extends State<FavoritePage> {
                       );
                     },
                   ),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+      body: ValueListenableBuilder(
+        valueListenable: dataController.favoriteNotifier,
+        builder: (context, favoriteData, child) {
+          if (favoriteData == null) {
+            return SizedBox(
+              height: height,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.withOpacity(0.2),
+                highlightColor: Colors.white,
+                child: GridView.builder(
+                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: height * 0.35,
+                      width: width * 0.4,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        color: Colors.black,
+                      ),
+                    );
+                  },
+                  itemCount: 10,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    mainAxisExtent: height * 0.25,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
+                    crossAxisCount: 2,
+                  ),
                 ),
               ),
-            ),
-            body: ValueListenableBuilder(
-              valueListenable: dataController.getFavoriteNotifier,
-              builder: (context, favoriteData, child) {
-                if (favoriteData == null) {
-                  return SizedBox(
-                    height: height,
-                    child: Shimmer.fromColors(
-                      baseColor: Colors.grey.withOpacity(0.2),
-                      highlightColor: Colors.white,
-                      child: GridView.builder(
-                        padding:
-                            const EdgeInsets.only(left: 20, top: 20, right: 20),
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            height: height * 0.35,
-                            width: width * 0.4,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              color: Colors.black,
-                            ),
-                          );
-                        },
-                        itemCount: 10,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          mainAxisExtent: height * 0.25,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 20,
-                          crossAxisCount: 2,
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  List<PropertyModel> properties = [];
-                  for (var favorite in favoriteData) {
-                    if (favorite.propertyId != null) {
-                      properties.add(favorite.propertyId!);
-                    }
-                  }
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    final propertyProvider =
-                        Provider.of<PropertyProvider>(context, listen: false);
-                    propertyProvider.propertyData = [];
-                    propertyProvider.propertyData.addAll(properties);
-                  });
-
-                  return SingleChildScrollView(
-                    child: Container(
-                      padding:
-                          const EdgeInsets.only(left: 20, top: 20, right: 20),
-                      child: Column(
-                        children: [
-                          if (displayItems.isNotEmpty) ...[
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (BuildContext context, int index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PropertyDetailPage(
-                                          propertyData: displayItems[index],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: FavoriteProperty(
-                                    propertyData: displayItems[index],
+            );
+          } else {
+            return RefreshIndicator(
+              onRefresh: _refreshData,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                  child: Column(
+                    children: [
+                      if (displayItems.isNotEmpty) ...[
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PropertyDetailPage(
+                                      propertyData: displayItems[index],
+                                    ),
                                   ),
                                 );
                               },
-                              itemCount: displayItems.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                mainAxisExtent: height * 0.3,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 20,
-                                crossAxisCount: 2,
+                              child: FavoriteProperty(
+                                propertyData: displayItems[index],
+                              ),
+                            );
+                          },
+                          itemCount: displayItems.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: height * 0.3,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                            crossAxisCount: 2,
+                          ),
+                        ),
+                      ] else ...[
+                        SizedBox(
+                          height: height - 185,
+                          child: Center(
+                            child: Text(
+                              onSearch
+                                  ? "Хайлтад тохирох сууц олдсонгүй."
+                                  : "Танд одоогоор таалагдсан сууц алга байна.",
+                              style: GoogleFonts.inter(
+                                color: textDefaultColor,
                               ),
                             ),
-                          ] else ...[
-                            SizedBox(
-                              height: height - 185,
-                              child: Center(
-                                child: Text(
-                                  onSearch
-                                      ? "Хайлтад тохирох сууц олдсонгүй."
-                                      : "Танд одоогоор таалагдсан сууц алга байна.",
-                                  style: GoogleFonts.inter(
-                                    color: textDefaultColor,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-          );
-        }
-      },
+                          ),
+                        )
+                      ]
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }

@@ -72,6 +72,7 @@ class _NavigationPageState extends State<NavigationPage> {
 
       if (document.exists && mounted) {
         final mongoUser = await _api.getMongoUser(userId);
+        // ignore: use_build_context_synchronously
         Provider.of<PropertyProvider>(context, listen: false)
             .authenticatedUser(mongoUser);
         setState(() => _mongoUser = mongoUser);
@@ -79,6 +80,14 @@ class _NavigationPageState extends State<NavigationPage> {
     } catch (e) {
       log('Error loading user: $e');
     }
+  }
+
+  Future<void> _refreshData() async {
+    await Future.wait([
+      _dataController.getPropertiesData(),
+    ]);
+
+    return Future.value();
   }
 
   @override
@@ -99,6 +108,7 @@ class _NavigationPageState extends State<NavigationPage> {
               index: _currentIndex,
               children: [
                 TripPage(
+                  refresh: _refreshData,
                   user: _mongoUser,
                   propertyDatas: propertyData ?? [],
                 ),

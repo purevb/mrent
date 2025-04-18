@@ -133,7 +133,9 @@ class MapSampleState extends State<MapSample> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PropertyDetailPage(propertyData: property),
+          builder: (context) => PropertyDetailPage(
+            propertyData: property,
+          ),
         ),
       ),
       child: Container(
@@ -144,6 +146,7 @@ class MapSampleState extends State<MapSample> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.2),
               blurRadius: 10,
               spreadRadius: 2,

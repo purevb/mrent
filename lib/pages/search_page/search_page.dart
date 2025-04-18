@@ -71,7 +71,9 @@ class _SearchPageState extends State<SearchPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PropertyDetailPage(propertyData: property),
+        builder: (context) => PropertyDetailPage(
+          propertyData: property,
+        ),
       ),
     );
   }
@@ -157,7 +159,6 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
             const SizedBox(height: 16),
-            // Properties Grid
             Expanded(
               child: displayItems.isEmpty
                   ? Center(

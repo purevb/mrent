@@ -23,32 +23,31 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   bool onSearch = false;
   int currentIndex = 0;
   final ScrollController _scrollController = ScrollController();
   DataController dataController = DataController();
   final FocusNode _focusNode = FocusNode();
   List<PropertyModel> _founders = [];
-  List<PropertyModel> filteredPropertyDatas = [];
-  String selectedType = "";
+  String selectedType = "Бүгд";
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_onFocusChange);
+    _refreshData();
+  }
 
   void _runFilter(String enteredKeyword) {
-    ValueNotifier<List<PropertyModel>?> properties =
-        ValueNotifier<List<PropertyModel>?>([]);
-    if (dataController.favoriteNotifier.value != null) {
-      properties.value = dataController.favoriteNotifier.value!
-          .where((favorite) => favorite.propertyId != null)
-          .map((favorite) => favorite.propertyId!)
-          .toList();
-    }
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
+    List<PropertyModel> properties = provider.getUserfavoriteProperties;
 
     List<PropertyModel> results = [];
-    if (properties.value != null) {
+    if (properties.isNotEmpty) {
       if (enteredKeyword.isEmpty) {
-        results = properties.value!;
+        results = properties;
       } else {
-        results = properties.value!
+        results = properties
             .where((property) =>
                 property.propertyName != null &&
                 property.propertyName!
@@ -64,25 +63,6 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    dataController.getPropertyTypeDatas();
-    _searchController = TextEditingController();
-    _founders = [];
-    _focusNode.addListener(_onFocusChange);
-    // getFavoriteData();
-  }
-
-  // Future<void> getFavoriteData() async {
-  //   try {
-  //     final userId = widget.user.id;
-  //     await dataController.getFavoritesDatas(userId!);
-  //   } catch (e) {
-  //     debugPrint("Error fetching favorites: $e");
-  //   }
-  // }
-
-  @override
   void dispose() {
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
@@ -94,6 +74,7 @@ class _FavoritePageState extends State<FavoritePage> {
     if (!_focusNode.hasFocus && onSearch) {
       setState(() {
         onSearch = false;
+        _founders = [];
       });
     }
   }
@@ -133,14 +114,8 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   List<PropertyModel> _getFilteredProperties() {
-    List<PropertyModel> properties = [];
-
-    if (dataController.favoriteNotifier.value != null) {
-      properties = dataController.favoriteNotifier.value!
-          .where((favorite) => favorite.propertyId != null)
-          .map((favorite) => favorite.propertyId!)
-          .toList();
-    }
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
+    List<PropertyModel> properties = provider.getUserfavoriteProperties;
 
     if (selectedType.isNotEmpty && selectedType != "Бүгд") {
       properties = properties
@@ -149,28 +124,38 @@ class _FavoritePageState extends State<FavoritePage> {
               property.propertyTypeId!.typeName == selectedType)
           .toList();
     }
-
     return properties;
   }
 
   Future<void> _refreshData() async {
-    // await getFavoriteData();
-    await dataController.getPropertyTypeDatas();
-    setState(() {
-      if (onSearch) {
-        _runFilter(_searchController.text);
-      }
-    });
+    await Future.wait([
+      dataController.getPropertyTypeDatas(),
+      dataController.getFavoritesDatas(widget.user.id!),
+    ]);
+
+    if (mounted) {
+      setState(() {
+        if (onSearch) {
+          _runFilter(_searchController.text);
+        }
+      });
+    }
+    return Future.value();
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    final provider = Provider.of<PropertyProvider>(context);
 
-    final displayItems = (onSearch == true && _founders.isNotEmpty)
+    // Determine which list to display
+    final displayItems = (onSearch && _founders.isNotEmpty)
         ? _founders
         : _getFilteredProperties();
+
+    // Check if favorites are still loading
+    final isLoading = provider.getUserfavoriteProperties.isEmpty;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -287,6 +272,11 @@ class _FavoritePageState extends State<FavoritePage> {
                   ),
                 );
               } else {
+                // Add "All" category at the beginning if not present
+                final allTypes = [
+                  ...propertyTypeData,
+                ];
+
                 return SizedBox(
                   height: 35,
                   child: ListView.separated(
@@ -295,11 +285,14 @@ class _FavoritePageState extends State<FavoritePage> {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
+                      final typeName = index == 0
+                          ? "Бүгд"
+                          : allTypes[index - 1].typeName ?? "";
+
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            selectedType =
-                                propertyTypeData[index].typeName ?? "";
+                            selectedType = typeName;
                             currentIndex = index;
                             if (onSearch) {
                               _focusNode.requestFocus();
@@ -319,7 +312,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           child: Row(
                             children: [
                               Text(
-                                propertyTypeData[index].typeName ?? "",
+                                typeName,
                                 style: GoogleFonts.inter(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
@@ -330,16 +323,14 @@ class _FavoritePageState extends State<FavoritePage> {
                                 height: 15,
                                 fit: BoxFit.contain,
                                 color: textDefaultColor,
-                                getIconPath(
-                                  propertyTypeData[index].typeName ?? "",
-                                ),
+                                getIconPath(typeName),
                               ),
                             ],
                           ),
                         ),
                       );
                     },
-                    itemCount: propertyTypeData.length,
+                    itemCount: allTypes.length + 1, // +1 for "All" category
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(
                         width: 5,
@@ -352,45 +343,47 @@ class _FavoritePageState extends State<FavoritePage> {
           ),
         ),
       ),
-      body: ValueListenableBuilder(
-        valueListenable: dataController.favoriteNotifier,
-        builder: (context, favoriteData, child) {
-          if (favoriteData == null) {
-            return SizedBox(
-              height: height,
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey.withOpacity(0.2),
-                highlightColor: Colors.white,
-                child: GridView.builder(
-                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: height * 0.35,
-                      width: width * 0.4,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: Colors.black,
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: isLoading
+              ? SizedBox(
+                  height: height,
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey.withOpacity(0.2),
+                    highlightColor: Colors.white,
+                    child: GridView.builder(
+                      padding:
+                          const EdgeInsets.only(left: 20, top: 20, right: 20),
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          height: height * 0.35,
+                          width: width * 0.4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: Colors.black,
+                          ),
+                        );
+                      },
+                      itemCount: 10,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        mainAxisExtent: height * 0.25,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
+                        crossAxisCount: 2,
                       ),
-                    );
-                  },
-                  itemCount: 10,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: height * 0.25,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
-                    crossAxisCount: 2,
+                    ),
                   ),
-                ),
-              ),
-            );
-          } else {
-            return RefreshIndicator(
-              onRefresh: _refreshData,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Container(
-                  padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+                )
+              : Container(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    top: 20,
+                    right: 20,
+                    bottom: 100,
+                  ),
                   child: Column(
                     children: [
                       if (displayItems.isNotEmpty) ...[
@@ -441,10 +434,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     ],
                   ),
                 ),
-              ),
-            );
-          }
-        },
+        ),
       ),
     );
   }

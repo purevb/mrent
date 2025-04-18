@@ -168,16 +168,16 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                 left: 16,
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {
-                      favorite = !favorite;
-                    });
+                    provider.toggleFavorite(
+                      provider.getUser!.id!,
+                      widget.propertyData,
+                    );
                   },
                   child: SvgPicture.asset(
                     fit: BoxFit.fitHeight,
-                    // provider.isFavorite(widget.propertyData) == true
-                    // ? "assets/object/pressedlike.svg"
-                    // :
-                    "assets/object/Vector.svg",
+                    provider.isPropertyIdFavorite(widget.propertyData.id!)
+                        ? "assets/object/pressedlike.svg"
+                        : "assets/object/Vector.svg",
                   ),
                 ),
               )

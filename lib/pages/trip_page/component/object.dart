@@ -15,10 +15,8 @@ class TheObject extends StatefulWidget {
   const TheObject({
     required this.propertyData,
     super.key,
-    required this.favoriteProperty,
   });
   final PropertyModel propertyData;
-  final bool favoriteProperty;
 
   @override
   State<TheObject> createState() => _TheObjectState();
@@ -30,7 +28,6 @@ class _TheObjectState extends State<TheObject> {
   @override
   void initState() {
     super.initState();
-    favorite = widget.favoriteProperty;
   }
 
   @override
@@ -155,17 +152,13 @@ class _TheObjectState extends State<TheObject> {
                       GestureDetector(
                         onTap: () {
                           if (provider.getUser != null) {
-                            if (favorite == true) {
-                              api.deleteFavorites(provider.getUser!.id!,
-                                  widget.propertyData.id!);
-                            } else {
-                              api.postFavorites(provider.getUser!.id!,
-                                  widget.propertyData.id!);
-                            }
+                            provider.toggleFavorite(
+                              provider.getUser!.id!,
+                              widget.propertyData,
+                            );
                             setState(() {
                               favorite = !favorite;
                             });
-                            // provider.toggleFavorite(widget.propertyData);
                           } else {
                             showModalBottomSheet(
                               elevation: 0,
@@ -183,7 +176,8 @@ class _TheObjectState extends State<TheObject> {
                           width: 25,
                           child: SvgPicture.asset(
                               fit: BoxFit.fitHeight,
-                              favorite == true
+                              provider.isPropertyIdFavorite(
+                                      widget.propertyData.id!)
                                   ? "assets/object/pressedlike.svg"
                                   : "assets/object/Vector.svg"),
                         ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mrent/components/main_appbar.dart';
 import 'package:mrent/controller/data_controller.dart';
@@ -7,18 +9,22 @@ import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 import 'package:mrent/pages/trip_page/component/object.dart';
+import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TripPage extends StatefulWidget {
   final MongoUserModel? user;
   final List<PropertyModel> propertyDatas;
   final bool? gotData;
+  final RefreshCallback? refresh;
 
   const TripPage({
     this.user,
     required this.propertyDatas,
     this.gotData,
+    this.refresh,
     super.key,
   });
 
@@ -49,15 +55,33 @@ class _TripPageState extends State<TripPage> {
     }
 
     try {
+      log("Loading favorites for user: ${widget.user!.id}");
       favoriteModels = await api.getFavorites(widget.user!.id!);
-      if (mounted) {
-        setState(() {
-          favoriteProperties =
-              favoriteModels.map((fav) => fav.propertyId!.id!).toList();
-          _isFavoritesLoading = false;
-        });
+      log("Loaded ${favoriteModels.length} favorites");
+
+      if (!mounted) return;
+      final provider = Provider.of<PropertyProvider>(context, listen: false);
+      List<PropertyModel> favoritePropertyObjects = [];
+      for (var favModel in favoriteModels) {
+        if (favModel.propertyId != null) {
+          final property = widget.propertyDatas.firstWhere(
+            (p) => p.id == favModel.propertyId!.id,
+            orElse: () => favModel.propertyId!,
+          );
+          favoritePropertyObjects.add(property);
+        }
       }
+      provider.addFavoriteProperties(favoritePropertyObjects);
+
+      setState(() {
+        favoriteProperties = favoriteModels
+            .where((fav) => fav.propertyId?.id != null)
+            .map((fav) => fav.propertyId!.id!)
+            .toList();
+        _isFavoritesLoading = false;
+      });
     } catch (e) {
+      log("Error loading favorites: $e");
       if (mounted) {
         setState(() => _isFavoritesLoading = false);
       }
@@ -73,16 +97,6 @@ class _TripPageState extends State<TripPage> {
               .where((property) =>
                   property.propertyTypeId!.typeName == categoryType)
               .toList();
-    });
-  }
-
-  void _updateFavorite(String propertyId, bool isFavorite) {
-    setState(() {
-      if (isFavorite) {
-        favoriteProperties.add(propertyId);
-      } else {
-        favoriteProperties.remove(propertyId);
-      }
     });
   }
 
@@ -154,51 +168,36 @@ class _TripPageState extends State<TripPage> {
             ),
           );
         } else {
-          return ListView.separated(
-            itemCount: displayData.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final property = displayData[index];
-              return PropertyListItem(
-                property: property,
-                isFavorite: favoriteProperties.contains(property.id),
-                onFavoriteChanged: (isFavorite) {
-                  _updateFavorite(property.id!, isFavorite);
-                },
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              await Future.wait([
+                widget.refresh?.call() ?? Future.value(),
+                _loadFavorites(),
+              ]);
             },
+            child: ListView.separated(
+              itemCount: displayData.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final property = displayData[index];
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PropertyDetailPage(
+                        propertyData: property,
+                      ),
+                    ),
+                  ),
+                  child: TheObject(
+                    propertyData: property,
+                  ),
+                );
+              },
+            ),
           );
         }
       }),
-    );
-  }
-}
-
-class PropertyListItem extends StatelessWidget {
-  final PropertyModel property;
-  final bool isFavorite;
-  final Function(bool) onFavoriteChanged;
-
-  const PropertyListItem({
-    required this.property,
-    required this.isFavorite,
-    required this.onFavoriteChanged,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PropertyDetailPage(propertyData: property),
-        ),
-      ),
-      child: TheObject(
-        propertyData: property,
-        favoriteProperty: isFavorite,
-      ),
     );
   }
 }

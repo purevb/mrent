@@ -33,7 +33,6 @@ class DataController with ChangeNotifier {
   Future<void> getUserPropertiesData(String userId) async {
     try {
       var res = await api.getUserProperties(userId);
-
       usePropertyDataNotifier.value = res;
       notifyListeners();
     } catch (e) {

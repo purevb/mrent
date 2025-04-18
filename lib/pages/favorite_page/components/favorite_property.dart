@@ -30,7 +30,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    final provider = Provider.of<PropertyProvider>(context, listen: false);
+    final provider = Provider.of<PropertyProvider>(context, listen: true);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -65,6 +65,7 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
             child: Padding(
               padding: const EdgeInsets.only(top: 5.0, left: 5, right: 5),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,10 +82,10 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                       GestureDetector(
                         onTap: () {
                           if (provider.getUser != null) {
-                            print("object");
-                            setState(() {
-                              // provider.toggleFavorite(widget.propertyData);
-                            });
+                            provider.toggleFavorite(
+                              provider.getUser!.id!,
+                              widget.propertyData,
+                            );
                           } else {
                             showModalBottomSheet(
                               elevation: 0,
@@ -102,21 +103,25 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                           width: 25,
                           child: SvgPicture.asset(
                             fit: BoxFit.fitHeight,
-                            // provider.isFavorite(widget.propertyData) == true
-                            // ? "assets/object/pressedlike.svg"
-                            // :
-                            "assets/object/Vector.svg",
+                            provider.isPropertyIdFavorite(
+                                    widget.propertyData.id!)
+                                ? "assets/object/pressedlike.svg"
+                                : "assets/object/Vector.svg",
                           ),
                         ),
                       )
                     ],
                   ),
-                  Text(
-                    widget.propertyData.description ?? "",
-                    maxLines: 3,
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 11,
+                  SizedBox(
+                    height: 50,
+                    child: Text(
+                      widget.propertyData.description ?? "",
+                      maxLines: 3,
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
                     ),
                   ),
                   const SizedBox(

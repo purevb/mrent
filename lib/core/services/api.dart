@@ -47,7 +47,7 @@ class Api {
     }
   }
 
-  Future<void> postFavorites(String userId, String propertyId) async {
+  Future<String> postFavorites(String userId, String propertyId) async {
     final response = await api.post(
       "/favorites",
       {
@@ -56,9 +56,10 @@ class Api {
       },
     );
     log("${response.statusCode} post favorite");
+    return response.statusCode.toString();
   }
 
-  Future<void> deleteFavorites(String userId, String propertyId) async {
+  Future<String> deleteFavorites(String userId, String propertyId) async {
     final response = await api.delete(
       "/favorites",
       {
@@ -66,7 +67,7 @@ class Api {
         "property_id": propertyId,
       },
     );
-    log("${response.statusCode} delete favorite");
+    return response.statusCode.toString();
   }
 
   Future<List<ProvinceModel>> getProvinces() async {

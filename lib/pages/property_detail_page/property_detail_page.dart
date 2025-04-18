@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
 import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
@@ -20,9 +19,11 @@ import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class PropertyDetailPage extends StatefulWidget {
-  const PropertyDetailPage({required this.propertyData, super.key});
+  const PropertyDetailPage({
+    required this.propertyData,
+    super.key,
+  });
   final PropertyModel propertyData;
-
   @override
   State<PropertyDetailPage> createState() => _PropertyDetailPageState();
 }
@@ -31,6 +32,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Api api = Api();
+  bool? favorite;
 
   final Map<int, Map<String, dynamic>> advantages = {
     0: {
@@ -67,7 +69,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    final provider = Provider.of<PropertyProvider>(context, listen: false);
+    final provider = Provider.of<PropertyProvider>(context, listen: true);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -210,7 +212,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                           GestureDetector(
                             onTap: () {
                               if (provider.getUser != null) {
-                                setState(() {});
+                                provider.toggleFavorite(
+                                  provider.getUser!.id!,
+                                  widget.propertyData,
+                                );
                               } else {
                                 showModalBottomSheet(
                                   elevation: 0,
@@ -228,11 +233,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               width: 25,
                               child: SvgPicture.asset(
                                   fit: BoxFit.fitHeight,
-                                  // provider.isFavorite(widget.propertyData) ==
-                                  //     true
-                                  // ? "assets/object/pressedlike.svg"
-                                  // :
-                                  "assets/object/Vector.svg"),
+                                  provider.isPropertyIdFavorite(
+                                          widget.propertyData.id!)
+                                      ? "assets/object/pressedlike.svg"
+                                      : "assets/object/Vector.svg"),
                             ),
                           ),
                         ],

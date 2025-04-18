@@ -1,4 +1,4 @@
-import 'package:mrent/model/fb_user_model.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
 
@@ -6,7 +6,7 @@ class PropertyModel {
   final String? id;
   final ProvinceModel? placeTypeId;
   final PropertyType? propertyTypeId;
-  final String? userId;
+  final MongoUserModel? userId;
   final int? nightlyPrice;
   final String? propertyName;
   final int? numGuests;
@@ -58,7 +58,9 @@ class PropertyModel {
                 ? PropertyType.fromJson(
                     json['propertyTypeId'] as Map<String, dynamic>)
                 : null,
-        userId = json['userId'] as String,
+        userId = (json['userId'] as Map<String, dynamic>?) != null
+            ? MongoUserModel.fromJson(json['userId'] as Map<String, dynamic>)
+            : null,
         nightlyPrice = json['nightlyPrice'] as int?,
         propertyName = json['propertyName'] as String?,
         numGuests = json['numGuests'] as int?,

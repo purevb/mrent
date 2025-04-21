@@ -1,10 +1,18 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mrent/core/services/api.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 
 @RoutePage()
 class PersonalInformationPage extends StatefulWidget {
-  const PersonalInformationPage({super.key});
+  const PersonalInformationPage({
+    required this.mongoUser,
+    super.key,
+  });
+  final MongoUserModel mongoUser;
 
   @override
   State<PersonalInformationPage> createState() =>
@@ -12,11 +20,16 @@ class PersonalInformationPage extends StatefulWidget {
 }
 
 class _PersonalInformationPageState extends State<PersonalInformationPage> {
+  Api api = Api();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Profile"),
+        title: const Text("Мэдээллүүдээ шинэчлэх"),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -28,23 +41,105 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(
-                  "https://cdn-icons-png.flaticon.com/128/4140/4140047.png"),
+            Container(
+              height: 200,
+              width: 200,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: widget.mongoUser.profileImage,
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
-            const SizedBox(height: 20),
-            _buildTextField("Mathew Adam", Icons.person),
-            _buildTextField("+62 112-3288-9111", Icons.phone),
-            _buildTextField("Mathew@email.com", Icons.email),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSocialButton("Google", Colors.black, Icons.logout),
-                const SizedBox(width: 16),
-                _buildSocialButton("Facebook", Colors.blue, Icons.link),
-              ],
+            const SizedBox(
+              height: 20,
+            ),
+            _buildTextField(
+              true,
+              nameController,
+              widget.mongoUser.name ?? "",
+              Icons.person,
+            ),
+            _buildTextField(
+              true,
+              phoneNumberController,
+              widget.mongoUser.phone ?? "",
+              Icons.phone,
+            ),
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        insetPadding: const EdgeInsets.symmetric(
+                          horizontal: 70,
+                        ),
+                        backgroundColor: Colors.transparent,
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 300,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 70,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                spacing: 10,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Lottie.asset(
+                                    'assets/animation/cancel.json',
+                                    fit: BoxFit.contain,
+                                  ),
+                                  Text(
+                                    "Та одоохондоо мэйлээ солих боломжгүй байна.",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.lato(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              right: 10,
+                              top: 10,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    color: Colors.grey,
+                                    Icons.cancel,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              },
+              child: _buildTextField(
+                false,
+                emailController,
+                widget.mongoUser.email ?? "",
+                Icons.email,
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -56,9 +151,15 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                await api.updateMongoUsersDetail(
+                  widget.mongoUser.id ?? "",
+                  userName: nameController.text,
+                  phoneNumber: phoneNumberController.text,
+                );
+              },
               child: Text(
-                "Choose location",
+                "Хадгалах",
                 style: GoogleFonts.inter(color: Colors.white, fontSize: 16),
               ),
             ),
@@ -68,10 +169,13 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
     );
   }
 
-  Widget _buildTextField(String hintText, IconData icon) {
+  Widget _buildTextField(bool enable, TextEditingController controller,
+      String hintText, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        enabled: enable,
+        controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: Icon(icon),
@@ -83,21 +187,6 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSocialButton(String label, Color color, IconData icon) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      onPressed: () {},
-      icon: Icon(icon, color: Colors.white),
-      label: Text(label, style: GoogleFonts.inter(color: Colors.white)),
     );
   }
 }

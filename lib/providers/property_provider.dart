@@ -73,4 +73,10 @@ class PropertyProvider extends ChangeNotifier {
     return favoritePropertyIds.contains(propertyId) ||
         favoriteProperties.any((p) => p.id == propertyId);
   }
+
+  void clearFavoriteProperties() {
+    favoriteProperties.clear();
+    favoritePropertyIds.clear();
+    notifyListeners();
+  }
 }

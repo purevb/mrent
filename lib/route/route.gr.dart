@@ -189,21 +189,21 @@ class PaymentRoute extends _i7.PageRouteInfo<void> {
   );
 }
 
-/// generated route for
-/// [_i4.PersonalInformationPage]
-class PersonalInformationRoute extends _i7.PageRouteInfo<void> {
-  const PersonalInformationRoute({List<_i7.PageRouteInfo>? children})
-      : super(PersonalInformationRoute.name, initialChildren: children);
+// /// generated route for
+// /// [_i4.PersonalInformationPage]
+// class PersonalInformationRoute extends _i7.PageRouteInfo<void> {
+//   const PersonalInformationRoute({List<_i7.PageRouteInfo>? children})
+//       : super(PersonalInformationRoute.name, initialChildren: children);
 
-  static const String name = 'PersonalInformationRoute';
+//   static const String name = 'PersonalInformationRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const _i4.PersonalInformationPage();
-    },
-  );
-}
+//   static _i7.PageInfo page = _i7.PageInfo(
+//     name,
+//     builder: (data) {
+//       return const _i4.PersonalInformationPage();
+//     },
+//   );
+// }
 
 /// generated route for
 /// [_i5.PrivacyPage]

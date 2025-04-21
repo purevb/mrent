@@ -10,7 +10,7 @@ import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
-import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
+import 'package:mrent/pages/map_pages/google_maps.dart';
 import 'package:mrent/pages/property_detail_page/components/image_swiper.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';

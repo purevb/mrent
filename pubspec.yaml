@@ -64,6 +64,10 @@ dependencies:
   shimmer: ^3.0.0
   firebase_storage: ^12.4.5
   flutter_image_compress: ^2.4.0
+  camera: ^0.11.1
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  lottie: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -107,6 +111,7 @@ flutter:
     - assets/booking/
     - assets/booking/payment_methods/
     - assets/add_property/
+    - assets/animation/
 
   #   - images/a_dot_ham.jpeg
 

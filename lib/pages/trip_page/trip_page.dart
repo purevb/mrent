@@ -50,18 +50,24 @@ class _TripPageState extends State<TripPage> {
 
   Future<void> _loadFavorites() async {
     if (widget.user == null) {
-      setState(() => _isFavoritesLoading = false);
+      if (mounted) {
+        setState(() {
+          _isFavoritesLoading = false;
+        });
+      }
       return;
     }
 
     try {
       log("Loading favorites for user: ${widget.user!.id}");
-      favoriteModels = await api.getFavorites(widget.user!.id!);
+      final favoriteModels = await api.getFavorites(widget.user!.id!);
       log("Loaded ${favoriteModels.length} favorites");
 
       if (!mounted) return;
+
       final provider = Provider.of<PropertyProvider>(context, listen: false);
       List<PropertyModel> favoritePropertyObjects = [];
+
       for (var favModel in favoriteModels) {
         if (favModel.propertyId != null) {
           final property = widget.propertyDatas.firstWhere(
@@ -71,8 +77,11 @@ class _TripPageState extends State<TripPage> {
           favoritePropertyObjects.add(property);
         }
       }
+
+      // Update provider first
       provider.addFavoriteProperties(favoritePropertyObjects);
 
+      // Then update state separately
       setState(() {
         favoriteProperties = favoriteModels
             .where((fav) => fav.propertyId?.id != null)

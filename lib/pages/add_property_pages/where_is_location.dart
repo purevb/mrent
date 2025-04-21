@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/pages/add_property_pages/add_property_photo.dart';
-import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
+import 'package:mrent/pages/map_pages/google_maps.dart';
 import 'package:mrent/utils/constants.dart';
 
 class WhereIsLocation extends StatefulWidget {

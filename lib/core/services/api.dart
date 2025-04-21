@@ -148,4 +148,24 @@ class Api {
       rethrow;
     }
   }
+
+  Future<MongoUserModel> updateMongoUsersDetail(
+    String mongoId, {
+    String? userName,
+    String? phoneNumber,
+    String? userProfile,
+  }) async {
+    try {
+      final Map<String, dynamic> updateData = {};
+      if (userName != null) updateData["name"] = userName;
+      if (phoneNumber != null) updateData["phone"] = phoneNumber;
+      if (userProfile != null) updateData["profileImage"] = userProfile;
+
+      final res = await api.putData("/users/$mongoId", updateData);
+      log("${res.statusCode} zurag amjilttai soligdloo");
+      return MongoUserModel.fromJson(res.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

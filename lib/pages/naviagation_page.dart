@@ -12,7 +12,7 @@ import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_checker.dart';
 import 'package:mrent/pages/profile_page/profile_checker.dart';
-import 'package:mrent/pages/property_detail_page/components/google_maps.dart';
+import 'package:mrent/pages/map_pages/google_maps.dart';
 import 'package:mrent/pages/rent_history_page/rent_checker.dart';
 import 'package:mrent/pages/trip_page/trip_page.dart';
 import 'package:mrent/providers/property_provider.dart';

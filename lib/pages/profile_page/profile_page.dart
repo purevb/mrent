@@ -9,6 +9,7 @@ import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
 import 'package:mrent/pages/profile_page/pages/pages/my_properties.dart';
+import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/route/route.gr.dart';
 import 'package:mrent/services/auth_service.dart';
@@ -55,11 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
   };
 
   final Map<int, Map<String, String>> tiles = {
-    0: {
-      "number": "10",
-      "description": "Түрээслүүлж буй",
-      "path": "",
-    },
     1: {
       "number": "0",
       "description": "Tөлөлтүүд",
@@ -97,9 +93,9 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const ProfileImage(
-                proImage:
-                    "https://cdn-icons-png.flaticon.com/128/4140/4140047.png",
+              ProfileImage(
+                mongoUser: widget.user,
+                proImage: widget.user.profileImage,
               ),
               Text(
                 firstLetterUpper(
@@ -245,6 +241,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               id: widget.user.id!,
                             ),
                           );
+                        } else if (path == "/personal_information") {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return PersonalInformationPage(
+                              mongoUser: widget.user,
+                            );
+                          }));
                         } else {
                           context.router.pushNamed(path);
                         }
@@ -279,6 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () async {
                       AuthService authService = AuthService();
                       await authService.signout(context);
+                      provider.clearFavoriteProperties();
                     },
                     child: Text(
                       "Гарах",

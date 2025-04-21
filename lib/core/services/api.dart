@@ -140,7 +140,8 @@ class Api {
 
   Future<MongoUserModel> getMongoUser(String firebaseId) async {
     try {
-      final res = await api.get("users/firebase/$firebaseId");
+      final res = await api.get("/users/firebase/$firebaseId");
+      print(res);
       return MongoUserModel.fromJson(
         res.data,
       );

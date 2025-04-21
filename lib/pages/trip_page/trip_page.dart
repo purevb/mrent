@@ -78,10 +78,8 @@ class _TripPageState extends State<TripPage> {
         }
       }
 
-      // Update provider first
       provider.addFavoriteProperties(favoritePropertyObjects);
 
-      // Then update state separately
       setState(() {
         favoriteProperties = favoriteModels
             .where((fav) => fav.propertyId?.id != null)
@@ -124,7 +122,7 @@ class _TripPageState extends State<TripPage> {
         chooseType: filterTypes,
       ),
       body: Builder(builder: (context) {
-        if (_isFavoritesLoading == true) {
+        if (widget.propertyDatas.isEmpty) {
           return Shimmer.fromColors(
             // ignore: deprecated_member_use
             baseColor: Colors.grey.withOpacity(0.1),

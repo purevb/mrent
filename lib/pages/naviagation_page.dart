@@ -22,8 +22,9 @@ import 'package:shimmer/shimmer.dart';
 
 @RoutePage()
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({this.id, super.key});
+  const NavigationPage({this.user, this.id, super.key});
   final String? id;
+  final MongoUserModel? user;
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -72,10 +73,11 @@ class _NavigationPageState extends State<NavigationPage> {
 
       if (document.exists && mounted) {
         final mongoUser = await _api.getMongoUser(userId);
-        // ignore: use_build_context_synchronously
-        Provider.of<PropertyProvider>(context, listen: false)
-            .authenticatedUser(mongoUser);
-        setState(() => _mongoUser = mongoUser);
+        if (mounted) {
+          Provider.of<PropertyProvider>(context, listen: false)
+              .authenticatedUser(mongoUser);
+          setState(() => _mongoUser = mongoUser);
+        }
       }
     } catch (e) {
       log('Error loading user: $e');
@@ -85,9 +87,16 @@ class _NavigationPageState extends State<NavigationPage> {
   Future<void> _refreshData() async {
     await Future.wait([
       _dataController.getPropertiesData(),
+      if (widget.id != null && widget.id!.isNotEmpty) _loadUserData(widget.id!),
     ]);
+  }
 
-    return Future.value();
+  void _handleNavigation(int index) {
+    if (index == _currentIndex) {
+      _refreshData();
+    } else {
+      setState(() => _currentIndex = index);
+    }
   }
 
   @override
@@ -101,7 +110,7 @@ class _NavigationPageState extends State<NavigationPage> {
         body: ValueListenableBuilder<List<PropertyModel>?>(
           valueListenable: _dataController.propertyDataNotifier,
           builder: (context, propertyData, _) {
-            if (_isLoading == false) {
+            if (!_isLoading) {
               return _buildShimmerLoading(height, width);
             }
             return IndexedStack(
@@ -117,9 +126,15 @@ class _NavigationPageState extends State<NavigationPage> {
                   hasFloatButton: false,
                   hasAppBar: true,
                 ),
-                RentChecker(user: _mongoUser),
-                FavoriteChecker(user: _mongoUser),
-                ProfileChecker(user: _mongoUser),
+                RentChecker(
+                  user: _mongoUser ?? widget.user,
+                ),
+                FavoriteChecker(
+                  user: _mongoUser ?? widget.user,
+                ),
+                ProfileChecker(
+                  user: _mongoUser ?? widget.user,
+                ),
               ],
             );
           },
@@ -131,9 +146,7 @@ class _NavigationPageState extends State<NavigationPage> {
 
   Widget _buildShimmerLoading(double height, double width) {
     return Container(
-      padding: const EdgeInsets.only(
-        top: 65,
-      ),
+      padding: const EdgeInsets.only(top: 65),
       child: Column(
         children: [
           Row(
@@ -147,7 +160,6 @@ class _NavigationPageState extends State<NavigationPage> {
                     color: backgroundColor,
                     boxShadow: [
                       BoxShadow(
-                        // ignore: deprecated_member_use
                         color: textDefaultColor.withOpacity(0.15),
                         blurRadius: 2,
                         spreadRadius: 0,
@@ -157,69 +169,53 @@ class _NavigationPageState extends State<NavigationPage> {
                   ),
                   height: height * 0.07,
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: width * 0.8 - 60,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: SvgPicture.asset(
-                                  fit: BoxFit.fitHeight,
-                                  "assets/search/searchbutton.svg",
-                                  // color: Colors.black.withOpacity(0.8),
-                                ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: width * 0.8 - 60,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: SvgPicture.asset(
+                                "assets/search/searchbutton.svg",
+                                fit: BoxFit.fitHeight,
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "Хайлт",
-                                style: GoogleFonts.inter(
-                                  fontSize: 18,
-                                  // ignore: deprecated_member_use
-                                  color: Colors.black.withOpacity(0.7),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          child: VerticalDivider(),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return const MapSample(
-                                      hasFloatButton: true,
-                                      hasAppBar: true,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Icon(
-                              CupertinoIcons.location,
-                              // ignore: deprecated_member_use
-                              color: Colors.black.withOpacity(0.8),
                             ),
-                          ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "Хайлт",
+                              style: GoogleFonts.inter(
+                                fontSize: 18,
+                                // ignore: deprecated_member_use
+                                color: Colors.black.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
                         ),
-                      ]),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: VerticalDivider(),
+                      ),
+                      Expanded(
+                        child: Icon(
+                          CupertinoIcons.location,
+                          // ignore: deprecated_member_use
+                          color: Colors.black.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           Shimmer.fromColors(
-            period: Duration(
-              seconds: 1,
-            ),
+            period: const Duration(seconds: 1),
+            // ignore: deprecated_member_use
             baseColor: Colors.grey.withOpacity(0.1),
             highlightColor: Colors.white,
             child: Column(
@@ -313,7 +309,7 @@ class _NavigationPageState extends State<NavigationPage> {
         showSelectedLabels: true,
         showUnselectedLabels: true,
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: _handleNavigation,
         items: [
           _buildNavItem("Аялах", "assets/navigationbar/search.svg", 0),
           _buildNavItem("Байршил", "assets/navigationbar/lco.svg", 1),

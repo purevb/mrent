@@ -116,16 +116,23 @@ class _AddListingScreenState extends State<AddListingScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.push(
+                  final user = Provider.of<PropertyProvider>(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return NavigationPage(
-                          id: Provider.of<PropertyProvider>(context).fbUser!.id,
-                        );
-                      },
-                    ),
-                  );
+                    listen: false,
+                  ).fbUser;
+                  if (user != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return NavigationPage(
+                            id: user.id,
+                            user: user,
+                          );
+                        },
+                      ),
+                    );
+                  }
                 },
                 child: const Text("OK"),
               ),
@@ -161,6 +168,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
     double height = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -298,7 +306,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     postPropertyAndShowDialog(
                       provinceId: widget.provinceID,
                       propertyTypeId: widget.propertyTypeId,
-                      userId: "67f5e5ab0a73101c4561a05f",
+                      userId: provider.getUser?.id ?? "",
                       rentController: rentController,
                       propertyName: widget.propertyName,
                       humanCount: humanCount,

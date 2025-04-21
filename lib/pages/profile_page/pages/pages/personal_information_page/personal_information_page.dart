@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 
@@ -24,6 +25,12 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  DataController dataController = DataController();
+  @override
+  void initState() {
+    super.initState();
+    dataController.getUserData(widget.mongoUser.firebaseId!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +56,8 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
               ),
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: widget.mongoUser.profileImage,
+                  imageUrl: widget.mongoUser.profileImage ??
+                      "https://cdn-icons-png.flaticon.com/128/1999/1999625.png",
                   fit: BoxFit.fill,
                 ),
               ),

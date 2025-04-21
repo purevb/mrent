@@ -95,7 +95,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               ProfileImage(
                 mongoUser: widget.user,
-                proImage: widget.user.profileImage,
+                proImage: widget.user.profileImage ??
+                    "https://cdn-icons-png.flaticon.com/128/1999/1999625.png",
               ),
               Text(
                 firstLetterUpper(

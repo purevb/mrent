@@ -166,7 +166,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                           children: [
                             SizedBox(
                               height: height * 0.43,
-                              child: MapSample(
+                              child: CustomizeMap(
                                 hasFloatButton: true,
                                 hasAppBar: false,
                                 onLocationSelected:

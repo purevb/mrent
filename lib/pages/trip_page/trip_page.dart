@@ -186,7 +186,8 @@ class _TripPageState extends State<TripPage> {
               itemCount: displayData.length,
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
-                final property = displayData[index];
+                int reversedIndex = displayData.length - index - 1;
+                final property = displayData[reversedIndex];
                 return GestureDetector(
                   onTap: () => Navigator.push(
                     context,

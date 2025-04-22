@@ -5,10 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
+import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
 import 'package:mrent/pages/profile_page/pages/pages/my_properties.dart';
+import 'package:mrent/pages/profile_page/pages/pages/order_page/orders_page.dart';
 import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/route/route.gr.dart';
@@ -55,21 +57,11 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   };
 
-  final Map<int, Map<String, String>> tiles = {
-    1: {
-      "number": "0",
-      "description": "Tөлөлтүүд",
-      "path": "/payment",
-    },
-    2: {
-      "number": "20",
-      "description": "Захиалгууд",
-      "path": "/orders",
-    },
-  };
   @override
   void initState() {
     dataController.getUserPropertiesData(widget.user.id!);
+    dataController.getOrderDatas(widget.user.id!);
+
     super.initState();
   }
 
@@ -150,17 +142,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     myContainers(
                       () {},
                       width,
-                      tiles[1]!['number']!,
-                      tiles[1]!['description']!,
+                      "20",
+                      "Төлөлтүүд",
                     ),
                     const SizedBox(
                       width: 15,
                     ),
-                    myContainers(
-                      () {},
-                      width,
-                      tiles[2]!['number']!,
-                      tiles[2]!['description']!,
+                    ValueListenableBuilder<List<OrderModel>?>(
+                      valueListenable: dataController.ordersNotifier,
+                      builder: (context, orderData, child) {
+                        if (orderData == null) {
+                          return const SizedBox();
+                        } else {
+                          return myContainers(
+                            () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return OrdersPage(
+                                  orderData: orderData,
+                                );
+                              }));
+                            },
+                            width,
+                            orderData.length.toString(),
+                            "Захиалгууд",
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),

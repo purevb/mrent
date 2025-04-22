@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mrent/components/map_component.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
-import 'package:mrent/pages/map_pages/google_maps.dart';
+
 import 'package:mrent/pages/property_detail_page/components/image_swiper.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
@@ -644,29 +645,8 @@ class DescriptionTab extends StatelessWidget {
             },
           ),
         ),
-        const ListingAgent(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Байршил",
-              style: GoogleFonts.inter(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Text(
-                "Газрын зураг дээр үзэх",
-                style: GoogleFonts.inter(
-                  color: Colors.black,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.black,
-                ),
-              ),
-            ),
-          ],
+        ListingAgent(
+          user: propertyData.userId!,
         ),
         const Divider(),
         const Row(
@@ -684,18 +664,12 @@ class DescriptionTab extends StatelessWidget {
           width: width,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: const MapSample(
-              hasFloatButton: true,
-              hasAppBar: false,
+            child: MapComponent(
+              longitude: propertyData.longitude!,
+              latitude: propertyData.latitude!,
             ),
           ),
         ),
-        Text(
-          "Нэмэлт мэдээлэл",
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        const Text(
-            "Additional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional thingsAdditional things"),
       ],
     );
   }

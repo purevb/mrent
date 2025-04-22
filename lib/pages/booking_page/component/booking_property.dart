@@ -28,26 +28,27 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
   Widget build(BuildContext context) {
     final Map<int, Map<String, dynamic>> advantages = {
       0: {
-        "value": "1,225",
-        "label": "sqft",
-        "icon": Icons.square_foot,
+        "label": "Хүн",
+        "value": "${widget.propertyData.numGuests}",
+        "icon": Icons.people,
       },
       1: {
-        "value": "3",
-        "label": "Bedrooms",
+        "label": "Ор",
+        "value": "${widget.propertyData.numGuests}",
         "icon": Icons.bed,
       },
       2: {
-        "value": "2",
-        "label": "Bathrooms",
+        "label": "Угаалгын өрөө",
+        "value": "${widget.propertyData.numGuests}",
         "icon": Icons.bathtub,
       },
       3: {
-        "value": "1",
-        "label": "Parking",
-        "icon": Icons.local_parking,
+        "label": "Унтлагын өрөө",
+        "value": "${widget.propertyData.numGuests}",
+        "icon": Icons.meeting_room,
       }
     };
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     final provider = Provider.of<PropertyProvider>(context, listen: false);
@@ -98,7 +99,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                     ),
                     const Spacer(),
                     SizedBox(
-                      height: height * 0.1,
+                      height: height * 0.12,
                       child: ListView.separated(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,

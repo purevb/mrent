@@ -4,7 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class NotesForOwnerComponent extends StatefulWidget {
-  const NotesForOwnerComponent({super.key});
+  const NotesForOwnerComponent({
+    super.key,
+    required this.controller,
+  });
+  final TextEditingController controller;
 
   @override
   State<NotesForOwnerComponent> createState() => _NotesForOwnerComponentState();
@@ -66,6 +70,7 @@ class _NotesForOwnerComponentState extends State<NotesForOwnerComponent> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: TextFormField(
+                    controller: widget.controller,
                     focusNode: focusNode,
                     maxLines: ontap ? 5 : 1,
                     minLines: 1,

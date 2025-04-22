@@ -13,26 +13,28 @@ import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:shimmer/shimmer.dart';
 
-class MapSample extends StatefulWidget {
-  const MapSample({
+class CustomizeMap extends StatefulWidget {
+  CustomizeMap({
     required this.hasAppBar,
     this.onLocationSelected,
     required this.hasFloatButton,
     this.propertyData,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
   final List<PropertyModel>? propertyData;
   final bool hasAppBar;
   final bool hasFloatButton;
   final Function(LatLng, String)? onLocationSelected;
 
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<CustomizeMap> createState() => MapSampleState();
 }
 
-class MapSampleState extends State<MapSample> {
-  final CustomInfoWindowController customInfoWindowController =
-      CustomInfoWindowController();
+class MapSampleState extends State<CustomizeMap> {
+  late final CustomInfoWindowController customInfoWindowController;
+  late final TextEditingController searchController;
+  late final ScrollController _scrollController;
+  final _mapKey = GlobalKey();
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
   LatLng _selectedLocation = const LatLng(47.921230, 106.918556);
@@ -40,10 +42,8 @@ class MapSampleState extends State<MapSample> {
   bool _isLoading = false;
   PropertyModel? _selectedProperty;
   int currentIndex = 0;
-  TextEditingController searchController = TextEditingController();
   String searchText = "";
 
-  final ScrollController _scrollController = ScrollController();
   DataController dataController = DataController();
   static const CameraPosition _kUlaanbaatar = CameraPosition(
     target: LatLng(47.921230, 106.918556),
@@ -53,6 +53,10 @@ class MapSampleState extends State<MapSample> {
   @override
   void initState() {
     super.initState();
+    customInfoWindowController = CustomInfoWindowController();
+    searchController = TextEditingController();
+    _scrollController = ScrollController();
+
     dataController.getProvinceData();
     searchController.addListener(_onSearchChanged);
     if (widget.propertyData != null && widget.propertyData!.isNotEmpty) {
@@ -60,6 +64,15 @@ class MapSampleState extends State<MapSample> {
         _addPropertyMarkers();
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    customInfoWindowController.dispose();
+    searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _onSearchChanged() {
@@ -79,13 +92,8 @@ class MapSampleState extends State<MapSample> {
     final String searchLower = searchText.toLowerCase();
 
     final filteredProperties = widget.propertyData!.where((property) {
-      // Search by property name
       final propertyName = property.propertyName?.toLowerCase() ?? '';
-
-      // Search by description
       final description = property.description?.toLowerCase() ?? '';
-
-      // Search by address or location details if available
       final location = property.placeTypeId?.provinceName?.toLowerCase() ?? '';
 
       return propertyName.contains(searchLower) ||
@@ -95,103 +103,80 @@ class MapSampleState extends State<MapSample> {
 
     for (var property in filteredProperties) {
       if (property.latitude != null && property.longitude != null) {
-        _markers.add(
-          Marker(
-            markerId: MarkerId(property.id ?? UniqueKey().toString()),
-            position: LatLng(property.latitude!, property.longitude!),
-            onTap: () => _handleMarkerTap(property),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-            infoWindow: InfoWindow(
-              title: property.propertyName,
-              snippet: '${property.nightlyPrice} MNT/night',
-            ),
-          ),
-        );
+        _addMarkerForProperty(property);
       }
     }
 
     setState(() {});
 
-    // Adjust map view to show filtered results if available
     if (filteredProperties.isNotEmpty) {
       _fitMarkersInView(filteredProperties);
+    }
+  }
+
+  void _addMarkerForProperty(PropertyModel property) {
+    if (property.latitude != null &&
+        property.longitude != null &&
+        property.latitude! >= -90 &&
+        property.latitude! <= 90 &&
+        property.longitude! >= -180 &&
+        property.longitude! <= 180) {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(property.id ?? UniqueKey().toString()),
+          position: LatLng(property.latitude!, property.longitude!),
+          onTap: () => _handleMarkerTap(property),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        ),
+      );
     }
   }
 
   void _fitMarkersInView(List<PropertyModel> properties) {
     if (properties.isEmpty || _mapController == null) return;
 
-    // Calculate bounds that include all markers
+    final validProperties = properties
+        .where((prop) =>
+            prop.latitude != null &&
+            prop.longitude != null &&
+            prop.latitude! >= -90 &&
+            prop.latitude! <= 90 &&
+            prop.longitude! >= -180 &&
+            prop.longitude! <= 180)
+        .toList();
+
+    if (validProperties.isEmpty) return;
+
     double minLat = 90.0;
     double maxLat = -90.0;
     double minLng = 180.0;
     double maxLng = -180.0;
 
-    for (var prop in properties) {
-      if (prop.latitude != null && prop.longitude != null) {
-        minLat = min(minLat, prop.latitude!);
-        maxLat = max(maxLat, prop.latitude!);
-        minLng = min(minLng, prop.longitude!);
-        maxLng = max(maxLng, prop.longitude!);
-      }
+    for (var prop in validProperties) {
+      minLat = min(minLat, prop.latitude!);
+      maxLat = max(maxLat, prop.latitude!);
+      minLng = min(minLng, prop.longitude!);
+      maxLng = max(maxLng, prop.longitude!);
     }
 
-    // Create bounds and animate camera
-    _mapController!.animateCamera(
-      CameraUpdate.newLatLngBounds(
-        LatLngBounds(
-          southwest: LatLng(minLat, minLng),
-          northeast: LatLng(maxLat, maxLng),
+    if (minLat != maxLat && minLng != maxLng) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+            southwest: LatLng(minLat, minLng),
+            northeast: LatLng(maxLat, maxLng),
+          ),
+          0,
         ),
-        50, // padding
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    searchController.removeListener(_onSearchChanged);
-    searchController.dispose();
-    _scrollController.dispose();
-    customInfoWindowController.dispose();
-    _mapController?.dispose();
-    super.dispose();
-  }
-
-  List<PropertyModel> sortByProvinceName(List<PropertyModel> properties) {
-    return List<PropertyModel>.from(properties)
-      ..sort((a, b) {
-        String provinceA = a.placeTypeId?.provinceName ?? '';
-        String provinceB = b.placeTypeId?.provinceName ?? '';
-        return provinceA.compareTo(provinceB);
-      });
-  }
-
-  List<PropertyModel> filterByProvince(
-      List<PropertyModel> properties, String provinceId) {
-    return properties
-        .where((property) => property.placeTypeId?.id == provinceId)
-        .toList();
-  }
-
-  Map<String, List<PropertyModel>> groupByProvince(
-      List<PropertyModel> properties) {
-    final Map<String, List<PropertyModel>> grouped = {};
-
-    for (var property in properties) {
-      final provinceId = property.placeTypeId?.id;
-      final provinceName = property.placeTypeId?.provinceName;
-
-      if (provinceId != null && provinceName != null) {
-        if (!grouped.containsKey(provinceId)) {
-          grouped[provinceId] = [];
-        }
-        grouped[provinceId]!.add(property);
-      }
+      );
+    } else {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(
+          LatLng(minLat, minLng),
+          14.0,
+        ),
+      );
     }
-
-    return grouped;
   }
 
   void _scrollToIndex(int index) {
@@ -200,15 +185,18 @@ class MapSampleState extends State<MapSample> {
     const padding = 10.0;
     double targetOffset =
         (itemWidth * index) - (screenWidth / 2) + (itemWidth / 2) + padding;
-    targetOffset = targetOffset.clamp(
-      0.0,
-      _scrollController.position.maxScrollExtent,
-    );
-    _scrollController.animateTo(
-      targetOffset,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+
+    if (_scrollController.hasClients) {
+      targetOffset = targetOffset.clamp(
+        0.0,
+        _scrollController.position.maxScrollExtent,
+      );
+      _scrollController.animateTo(
+        targetOffset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _updateSelectedLocation(LatLng location) async {
@@ -240,28 +228,7 @@ class MapSampleState extends State<MapSample> {
 
     _markers = {};
     for (var property in widget.propertyData ?? []) {
-      if (property.latitude != null && property.longitude != null) {
-        if (property.latitude! >= -90 &&
-            property.latitude! <= 90 &&
-            property.longitude! >= -180 &&
-            property.longitude! <= 180) {
-          _markers.add(
-            Marker(
-              markerId: MarkerId(property.id ?? UniqueKey().toString()),
-              position: LatLng(property.latitude!, property.longitude!),
-              onTap: () => _handleMarkerTap(property),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueRed),
-              infoWindow: InfoWindow(
-                title: property.propertyName,
-                snippet: '${property.nightlyPrice} MNT/night',
-              ),
-            ),
-          );
-        } else {
-          debugPrint('Invalid coordinates for property ${property.id}');
-        }
-      }
+      _addMarkerForProperty(property);
     }
     setState(() {});
   }
@@ -286,24 +253,19 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
-  void _filterMarkersByProvince(String provinceId) {
-    if (provinceId.isEmpty || widget.propertyData == null) return;
+  void _filterMarkersByProvince(String provinceName) {
+    if (widget.propertyData == null) return;
 
     _markers = {};
-    final filteredProperties = widget.propertyData!
-        .where((property) => property.placeTypeId?.id == provinceId)
-        .toList();
+    final filteredProperties = provinceName == "Бүгд"
+        ? widget.propertyData
+        : widget.propertyData!
+            .where((property) =>
+                property.placeTypeId?.provinceName == provinceName)
+            .toList();
 
-    for (var property in filteredProperties) {
-      if (property.latitude != null && property.longitude != null) {
-        _markers.add(
-          Marker(
-            markerId: MarkerId(property.id ?? UniqueKey().toString()),
-            position: LatLng(property.latitude!, property.longitude!),
-            onTap: () => _handleMarkerTap(property),
-          ),
-        );
-      }
+    for (var property in filteredProperties!) {
+      _addMarkerForProperty(property);
     }
     setState(() {});
   }
@@ -319,14 +281,13 @@ class MapSampleState extends State<MapSample> {
         ),
       ),
       child: Container(
-        width: 230,
+        height: 300,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.2),
               blurRadius: 10,
               spreadRadius: 2,
@@ -366,7 +327,7 @@ class MapSampleState extends State<MapSample> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
+            const Spacer(),
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 16),
@@ -391,202 +352,224 @@ class MapSampleState extends State<MapSample> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: height * (0.08),
-        elevation: 0.8,
-        automaticallyImplyLeading: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(70),
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(left: 30, right: 30),
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: backgroundColor,
-                  boxShadow: [
-                    BoxShadow(
-                      // ignore: deprecated_member_use
-                      color: textDefaultColor.withOpacity(0.15),
-                      blurRadius: 2,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                height: height * 0.07,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      appBar: widget.hasAppBar == true
+          ? AppBar(
+              toolbarHeight: height * (0.08),
+              elevation: 0.8,
+              automaticallyImplyLeading: false,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(70),
+                child: Column(
                   children: [
-                    SizedBox(
-                      width: width * 0.8 - 60,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: SvgPicture.asset(
-                              fit: BoxFit.fitHeight,
-                              "assets/search/searchbutton.svg",
-                            ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 30, right: 30),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: backgroundColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: textDefaultColor.withOpacity(0.15),
+                            blurRadius: 2,
+                            spreadRadius: 0,
+                            offset: const Offset(0, 2),
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: TextField(
-                              controller: searchController,
-                              decoration: InputDecoration(
-                                hintText: "Хайлт",
-                                labelStyle: GoogleFonts.inter(
-                                  fontSize: 18,
-                                  color: Colors.black.withOpacity(0.7),
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                              onSubmitted: (value) {
-                                _filterPropertiesBySearch();
-                              },
-                            ),
-                          )
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              ValueListenableBuilder(
-                valueListenable: dataController.proviceNotifier,
-                builder: (context, provinceData, child) {
-                  if (provinceData == null) {
-                    return SizedBox(
-                      height: 70.0,
-                      child: Shimmer.fromColors(
-                        // ignore: deprecated_member_use
-                        baseColor: Colors.grey.withOpacity(0.2),
-                        highlightColor: Colors.white,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.only(
-                            left: 30,
-                          ),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              height: 30,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(
-                              width: 10,
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  }
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 6),
-                    height: 70,
-                    alignment: const Alignment(0, 0),
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              currentIndex = index;
-                            });
-
-                            _scrollToIndex(index);
-                            final provinceId = provinceData[index].id;
-                            if (provinceId != null) {
-                              _filterMarkersByProvince(provinceId);
-                            }
-                          },
-                          child: Container(
-                            // ignore: deprecated_member_use
-                            color: backgroundColor.withOpacity(0),
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
+                      height: height * 0.07,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: width * 0.8 - 60,
+                            child: Row(
                               children: [
-                                const SizedBox(height: 5),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    FractionalTranslation(
-                                      translation: index == 0
-                                          ? const Offset(0, -0.028)
-                                          : const Offset(0, 0),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Container(
-                                      alignment: Alignment.bottomCenter,
-                                      height: 55,
-                                      child: Text(
-                                        provinceData[index]
-                                            .provinceName
-                                            .toString(),
-                                        style: GoogleFonts.inter(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: SvgPicture.asset(
+                                    fit: BoxFit.fitHeight,
+                                    "assets/search/searchbutton.svg",
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: TextField(
+                                    controller: searchController,
+                                    decoration: InputDecoration(
+                                      hintText: "Хайлт",
+                                      labelStyle: GoogleFonts.inter(
+                                        fontSize: 18,
+                                        color: Colors.black.withOpacity(0.7),
+                                      ),
+                                      border: const OutlineInputBorder(
+                                        borderSide: BorderSide.none,
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  switchInCurve: Easing.legacy,
-                                  child: currentIndex == index
-                                      ? Container(
-                                          width: 40,
-                                          key: ValueKey<int>(index),
-                                          height: 2,
-                                          decoration: BoxDecoration(
-                                            color: mRed,
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ),
+                                    onSubmitted: (value) {
+                                      _filterPropertiesBySearch();
+                                    },
+                                  ),
+                                )
                               ],
                             ),
                           ),
-                        );
-                      },
-                      itemCount: provinceData.length,
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(
-                          width: 5,
+                        ],
+                      ),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: dataController.proviceNotifier,
+                      builder: (context, provinceData, child) {
+                        if (provinceData == null) {
+                          return SizedBox(
+                            height: 70.0,
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey.withOpacity(0.2),
+                              highlightColor: Colors.white,
+                              child: ListView.separated(
+                                padding: const EdgeInsets.only(
+                                  left: 30,
+                                ),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 5,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    height: 30,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(
+                                    width: 10,
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        }
+
+                        if (provinceData.isEmpty) {
+                          return const SizedBox(height: 70);
+                        }
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 6),
+                          height: 70,
+                          alignment: const Alignment(0, 0),
+                          child: ListView.separated(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              final typeName = index == 0
+                                  ? "Бүгд"
+                                  : provinceData[index - 1].provinceName ?? "";
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    currentIndex = index;
+                                  });
+
+                                  _scrollToIndex(index);
+
+                                  if (index == 0) {
+                                    _filterMarkersByProvince("Бүгд");
+                                  } else if (index > 0 &&
+                                      index <= provinceData.length) {
+                                    final provinceName =
+                                        provinceData[index - 1].provinceName;
+                                    if (provinceName != null) {
+                                      _filterMarkersByProvince(provinceName);
+                                    }
+                                  }
+                                },
+                                child: Container(
+                                  color: backgroundColor.withOpacity(0),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          FractionalTranslation(
+                                            translation: index == 0
+                                                ? const Offset(0, -0.028)
+                                                : const Offset(0, 0),
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: 55,
+                                            child: Text(
+                                              typeName,
+                                              style: GoogleFonts.inter(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        switchInCurve: Easing.legacy,
+                                        child: currentIndex == index
+                                            ? Container(
+                                                width: 40,
+                                                key: ValueKey<int>(index),
+                                                height: 2,
+                                                decoration: BoxDecoration(
+                                                  color: mRed,
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: provinceData.length + 1,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(
+                                width: 5,
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : null,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           GoogleMap(
+            key: _mapKey,
             mapType: MapType.normal,
             initialCameraPosition: _kUlaanbaatar,
             onMapCreated: (GoogleMapController controller) {
+              if (!mounted) return;
               _mapController = controller;
               customInfoWindowController.googleMapController = controller;
               _addPropertyMarkers();
@@ -607,22 +590,6 @@ class MapSampleState extends State<MapSample> {
             ),
           ),
           if (_isLoading) const Center(child: CircularProgressIndicator()),
-          if (widget.hasFloatButton == true) ...[
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: FloatingActionButton.extended(
-                heroTag: "confirm_location",
-                onPressed: () {
-                  debugPrint("Selected Location: $_selectedLocation");
-                  debugPrint(
-                      "Selected Property: ${_selectedProperty?.propertyName}");
-                },
-                label: const Text('Confirm'),
-                icon: const Icon(Icons.check),
-              ),
-            ),
-          ],
           CustomInfoWindow(
             controller: customInfoWindowController,
             height: 220,

@@ -32,7 +32,7 @@ class MapSampleState extends State<MapSample> {
 
   @override
   void dispose() {
-    _mapController?.dispose(); // Dispose of the controller
+    _mapController?.dispose();
     super.dispose();
   }
 

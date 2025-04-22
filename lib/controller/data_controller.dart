@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
+import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
@@ -21,6 +22,7 @@ class DataController with ChangeNotifier {
 
   final ValueNotifier<List<FavoriteModel>?> favoriteNotifier =
       ValueNotifier(null);
+  final ValueNotifier<List<OrderModel>?> ordersNotifier = ValueNotifier(null);
   final ValueNotifier<MongoUserModel?> userNotifier =
       ValueNotifier<MongoUserModel?>(null);
   Future<void> getUserData(String userId) async {
@@ -31,6 +33,16 @@ class DataController with ChangeNotifier {
       log(e.toString());
     }
   }
+
+  Future<void> getOrderDatas(String hostId) async {
+    try {
+      var res = await api.getHostsOrdersData(hostId);
+      ordersNotifier.value = res;
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  //getHostsOrdersData
 
   Future<void> getPropertyTypeDatas() async {
     try {

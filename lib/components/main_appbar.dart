@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/model/fb_user_model.dart';
-import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/map_pages/google_maps.dart';
 import 'package:mrent/pages/search_page/search_page.dart';
@@ -153,7 +152,6 @@ class _MainAppBarState extends State<MainAppBar> {
                                   child: SvgPicture.asset(
                                     fit: BoxFit.fitHeight,
                                     "assets/search/searchbutton.svg",
-                                    // color: Colors.black.withOpacity(0.8),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -180,7 +178,7 @@ class _MainAppBarState extends State<MainAppBar> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return const MapSample(
+                                        return CustomizeMap(
                                           hasFloatButton: true,
                                           hasAppBar: true,
                                         );
@@ -261,14 +259,16 @@ class _MainAppBarState extends State<MainAppBar> {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
+                      final typeName = index == 0
+                          ? "Бүгд"
+                          : propertyType[index - 1].typeName ?? "";
                       return GestureDetector(
                         onTap: () {
                           setState(() {
                             currentIndex = index;
                           });
-
                           _scrollToIndex(index);
-                          widget.chooseType(propertyType[index].typeName ?? "");
+                          widget.chooseType(typeName);
                         },
                         child: Container(
                           // ignore: deprecated_member_use
@@ -289,8 +289,11 @@ class _MainAppBarState extends State<MainAppBar> {
                                       height: 55,
                                       alignment: Alignment.bottomCenter,
                                       child: Image.asset(
-                                        getIconPath(
-                                            propertyType[index].typeName ?? ""),
+                                        getIconPath(index == 0
+                                            ? "Бүгд"
+                                            : propertyType[index - 1]
+                                                    .typeName ??
+                                                ""),
                                         height: index == 0 ? 18 : 25,
                                         fit: BoxFit.contain,
                                         color: textDefaultColor,
@@ -302,11 +305,11 @@ class _MainAppBarState extends State<MainAppBar> {
                                     alignment: Alignment.bottomCenter,
                                     height: 55,
                                     child: Text(
-                                      propertyType[index].typeName.toString(),
-                                      style: GoogleFonts.inter(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      index == 0
+                                          ? "Бүгд"
+                                          : propertyType[index - 1]
+                                              .typeName
+                                              .toString(),
                                     ),
                                   ),
                                 ],
@@ -331,7 +334,7 @@ class _MainAppBarState extends State<MainAppBar> {
                         ),
                       );
                     },
-                    itemCount: propertyType.length,
+                    itemCount: propertyType.length + 1,
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(
                         width: 5,

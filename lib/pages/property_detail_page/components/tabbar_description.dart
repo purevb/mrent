@@ -56,7 +56,7 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 color: Colors.black,
-                fontSize: 13,
+                fontSize: 10,
               ),
             ),
           ),

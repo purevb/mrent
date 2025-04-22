@@ -3,16 +3,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/utils/constants.dart';
 
 class TotalPriceComponent extends StatefulWidget {
-  const TotalPriceComponent({super.key, this.totalDays});
+  const TotalPriceComponent({
+    super.key,
+    this.totalDays,
+    required this.nightlyPrice,
+    required this.perDayServiceCost,
+  });
   final int? totalDays;
+  final int nightlyPrice;
+  final int perDayServiceCost;
 
   @override
   State<TotalPriceComponent> createState() => _TotalPriceComponentState();
 }
 
 class _TotalPriceComponentState extends State<TotalPriceComponent> {
-  int perDayCost = 10000;
-  int perDayServiceCost = 10000;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,12 +49,14 @@ class _TotalPriceComponentState extends State<TotalPriceComponent> {
             padding: EdgeInsets.zero,
             scrollDirection: Axis.vertical,
             children: [
-              buildRow("Өдрийн төлбөр", perDayCost),
+              buildRow("Өдрийн төлбөр", widget.nightlyPrice),
               buildDays(widget.totalDays ?? 0),
-              buildRow("Үйлчилгээний төлбөр", perDayServiceCost),
+              buildRow("Үйлчилгээний төлбөр", widget.perDayServiceCost),
               const Divider(),
-              buildRow("Нийт төлбөр",
-                  perDayCost * widget.totalDays! + perDayServiceCost),
+              buildRow(
+                  "Нийт төлбөр",
+                  widget.nightlyPrice * widget.totalDays! +
+                      widget.perDayServiceCost),
             ],
           ),
         ),

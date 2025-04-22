@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:mrent/core/services/api_dio.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
+import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
@@ -11,7 +12,7 @@ class Api {
   final api = ApiDio();
 
   Future<List<PropertyModel>> getProperties() async {
-    final res = await api.get("/properties");
+    final res = await api.get("/api/properties");
 
     final List<dynamic> data = res.data;
     return data.map((json) {
@@ -20,7 +21,7 @@ class Api {
   }
 
   Future<List<PropertyModel>> getUserProperties(String userId) async {
-    final res = await api.get("/properties/user/$userId");
+    final res = await api.get("/api/properties/user/$userId");
     final List<dynamic> data = res.data;
     return data.map((json) {
       return PropertyModel.fromJson(json);
@@ -29,7 +30,7 @@ class Api {
 
   Future<List<PropertyType>> getPropertyTypes() async {
     try {
-      final res = await api.get("/property_types");
+      final res = await api.get("/api/property_types");
       final List data = res.data;
       return data.map((e) => PropertyType.fromJson(e)).toList();
     } catch (e) {
@@ -39,7 +40,7 @@ class Api {
 
   Future<List<FavoriteModel>> getFavorites(String userId) async {
     try {
-      final res = await api.get("/favorites/user/$userId");
+      final res = await api.get("/api/favorites/user/$userId");
       final List data = res.data;
       return data.map((e) => FavoriteModel.fromJson(e)).toList();
     } catch (e) {
@@ -49,7 +50,7 @@ class Api {
 
   Future<String> postFavorites(String userId, String propertyId) async {
     final response = await api.post(
-      "/favorites",
+      "/api/favorites",
       {
         "property_id": propertyId,
         "user_id": userId,
@@ -61,7 +62,7 @@ class Api {
 
   Future<String> deleteFavorites(String userId, String propertyId) async {
     final response = await api.delete(
-      "/favorites",
+      "/api/favorites",
       {
         "user_id": userId,
         "property_id": propertyId,
@@ -71,7 +72,7 @@ class Api {
   }
 
   Future<List<ProvinceModel>> getProvinces() async {
-    final res = await api.get("/province");
+    final res = await api.get("/api/province");
     final List data = res.data;
     return data.map((json) => ProvinceModel.fromJson(json)).toList();
   }
@@ -140,8 +141,7 @@ class Api {
 
   Future<MongoUserModel> getMongoUser(String firebaseId) async {
     try {
-      final res = await api.get("/users/firebase/$firebaseId");
-      print(res);
+      final res = await api.get("/api/users/firebase/$firebaseId");
       return MongoUserModel.fromJson(
         res.data,
       );
@@ -158,15 +158,69 @@ class Api {
   }) async {
     try {
       final Map<String, dynamic> updateData = {};
-      if (userName != null) updateData["name"] = userName;
-      if (phoneNumber != null) updateData["phone"] = phoneNumber;
-      if (userProfile != null) updateData["profileImage"] = userProfile;
 
-      final res = await api.putData("/users/$mongoId", updateData);
-      log("${res.statusCode} zurag amjilttai soligdloo");
+      if (userName != null && userName.isNotEmpty)
+        updateData['name'] = userName;
+      if (phoneNumber != null && phoneNumber.isNotEmpty)
+        updateData['phone'] = phoneNumber;
+      if (userProfile != null && userProfile.isNotEmpty)
+        updateData['profileImage'] = userProfile;
+
+      if (updateData.isEmpty) {
+        throw Exception('No valid fields provided for update');
+      }
+
+      final res = await api.putData("/api/users/$mongoId", updateData);
+      log("Update status: ${res.statusCode}");
       return MongoUserModel.fromJson(res.data);
+    } on DioException catch (e) {
+      log("DioError: ${e.response?.data}");
+      rethrow;
     } catch (e) {
+      log("Error: $e");
       rethrow;
     }
+  }
+
+  Future<int> postBookingRequest({
+    required String propertyId,
+    required String userId,
+    required String hostId,
+    required String additionalRequest,
+    required DateTime checkInDate,
+    required DateTime checkoutDate,
+    required int totalPrice,
+  }) async {
+    try {
+      final response = await api.post("/api/bookings", {
+        "property_id": propertyId,
+        "user_id": userId,
+        "host_id": hostId,
+        "additional_request": additionalRequest,
+        "checkin_date": checkInDate.toIso8601String(),
+        "checkout_date": checkoutDate.toIso8601String(),
+        "total_price": totalPrice,
+      });
+
+      if (response.statusCode == 201) {
+        log("Booking successful: ${response.data}");
+      } else {
+        log("Failed to book: ${response.statusCode}");
+      }
+      return response.statusCode!.toInt();
+    } catch (e) {
+      log("Error posting booking: $e");
+      return 400;
+    }
+  }
+
+  Future<List<OrderModel>> getHostsOrdersData(String hostId) async {
+    final res = await api.get("/api/bookings/host/$hostId");
+    final List data = res.data;
+    return data.map((e) => OrderModel.fromJson(e)).toList();
+  }
+
+  Future<void> postSyncUserFromFirebase() async {
+    await api.post("/sync-users", {});
   }
 }

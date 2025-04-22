@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
-import 'package:mrent/model/mongo_user_model.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/pages/booking_page/component/booking_period_chooser.dart';
 import 'package:mrent/pages/booking_page/component/booking_property.dart';
 import 'package:mrent/pages/booking_page/component/notes_for_owner.dart';
-import 'package:mrent/pages/booking_page/component/payment_types.dart';
 import 'package:mrent/pages/booking_page/component/total_price.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
@@ -24,13 +22,22 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
+  final TextEditingController additionalRequestController =
+      TextEditingController();
+  Api api = Api();
   DateTime? _firstSelectedDay;
   DateTime? _secondSelectedDay;
+  int serviceFee = 20000;
   int getSelectedDaysDifference() {
     if (_firstSelectedDay != null && _secondSelectedDay != null) {
       return _secondSelectedDay!.difference(_firstSelectedDay!).inDays;
     }
     return 0;
+  }
+
+  int calculateTotalPayment() {
+    return widget.propertyData.nightlyPrice! * getSelectedDaysDifference() +
+        serviceFee;
   }
 
   @override
@@ -79,27 +86,57 @@ class _BookingPageState extends State<BookingPage> {
                   });
                 },
               ),
-              const NotesForOwnerComponent(),
-              const PaymentTypesComponent(),
+              NotesForOwnerComponent(
+                controller: additionalRequestController,
+              ),
+              // const PaymentTypesComponent(),
               TotalPriceComponent(
+                nightlyPrice: widget.propertyData.nightlyPrice ?? 0,
                 totalDays: getSelectedDaysDifference(),
+                perDayServiceCost: serviceFee,
               ),
               MyButton(
                 canPress: true,
                 onPress: () {
-                  Fluttertoast.showToast(
-                    msg: "See u soon",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: mRed,
-                    textColor: Colors.white,
-                    fontSize: 30.0,
+                  api
+                      .postBookingRequest(
+                    propertyId: widget.propertyData.id ?? "",
+                    userId: provider.getUser?.id ?? "",
+                    hostId: widget.propertyData.userId?.id ?? "",
+                    additionalRequest: additionalRequestController.text,
+                    checkInDate: _firstSelectedDay!,
+                    checkoutDate: _secondSelectedDay!,
+                    totalPrice: calculateTotalPayment(),
+                  )
+                      .then(
+                    (res) {
+                      if (res == 201) {
+                        return Fluttertoast.showToast(
+                          msg: "Захиалгын хүсэлт илгээгдлээ",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: mRed,
+                          textColor: Colors.white,
+                          fontSize: 20,
+                        );
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: res.toString(),
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: mRed,
+                          textColor: Colors.white,
+                          fontSize: 20,
+                        );
+                      }
+                    },
                   );
                 },
                 height: 60,
                 width: double.infinity,
-                text: "Түрээслэх",
+                text: "Захиалах",
               ),
             ],
           ),

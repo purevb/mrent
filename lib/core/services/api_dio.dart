@@ -3,11 +3,12 @@ import 'package:mrent/model/favorite_model.dart';
 
 class ApiDio {
   final Dio _dio;
+
   ApiDio()
       : _dio = Dio(
           BaseOptions(
-            //http://localhost:3106/api/
-            baseUrl: 'https://backend-for-diplom.vercel.app/api',
+            //https://backend-for-diplom.vercel.app/api
+            baseUrl: 'http://localhost:3106',
             contentType: 'application/json',
           ),
         );

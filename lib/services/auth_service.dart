@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mrent/model/fb_user_model.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/pages/naviagation_page.dart';
-import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 
 class AuthService {
   final _auth = FirebaseAuth.instance;
+  Api api = Api();
   Future<UserCredential?> loginWithGoogle(BuildContext context) async {
     try {
       showDialog(
@@ -58,13 +58,15 @@ class AuthService {
         await Future.delayed(const Duration(seconds: 3));
 
         if (context.mounted) {
-          Navigator.pop(context);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => NavigationPage(id: userId),
-            ),
-          );
+          api.postSyncUserFromFirebase().then((_) {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => NavigationPage(id: userId),
+              ),
+            );
+          });
         }
 
         return userCredential;
@@ -114,8 +116,10 @@ class AuthService {
           alignment: Alignment.center,
           position: StyledToastPosition.bottom,
         );
-        // ignore: use_build_context_synchronously
-        Navigator.pop(context);
+        api.postSyncUserFromFirebase().then((_) {
+          // ignore: use_build_context_synchronously
+          Navigator.pop(context);
+        });
       }
     } on FirebaseAuthException catch (e) {
       String message = '';
@@ -175,6 +179,15 @@ class AuthService {
       required String password,
       required BuildContext context}) async {
     try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(
+            color: mRed,
+          ),
+        ),
+      );
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       String userId = userCredential.user!.uid;

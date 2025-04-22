@@ -91,14 +91,10 @@ class _ProfileImageState extends State<ProfileImage> {
         _isUploading = false;
       });
       log("Successfully uploaded profile image: $downloadUrl");
-      api
-          .updateMongoUsersDetail(
+      api.updateMongoUsersDetail(
         widget.mongoUser.id ?? "",
         userProfile: downloadUrl,
-      )
-          .then((_) {
-        return Navigator.pop(context);
-      });
+      );
     } catch (e) {
       log("Error uploading image: $e");
       setState(() {

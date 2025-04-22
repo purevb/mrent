@@ -10,6 +10,7 @@ class MyButton extends StatefulWidget {
   final double width;
   final double? borderRadius;
   final double? fontSize;
+  final Color? color;
 
   const MyButton({
     required this.canPress,
@@ -19,6 +20,7 @@ class MyButton extends StatefulWidget {
     required this.text,
     this.borderRadius,
     this.fontSize,
+    this.color,
     super.key,
   });
 
@@ -30,15 +32,14 @@ class _MyButtonState extends State<MyButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.canPress
-          ? widget.onPress
-          : null, // Changed to null when not pressable
+      onTap: widget.canPress ? widget.onPress : null,
       child: Container(
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 6),
-          color: widget.canPress ? mRed : const Color(0xffc4c4c4),
+          color:
+              widget.canPress ? widget.color ?? mRed : const Color(0xffc4c4c4),
         ),
         child: Center(
           child: Text(

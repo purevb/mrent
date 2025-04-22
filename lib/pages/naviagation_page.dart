@@ -36,7 +36,7 @@ class _NavigationPageState extends State<NavigationPage> {
   late final DataController _dataController;
   late final Api _api;
   MongoUserModel? _mongoUser;
-
+  final Key mapKey = UniqueKey();
   @override
   void initState() {
     super.initState();
@@ -121,7 +121,8 @@ class _NavigationPageState extends State<NavigationPage> {
                   user: _mongoUser,
                   propertyDatas: propertyData ?? [],
                 ),
-                MapSample(
+                CustomizeMap(
+                  key: mapKey,
                   propertyData: propertyData ?? [],
                   hasFloatButton: false,
                   hasAppBar: true,

@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/utils/constants.dart';
 
 class ListingAgent extends StatefulWidget {
-  const ListingAgent({super.key});
+  const ListingAgent({required this.user, super.key});
+  final MongoUserModel user;
 
   @override
   State<ListingAgent> createState() => _ListingAgentState();
@@ -23,19 +26,22 @@ class _ListingAgentState extends State<ListingAgent> {
             shape: BoxShape.circle,
             color: Colors.black,
           ),
-          // child: CachedNetworkImage(
-          //   imageUrl: "",
-          //   errorWidget: (context, url, error) {
-          //     return const Center(
-          //       child: CircularProgressIndicator(
-          //         color: Colors.red,
-          //       ),
-          //     );
-          //   },
-          // ),
+          child: ClipOval(
+            child: CachedNetworkImage(
+              fit: BoxFit.fill,
+              imageUrl: widget.user.profileImage,
+              errorWidget: (context, url, error) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: mRed,
+                  ),
+                );
+              },
+            ),
+          ),
         ),
         Text(
-          "Sandeep S.",
+          widget.user.name ?? "",
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             fontSize: 18,

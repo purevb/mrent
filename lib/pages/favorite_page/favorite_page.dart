@@ -149,12 +149,10 @@ class _FavoritePageState extends State<FavoritePage> {
     double width = MediaQuery.of(context).size.width;
     final provider = Provider.of<PropertyProvider>(context);
 
-    // Determine which list to display
     final displayItems = (onSearch && _founders.isNotEmpty)
         ? _founders
         : _getFilteredProperties();
 
-    // Check if favorites are still loading
     final isLoading = provider.getUserfavoriteProperties.isEmpty;
 
     return Scaffold(
@@ -272,7 +270,6 @@ class _FavoritePageState extends State<FavoritePage> {
                   ),
                 );
               } else {
-                // Add "All" category at the beginning if not present
                 final allTypes = [
                   ...propertyTypeData,
                 ];
@@ -330,7 +327,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         ),
                       );
                     },
-                    itemCount: allTypes.length + 1, // +1 for "All" category
+                    itemCount: allTypes.length + 1,
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(
                         width: 5,

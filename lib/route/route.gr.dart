@@ -158,20 +158,20 @@ class NotificationRoute extends _i7.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [OrdersPage]
-class OrdersRoute extends _i7.PageRouteInfo<void> {
-  const OrdersRoute({List<_i7.PageRouteInfo>? children})
-      : super(OrdersRoute.name, initialChildren: children);
+// /// [OrdersPage]
+// class OrdersRoute extends _i7.PageRouteInfo<void> {
+//   const OrdersRoute({List<_i7.PageRouteInfo>? children})
+//       : super(OrdersRoute.name, initialChildren: children);
 
-  static const String name = 'OrdersRoute';
+//   static const String name = 'OrdersRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const OrdersPage();
-    },
-  );
-}
+//   static _i7.PageInfo page = _i7.PageInfo(
+//     name,
+//     builder: (data) {
+//       return const OrdersPage();
+//     },
+//   );
+// }
 
 /// generated route for
 /// [_i3.PaymentPage]

@@ -25,6 +25,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+
   DataController dataController = DataController();
   @override
   void initState() {
@@ -160,11 +161,16 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 ),
               ),
               onPressed: () async {
-                await api.updateMongoUsersDetail(
+                await api
+                    .updateMongoUsersDetail(
                   widget.mongoUser.id ?? "",
                   userName: nameController.text,
                   phoneNumber: phoneNumberController.text,
-                );
+                )
+                    .then((_) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+                });
               },
               child: Text(
                 "Хадгалах",

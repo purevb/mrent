@@ -354,6 +354,7 @@ class MapSampleState extends State<CustomizeMap> {
     return Scaffold(
       appBar: widget.hasAppBar == true
           ? AppBar(
+              // forceMaterialTransparency: true,
               toolbarHeight: height * (0.08),
               elevation: 0.8,
               automaticallyImplyLeading: false,

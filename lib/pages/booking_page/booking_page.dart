@@ -45,6 +45,7 @@ class _BookingPageState extends State<BookingPage> {
     final provider = Provider.of<PropertyProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         leading: GestureDetector(
           onTap: () {
             Navigator.pop(context);

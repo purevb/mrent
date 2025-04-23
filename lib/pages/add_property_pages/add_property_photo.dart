@@ -158,6 +158,7 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         if (_uploadedImageUrls.isNotEmpty) {
@@ -168,6 +169,7 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
       },
       child: Scaffold(
         appBar: AppBar(
+          forceMaterialTransparency: true,
           title: const Text("Зураг нэмэх"),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),

@@ -174,6 +174,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        forceMaterialTransparency: true,
         backgroundColor: backgroundColor,
         title: const Text("Add Listing"),
       ),

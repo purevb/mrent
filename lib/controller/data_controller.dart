@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/favorite_model.dart';
@@ -29,6 +30,7 @@ class DataController with ChangeNotifier {
     try {
       var res = await api.getMongoUser(userId);
       userNotifier.value = res;
+      notifyListeners();
     } catch (e) {
       log(e.toString());
     }
@@ -38,6 +40,7 @@ class DataController with ChangeNotifier {
     try {
       var res = await api.getHostsOrdersData(hostId);
       ordersNotifier.value = res;
+      notifyListeners();
     } catch (e) {
       log(e.toString());
     }

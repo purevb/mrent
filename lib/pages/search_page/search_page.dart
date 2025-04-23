@@ -85,6 +85,7 @@ class _SearchPageState extends State<SearchPage> {
 
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Text(
           "Хайлт",
           style: GoogleFonts.inter(fontWeight: FontWeight.w500),

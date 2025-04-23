@@ -26,6 +26,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        forceMaterialTransparency: true,
         backgroundColor: backgroundColor,
         title: const Text(
           "Миний түрээслүүлж буй",
@@ -60,7 +61,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
           },
           separatorBuilder: (BuildContext context, int index) {
             return const SizedBox(
-              height: 20,
+              height: 10,
             );
           },
         ),

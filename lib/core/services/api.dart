@@ -223,4 +223,69 @@ class Api {
   Future<void> postSyncUserFromFirebase() async {
     await api.post("/sync-users", {});
   }
+
+  Future<PropertyModel> updatePropertyData({
+    required String propertyId,
+    String? propertyTypeId,
+    String? placeTypeId,
+    String? nightlyPrice,
+    String? propertyName,
+    String? description,
+    int? numGuests,
+    int? numBeds,
+    int? numBedrooms,
+    int? numBathrooms,
+    double? longtitude,
+    double? lattitude,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? images,
+  }) async {
+    try {
+      final Map<String, dynamic> data = {};
+
+      if (propertyTypeId != null) data['propertyTypeId'] = propertyTypeId;
+      if (placeTypeId != null) data['placeTypeId'] = placeTypeId;
+
+      if (nightlyPrice != null && nightlyPrice.isNotEmpty) {
+        data['nightlyPrice'] = double.tryParse(nightlyPrice);
+      }
+
+      if (propertyName != null && propertyName.isNotEmpty) {
+        data['propertyName'] = propertyName;
+      }
+
+      if (description != null && description.isNotEmpty) {
+        data['description'] = description;
+      }
+
+      if (numGuests != null) data['numGuests'] = numGuests;
+      if (numBeds != null) data['numBeds'] = numBeds;
+      if (numBedrooms != null) data['numBedrooms'] = numBedrooms;
+      if (numBathrooms != null) data['numBathrooms'] = numBathrooms;
+
+      if (longtitude != null) data['longitude'] = longtitude;
+      if (lattitude != null) data['latitude'] = lattitude;
+
+      if (startDate != null) data['start_date'] = startDate.toIso8601String();
+      if (endDate != null) data['end_date'] = endDate.toIso8601String();
+
+      if (images != null && images.isNotEmpty) {
+        data['images'] = images;
+      }
+      log("Sending update data: $data");
+
+      final res = await api.putData("/api/properties/$propertyId", data);
+      return PropertyModel.fromJson(res.data);
+    } catch (e) {
+      log("Error updating property: $e");
+      if (e is DioException && e.response?.statusCode == 500) {
+        log("Server error details: ${e.response?.data}");
+        throw "Server error occurred. Please try again with fewer changes.";
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> postReview() async {}
 }

@@ -48,6 +48,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
 
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Text(
           "Tүрээслүүлэх сууц нэмэх",
           style: GoogleFonts.inter(

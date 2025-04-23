@@ -10,6 +10,7 @@ class MappBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      forceMaterialTransparency: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),

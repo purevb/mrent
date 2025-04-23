@@ -47,6 +47,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        forceMaterialTransparency: true,
         backgroundColor: backgroundColor,
         title: Text(
           "Tүрээслүүлэх сууц нэмэх",

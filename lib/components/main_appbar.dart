@@ -89,6 +89,7 @@ class _MainAppBarState extends State<MainAppBar> {
     double width = MediaQuery.of(context).size.width;
 
     return AppBar(
+      forceMaterialTransparency: true,
       toolbarHeight: height * (0.1),
       backgroundColor: backgroundColor,
       automaticallyImplyLeading: false,

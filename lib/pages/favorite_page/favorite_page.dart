@@ -158,6 +158,7 @@ class _FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        forceMaterialTransparency: true,
         automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
         elevation: 0,
@@ -342,6 +343,7 @@ class _FavoritePageState extends State<FavoritePage> {
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
+        color: mRed,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: isLoading

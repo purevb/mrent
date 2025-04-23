@@ -107,24 +107,6 @@ class MapSampleState extends State<MapSample> {
             const Center(
               child: CircularProgressIndicator(),
             ),
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                FloatingActionButton.extended(
-                  heroTag: "btn2",
-                  onPressed: () {
-                    log("Selected Location: $_selectedLocation");
-                    log("Selected Address: $_selectedAddress");
-                  },
-                  label: const Text('Confirm Location'),
-                  icon: const Icon(Icons.check),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

@@ -27,24 +27,10 @@ class _RentHistoryPageState extends State<UnauthorizedRentHistory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
+              const Flexible(
                 flex: 2,
                 child: Row(
-                  children: [
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        "Edit",
-                        style: GoogleFonts.inter(
-                          color: textDefaultColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
+                  children: [],
                 ),
               ),
               Flexible(

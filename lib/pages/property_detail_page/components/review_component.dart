@@ -107,10 +107,10 @@ class _ReviewComponentState extends State<ReviewComponent> {
         }
 
         return ListView.builder(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.only(bottom: 100),
           shrinkWrap: true,
           itemCount: commentData.length,
-          physics: const NeverScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
@@ -158,6 +158,7 @@ class _ReviewComponentState extends State<ReviewComponent> {
                           Text(
                             commentData[index].comment?[0].text ?? "",
                             style: GoogleFonts.inter(
+                              // ignore: deprecated_member_use
                               color: Colors.black.withOpacity(0.6),
                               fontSize: 15,
                             ),

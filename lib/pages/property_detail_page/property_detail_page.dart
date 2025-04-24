@@ -273,7 +273,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                       ),
                       Text(widget.propertyData.description ?? ""),
                       const SizedBox(height: 16),
-                      tabBar(height, width),
+                      tabBar(height),
                     ],
                   ),
                 ),
@@ -286,8 +286,9 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
     );
   }
 
-  Widget tabBar(double height, double width) {
+  Widget tabBar(double height) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         TabBar(
           dividerColor: Colors.transparent,
@@ -302,7 +303,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
           ],
         ),
         SizedBox(
-          height: height * 2,
+          height: height,
           child: TabBarView(
             controller: _tabController,
             children: [

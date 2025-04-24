@@ -9,6 +9,7 @@ import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
+import 'package:mrent/model/rented_properties_model.dart';
 import 'package:mrent/model/users_review_model.dart';
 
 class DataController with ChangeNotifier {
@@ -39,6 +40,19 @@ class DataController with ChangeNotifier {
 
   final ValueNotifier<List<UsersReviewModel>?> propertyReviewNotifier =
       ValueNotifier(null);
+
+  final ValueNotifier<List<RentedPropertiesModel>?> rentedPropertiesNotifier =
+      ValueNotifier(null);
+
+  Future<void> getRentedPropertiesData(String userId) async {
+    try {
+      var res = await api.getRentedProperties(userId);
+      rentedPropertiesNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   Future<void> getRatingData(String propertyId) async {
     try {

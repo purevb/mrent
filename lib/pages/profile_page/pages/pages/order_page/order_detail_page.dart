@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/components/horizontal_property.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/profile_page/pages/pages/order_page/orders_page.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
+import 'package:mrent/providers/property_provider.dart';
+import 'package:provider/provider.dart';
 
 class OrderDetailPage extends StatefulWidget {
   const OrderDetailPage({
@@ -18,8 +21,10 @@ class OrderDetailPage extends StatefulWidget {
 }
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
+  Api api = Api();
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Захиалгын дэлгэрэнгүй"),
@@ -107,7 +112,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 Expanded(
                   child: MyButton(
                     canPress: true,
-                    onPress: () {},
+                    onPress: () {
+                      api.approveBookingRequest(
+                        orderId: widget.orderData.id ?? "",
+                        hostId: provider.getUser?.id ?? "",
+                        userId: widget.orderData.userId?.id ?? "",
+                      );
+                    },
                     height: 40,
                     width: 100,
                     text: "Зөвшөөрөх",

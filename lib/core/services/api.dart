@@ -8,6 +8,7 @@ import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
+import 'package:mrent/model/rented_properties_model.dart';
 import 'package:mrent/model/users_review_model.dart';
 
 class Api {
@@ -336,7 +337,6 @@ class Api {
 
   Future<List<UsersReviewModel>?> getReviews(String propertyId) async {
     final res = await api.get("/api/users_review/property/$propertyId");
-    log(res.toString());
     List data = res.data;
     return data.map((json) {
       return UsersReviewModel.fromJson(json);
@@ -346,5 +346,50 @@ class Api {
   Future<AverageRatingModel?> getRatings(String propertyId) async {
     final res = await api.get("/api/ratings/property/$propertyId/average");
     return AverageRatingModel.fromJson(res.data);
+  }
+
+  Future<int> approveBookingRequest({
+    required String orderId,
+    required String hostId,
+    required String userId,
+  }) async {
+    try {
+      final res = await api.post("/api/rented", {
+        "host_id": hostId,
+        "booking_id": orderId,
+        "user_id": userId,
+      });
+
+      if (res.statusCode == 201) {
+        log("Successfully approved booking request");
+        log("Response data: ${res.data}");
+        return res.statusCode!;
+      } else {
+        log("Request failed with status: ${res.statusCode}");
+        log("Response data: ${res.data}");
+        return res.statusCode!;
+      }
+    } catch (e, stackTrace) {
+      log("Error approving booking request", error: e, stackTrace: stackTrace);
+
+      if (e is DioError) {
+        // If you're using Dio
+        log("Dio error details:");
+        log("Type: ${e.type}");
+        log("Message: ${e.message}");
+        log("Response: ${e.response?.data}");
+        log("Status code: ${e.response?.statusCode}");
+
+        return e.response?.statusCode ?? 500;
+      }
+
+      return 500; // Return generic server error code
+    }
+  }
+
+  Future<List<RentedPropertiesModel>> getRentedProperties(String userId) async {
+    final res = await api.get("/api/rented/user/$userId");
+    List data = res.data;
+    return data.map((datas) => RentedPropertiesModel.fromJson(datas)).toList();
   }
 }

@@ -349,9 +349,11 @@ class _ReviewTabState extends State<ReviewTab> {
             ],
           ),
         ),
-        ReviewComponent(
-          propertyId: widget.propertyId,
-          refreshTrigger: refreshStream,
+        Expanded(
+          child: ReviewComponent(
+            propertyId: widget.propertyId,
+            refreshTrigger: refreshStream,
+          ),
         ),
       ],
     );

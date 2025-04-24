@@ -1,31 +1,65 @@
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mrent/core/services/api.dart';
+import 'package:mrent/model/average_rating_model.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
+import 'package:mrent/model/users_review_model.dart';
 
 class DataController with ChangeNotifier {
   var api = Api();
+
   final ValueNotifier<List<PropertyModel>?> propertyDataNotifier =
       ValueNotifier(null);
+
   final ValueNotifier<List<PropertyModel>?> usePropertyDataNotifier =
       ValueNotifier(null);
+
   final ValueNotifier<List<PropertyType>?> propertyTypeNotifier =
       ValueNotifier(null);
+
   final ValueNotifier<List<ProvinceModel>?> proviceNotifier =
       ValueNotifier(null);
 
   final ValueNotifier<List<FavoriteModel>?> favoriteNotifier =
       ValueNotifier(null);
+
   final ValueNotifier<List<OrderModel>?> ordersNotifier = ValueNotifier(null);
+
   final ValueNotifier<MongoUserModel?> userNotifier =
       ValueNotifier<MongoUserModel?>(null);
+
+  final ValueNotifier<AverageRatingModel?> propertyRatingNotifier =
+      ValueNotifier(null);
+
+  final ValueNotifier<List<UsersReviewModel>?> propertyReviewNotifier =
+      ValueNotifier(null);
+
+  Future<void> getRatingData(String propertyId) async {
+    try {
+      var res = await api.getRatings(propertyId);
+      propertyRatingNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> getReviewData(String propertyId) async {
+    try {
+      var res = await api.getReviews(propertyId);
+      propertyReviewNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future<void> getUserData(String userId) async {
     try {
       var res = await api.getMongoUser(userId);

@@ -1,12 +1,14 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:mrent/core/services/api_dio.dart';
+import 'package:mrent/model/average_rating_model.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
+import 'package:mrent/model/users_review_model.dart';
 
 class Api {
   final api = ApiDio();
@@ -128,11 +130,11 @@ class Api {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("Ajillsn"); // ✅ success
+        log("Ajillsn");
       } else {
         throw Exception('Failed to post property: ${response.statusCode}');
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw Exception('Network error: ${e.message}');
     } catch (e) {
       throw Exception('Failed to post property: $e');
@@ -287,5 +289,62 @@ class Api {
     }
   }
 
-  Future<void> postReview() async {}
+  Future<int> postRating({
+    String? userId,
+    String? propertyId,
+    int? rating,
+  }) async {
+    final Map<String, dynamic> updateData = {};
+    updateData['property_id'] = propertyId;
+    updateData['user_id'] = userId;
+    updateData['overall_rating'] = rating;
+
+    final res = await api.post("/api/ratings", updateData);
+    return res.statusCode?.toInt() ?? 0;
+  }
+
+  Future<int> postReview({
+    required String propertyId,
+    required String userId,
+    required String text,
+    List<String> images = const [],
+  }) async {
+    try {
+      final Map<String, dynamic> reviewData = {
+        'property_id': propertyId,
+        'user_id': userId,
+        'comment': [
+          {
+            'text': text,
+            'images': images,
+          }
+        ]
+      };
+      final res = await api.post('/api/users_review', reviewData);
+      if (res.statusCode == 201) {
+        log("${reviewData.toString()} ${res.statusCode}");
+        return res.statusCode ?? 0;
+      } else {
+        log(reviewData.toString());
+        return res.statusCode ?? -1;
+      }
+    } catch (e) {
+      log('Exception when posting review: $e');
+      return 500;
+    }
+  }
+
+  Future<List<UsersReviewModel>?> getReviews(String propertyId) async {
+    final res = await api.get("/api/users_review/property/$propertyId");
+    log(res.toString());
+    List data = res.data;
+    return data.map((json) {
+      return UsersReviewModel.fromJson(json);
+    }).toList();
+  }
+
+  Future<AverageRatingModel?> getRatings(String propertyId) async {
+    final res = await api.get("/api/ratings/property/$propertyId/average");
+    return AverageRatingModel.fromJson(res.data);
+  }
 }

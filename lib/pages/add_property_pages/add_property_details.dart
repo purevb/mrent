@@ -96,7 +96,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 227, 226, 230),
+                      color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -111,6 +111,9 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
+                              hintStyle: const TextStyle(
+                                color: Color(0xff252B5C),
+                              ),
                             ),
                           ),
                         ),

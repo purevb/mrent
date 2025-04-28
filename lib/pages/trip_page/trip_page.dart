@@ -59,12 +59,8 @@ class _TripPageState extends State<TripPage> {
     }
 
     try {
-      log("Loading favorites for user: ${widget.user!.id}");
       final favoriteModels = await api.getFavorites(widget.user!.id!);
-      log("Loaded ${favoriteModels.length} favorites");
-
       if (!mounted) return;
-
       final provider = Provider.of<PropertyProvider>(context, listen: false);
       List<PropertyModel> favoritePropertyObjects = [];
 
@@ -118,7 +114,7 @@ class _TripPageState extends State<TripPage> {
       appBar: MainAppBar(
         hasLeading: false,
         properties: widget.propertyDatas,
-        hasLocationBar: true,
+        hasLocationBar: false,
         chooseType: filterTypes,
       ),
       body: Builder(builder: (context) {
@@ -176,6 +172,7 @@ class _TripPageState extends State<TripPage> {
           );
         } else {
           return RefreshIndicator(
+            color: mRed,
             onRefresh: () async {
               await Future.wait([
                 widget.refresh?.call() ?? Future.value(),

@@ -158,10 +158,11 @@ class _FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        forceMaterialTransparency: true,
         automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
-        elevation: 0,
+        // ignore: deprecated_member_use
+        shadowColor: Colors.black.withOpacity(0.5),
+        elevation: 1,
         title: onSearch == false ? const Text("Таалагдсан") : const Text(""),
         centerTitle: true,
         actions: [
@@ -223,7 +224,7 @@ class _FavoritePageState extends State<FavoritePage> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(35),
+          preferredSize: const Size.fromHeight(45),
           child: ValueListenableBuilder(
             valueListenable: dataController.propertyTypeNotifier,
             builder: (context, propertyTypeData, child) {
@@ -275,7 +276,8 @@ class _FavoritePageState extends State<FavoritePage> {
                   ...propertyTypeData,
                 ];
 
-                return SizedBox(
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 5),
                   height: 35,
                   child: ListView.separated(
                     padding: const EdgeInsets.only(left: 20),

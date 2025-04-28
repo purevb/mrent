@@ -69,6 +69,7 @@ dependencies:
   path: ^1.9.1
   lottie: ^3.3.1
   focus_detector: ^2.0.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

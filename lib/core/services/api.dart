@@ -126,7 +126,7 @@ class Api {
       };
 
       final response = await api.post(
-        "/properties",
+        "/api/properties",
         requestData,
       );
 
@@ -162,12 +162,15 @@ class Api {
     try {
       final Map<String, dynamic> updateData = {};
 
-      if (userName != null && userName.isNotEmpty)
+      if (userName != null && userName.isNotEmpty) {
         updateData['name'] = userName;
-      if (phoneNumber != null && phoneNumber.isNotEmpty)
+      }
+      if (phoneNumber != null && phoneNumber.isNotEmpty) {
         updateData['phone'] = phoneNumber;
-      if (userProfile != null && userProfile.isNotEmpty)
+      }
+      if (userProfile != null && userProfile.isNotEmpty) {
         updateData['profileImage'] = userProfile;
+      }
 
       if (updateData.isEmpty) {
         throw Exception('No valid fields provided for update');
@@ -217,10 +220,11 @@ class Api {
     }
   }
 
-  Future<List<OrderModel>> getHostsOrdersData(String hostId) async {
+  Future<List<BookingModel>> getHostsOrdersData(String hostId) async {
     final res = await api.get("/api/bookings/host/$hostId");
+    log(res.toString());
     final List data = res.data;
-    return data.map((e) => OrderModel.fromJson(e)).toList();
+    return data.map((e) => BookingModel.fromJson(e)).toList();
   }
 
   Future<void> postSyncUserFromFirebase() async {
@@ -362,17 +366,16 @@ class Api {
 
       if (res.statusCode == 201) {
         log("Successfully approved booking request");
-        log("Response data: ${res.data}");
         return res.statusCode!;
       } else {
         log("Request failed with status: ${res.statusCode}");
-        log("Response data: ${res.data}");
+
         return res.statusCode!;
       }
     } catch (e, stackTrace) {
       log("Error approving booking request", error: e, stackTrace: stackTrace);
 
-      if (e is DioError) {
+      if (e is DioException) {
         // If you're using Dio
         log("Dio error details:");
         log("Type: ${e.type}");
@@ -383,7 +386,7 @@ class Api {
         return e.response?.statusCode ?? 500;
       }
 
-      return 500; // Return generic server error code
+      return 500;
     }
   }
 
@@ -391,5 +394,31 @@ class Api {
     final res = await api.get("/api/rented/user/$userId");
     List data = res.data;
     return data.map((datas) => RentedPropertiesModel.fromJson(datas)).toList();
+  }
+
+  Future<int> deleteBookingRequest(String bookingId) async {
+    final res = await api.delete("/api/bookings/$bookingId", {});
+    if (res.statusCode == 200) {
+      log("${res.statusCode} amjilttai ustlaa");
+    } else {
+      log("${res.statusCode} amjiltgui");
+    }
+    return res.statusCode!;
+  }
+
+  Future<int> updateBookingStatus({
+    required String bookingid,
+    required bool approved,
+  }) async {
+    try {
+      final Map<String, dynamic> json = {'approved': approved};
+      log(json.toString());
+      final res = await api.putData("/api/bookings/$bookingid", json);
+
+      return res.statusCode!;
+    } catch (e) {
+      log(e.toString());
+      return 0;
+    }
   }
 }

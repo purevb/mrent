@@ -30,7 +30,7 @@ class DataController with ChangeNotifier {
   final ValueNotifier<List<FavoriteModel>?> favoriteNotifier =
       ValueNotifier(null);
 
-  final ValueNotifier<List<OrderModel>?> ordersNotifier = ValueNotifier(null);
+  final ValueNotifier<List<BookingModel>?> ordersNotifier = ValueNotifier(null);
 
   final ValueNotifier<MongoUserModel?> userNotifier =
       ValueNotifier<MongoUserModel?>(null);

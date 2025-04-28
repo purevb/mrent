@@ -1,7 +1,7 @@
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
 
-class OrderModel {
+class BookingModel {
   final String? id;
   final PropertyModel? propertyId;
   final MongoUserModel? userId;
@@ -10,9 +10,12 @@ class OrderModel {
   final String? checkinDate;
   final String? checkoutDate;
   final int? totalPrice;
+  final String? createdAt;
+  final String? updatedAt;
+  final bool? approved;
   final int? v;
 
-  OrderModel({
+  BookingModel({
     this.id,
     this.propertyId,
     this.userId,
@@ -21,10 +24,13 @@ class OrderModel {
     this.checkinDate,
     this.checkoutDate,
     this.totalPrice,
+    this.createdAt,
+    this.updatedAt,
+    this.approved,
     this.v,
   });
 
-  OrderModel.fromJson(Map<String, dynamic> json)
+  BookingModel.fromJson(Map<String, dynamic> json)
       : id = json['_id'] as String?,
         propertyId = (json['property_id'] as Map<String, dynamic>?) != null
             ? PropertyModel.fromJson(
@@ -38,6 +44,9 @@ class OrderModel {
         checkinDate = json['checkin_date'] as String?,
         checkoutDate = json['checkout_date'] as String?,
         totalPrice = json['total_price'] as int?,
+        createdAt = json['createdAt'] as String?,
+        updatedAt = json['updatedAt'] as String?,
+        approved = json['approved'] as bool?,
         v = json['__v'] as int?;
 
   Map<String, dynamic> toJson() => {
@@ -49,6 +58,7 @@ class OrderModel {
         'checkin_date': checkinDate,
         'checkout_date': checkoutDate,
         'total_price': totalPrice,
+        'approved': approved,
         '__v': v
       };
 }

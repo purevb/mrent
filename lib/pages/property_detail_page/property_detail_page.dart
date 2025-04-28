@@ -155,7 +155,9 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
             child: Column(
               children: [
                 ImageSwiper(
-                    height: height, images: widget.propertyData.images!),
+                  height: height,
+                  images: widget.propertyData.images!,
+                ),
                 Container(
                   color: Colors.white,
                   padding: const EdgeInsets.only(
@@ -209,9 +211,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               color: const Color(0xffF4F6F9),
                               borderRadius: BorderRadius.circular(3),
                             ),
-                            child: Text(widget
-                                .propertyData.propertyTypeId!.typeName
-                                .toString()),
+                            child: Text(
+                              widget.propertyData.propertyTypeId!.typeName
+                                  .toString(),
+                            ),
                           ),
                         ],
                       ),
@@ -252,11 +255,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                               height: 20,
                               width: 25,
                               child: SvgPicture.asset(
-                                  fit: BoxFit.fitHeight,
-                                  provider.isPropertyIdFavorite(
-                                          widget.propertyData.id!)
-                                      ? "assets/object/pressedlike.svg"
-                                      : "assets/object/Vector.svg"),
+                                fit: BoxFit.fitHeight,
+                                provider.isPropertyIdFavorite(
+                                        widget.propertyData.id!)
+                                    ? "assets/object/pressedlike.svg"
+                                    : "assets/object/Vector.svg",
+                              ),
                             ),
                           ),
                         ],
@@ -303,7 +307,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
           ],
         ),
         SizedBox(
-          height: height,
+          height: height * 1.1,
           child: TabBarView(
             controller: _tabController,
             children: [

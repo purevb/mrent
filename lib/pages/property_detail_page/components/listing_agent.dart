@@ -29,7 +29,8 @@ class _ListingAgentState extends State<ListingAgent> {
           child: ClipOval(
             child: CachedNetworkImage(
               fit: BoxFit.fill,
-              imageUrl: widget.user.profileImage,
+              imageUrl: widget.user.profileImage ??
+                  "https://cdn-icons-png.flaticon.com/128/1999/1999625.png",
               errorWidget: (context, url, error) {
                 return Center(
                   child: CircularProgressIndicator(

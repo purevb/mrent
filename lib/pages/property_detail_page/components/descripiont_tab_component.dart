@@ -1,11 +1,17 @@
+import 'dart:developer';
+
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mrent/components/calendar.dart';
 import 'package:mrent/components/map_component.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class DescriptionTab extends StatelessWidget {
+class DescriptionTab extends StatefulWidget {
   const DescriptionTab({
     super.key,
     required this.advantages,
@@ -16,34 +22,68 @@ class DescriptionTab extends StatelessWidget {
   final Map<int, Map<String, dynamic>> advantages;
 
   @override
+  State<DescriptionTab> createState() => _DescriptionTabState();
+}
+
+class _DescriptionTabState extends State<DescriptionTab> {
+  String _locale = 'en_US';
+  void _showDatePicker() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: SimpleDatePicker(
+          rangeStart: DateTime.now(),
+          rangeEnd: DateTime.now().add(const Duration(days: 7)),
+          onSelectDateRange: (start, end) {
+            // Handle selected date range
+            print('Selected date range: $start to $end');
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('mn', null);
+  }
+
+  void _changeLocale(String locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var today = DateTime.now();
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final Map<int, Map<String, dynamic>> filledAdvantages = {
       0: {
-        "label": advantages[0]!["label"],
-        "value": "${propertyData.numGuests}",
-        "icon": advantages[0]!["icon"],
+        "label": widget.advantages[0]!["label"],
+        "value": "${widget.propertyData.numGuests}",
+        "icon": widget.advantages[0]!["icon"],
       },
       1: {
-        "label": advantages[1]!["label"],
-        "value": "${propertyData.numBeds}",
-        "icon": advantages[1]!["icon"],
+        "label": widget.advantages[1]!["label"],
+        "value": "${widget.propertyData.numBeds}",
+        "icon": widget.advantages[1]!["icon"],
       },
       2: {
-        "label": advantages[2]!["label"],
-        "value": "${propertyData.numBathrooms}",
-        "icon": advantages[2]!["icon"],
+        "label": widget.advantages[2]!["label"],
+        "value": "${widget.propertyData.numBathrooms}",
+        "icon": widget.advantages[2]!["icon"],
       },
       3: {
-        "label": advantages[3]!["label"],
-        "value": "${propertyData.numBedrooms}",
-        "icon": advantages[3]!["icon"],
+        "label": widget.advantages[3]!["label"],
+        "value": "${widget.propertyData.numBedrooms}",
+        "icon": widget.advantages[3]!["icon"],
       },
     };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 10,
       children: [
         SizedBox(
           height: height * 0.128,
@@ -67,28 +107,46 @@ class DescriptionTab extends StatelessWidget {
             },
           ),
         ),
+        const SizedBox(height: 10),
         ListingAgent(
-          user: propertyData.userId!,
+          user: widget.propertyData.userId!,
         ),
-        const Divider(),
+        const SizedBox(height: 10),
+        SimpleDatePicker(
+          rangeStart: DateTime.now(),
+          rangeEnd: DateTime.now().add(const Duration(days: 7)),
+          onSelectDateRange: (start, end) {},
+        ),
+        const SizedBox(height: 10),
         const Row(
-          spacing: 5,
-          children: [
+          children: const [
             Icon(
               CupertinoIcons.placemark,
               size: 25,
             ),
+            SizedBox(width: 5),
             Text("Газарзүйн байршил")
           ],
         ),
-        SizedBox(
+        Container(
           height: height * 0.3,
+          margin: const EdgeInsets.all(5),
           width: width,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 3,
+              ),
+            ],
+          ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: MapComponent(
-              longitude: propertyData.longitude!,
-              latitude: propertyData.latitude!,
+              longitude: widget.propertyData.longitude!,
+              latitude: widget.propertyData.latitude!,
             ),
           ),
         ),

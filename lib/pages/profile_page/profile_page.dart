@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
@@ -175,24 +172,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               const SizedBox(
                                 width: 15,
                               ),
-                              ValueListenableBuilder<List<OrderModel>?>(
+                              ValueListenableBuilder<List<BookingModel>?>(
                                 valueListenable: dataController.ordersNotifier,
                                 builder: (context, orderData, child) {
                                   if (orderData == null) {
                                     return const SizedBox();
                                   } else {
+                                    List<BookingModel> notApproved = orderData
+                                        .where((booking) =>
+                                            booking.approved != true)
+                                        .toList();
+
                                     return myContainers(
                                       () {
                                         Navigator.push(context,
                                             MaterialPageRoute(
                                                 builder: (context) {
                                           return OrdersPage(
-                                            orderData: orderData,
+                                            orderData: notApproved,
                                           );
                                         }));
                                       },
                                       width,
-                                      orderData.length.toString(),
+                                      notApproved.length.toString(),
                                       "Захиалгууд",
                                     );
                                   }

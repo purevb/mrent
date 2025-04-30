@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:mrent/model/property_table_calendar.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class SimpleDatePicker extends StatefulWidget {
   const SimpleDatePicker({
-    super.key,
     required this.onSelectDateRange,
     this.rangeStart,
     this.rangeEnd,
+    this.tableDate,
+    super.key,
   });
 
   final void Function(DateTime, DateTime) onSelectDateRange;
   final DateTime? rangeStart, rangeEnd;
+  final List<PropertyTableCalendar>? tableDate;
 
   @override
   State<SimpleDatePicker> createState() => _SimpleDatePickerState();

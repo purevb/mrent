@@ -7,6 +7,7 @@ import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/property_table_calendar.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
 import 'package:mrent/model/rented_properties_model.dart';
@@ -43,6 +44,19 @@ class DataController with ChangeNotifier {
 
   final ValueNotifier<List<RentedPropertiesModel>?> rentedPropertiesNotifier =
       ValueNotifier(null);
+
+  final ValueNotifier<List<PropertyTableCalendar>?> tableDateDataNotifier =
+      ValueNotifier(null);
+
+  Future<void> getTableDateData(String propertyId) async {
+    try {
+      var res = await api.getTableDateData(propertyId);
+      tableDateDataNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   Future<void> getRentedPropertiesData(String userId) async {
     try {

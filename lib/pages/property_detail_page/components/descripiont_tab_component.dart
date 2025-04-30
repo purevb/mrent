@@ -1,15 +1,12 @@
-import 'dart:developer';
-
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:mrent/components/calendar.dart';
 import 'package:mrent/components/map_component.dart';
+import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/property_detail_page/components/listing_agent.dart';
 import 'package:mrent/pages/property_detail_page/components/tabbar_description.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class DescriptionTab extends StatefulWidget {
   const DescriptionTab({
@@ -26,33 +23,13 @@ class DescriptionTab extends StatefulWidget {
 }
 
 class _DescriptionTabState extends State<DescriptionTab> {
-  String _locale = 'en_US';
-  void _showDatePicker() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: SimpleDatePicker(
-          rangeStart: DateTime.now(),
-          rangeEnd: DateTime.now().add(const Duration(days: 7)),
-          onSelectDateRange: (start, end) {
-            // Handle selected date range
-            print('Selected date range: $start to $end');
-          },
-        ),
-      ),
-    );
-  }
+  DataController dataController = DataController();
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('mn', null);
-  }
-
-  void _changeLocale(String locale) {
-    setState(() {
-      _locale = locale;
-    });
+    dataController.getTableDateData(widget.propertyData.id ?? "");
   }
 
   @override
@@ -83,6 +60,7 @@ class _DescriptionTabState extends State<DescriptionTab> {
       },
     };
     return Column(
+      spacing: 5,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
@@ -112,11 +90,15 @@ class _DescriptionTabState extends State<DescriptionTab> {
           user: widget.propertyData.userId!,
         ),
         const SizedBox(height: 10),
-        SimpleDatePicker(
-          rangeStart: DateTime.now(),
-          rangeEnd: DateTime.now().add(const Duration(days: 7)),
-          onSelectDateRange: (start, end) {},
-        ),
+        ValueListenableBuilder(
+            valueListenable: dataController.tableDateDataNotifier,
+            builder: (context, tableDateData, child) {
+              return SimpleDatePicker(
+                rangeStart: DateTime.now(),
+                rangeEnd: DateTime.now().add(const Duration(days: 7)),
+                onSelectDateRange: (start, end) {},
+              );
+            }),
         const SizedBox(height: 10),
         const Row(
           children: const [

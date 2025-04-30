@@ -6,6 +6,7 @@ import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/model/property_table_calendar.dart';
 import 'package:mrent/model/property_type.dart';
 import 'package:mrent/model/province_model.dart';
 import 'package:mrent/model/rented_properties_model.dart';
@@ -222,7 +223,6 @@ class Api {
 
   Future<List<BookingModel>> getHostsOrdersData(String hostId) async {
     final res = await api.get("/api/bookings/host/$hostId");
-    log(res.toString());
     final List data = res.data;
     return data.map((e) => BookingModel.fromJson(e)).toList();
   }
@@ -420,5 +420,14 @@ class Api {
       log(e.toString());
       return 0;
     }
+  }
+
+  Future<List<PropertyTableCalendar>> getTableDateData(
+      String propertyId) async {
+    final res = await api.get("/api/properties/$propertyId/calendar");
+    final List<dynamic> data = res.data;
+    return data.map((json) {
+      return PropertyTableCalendar.fromJson(json);
+    }).toList();
   }
 }

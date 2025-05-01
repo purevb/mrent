@@ -11,7 +11,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: NavigationRoute.page, initial: true),
         // CupertinoRoute(
         //     page: PersonalInformationRoute.page, path: '/personal_information'),
-        CupertinoRoute(page: PaymentRoute.page, path: '/payment'),
+        // CupertinoRoute(page: PaymentRoute.page, path: '/payment'),
         CupertinoRoute(page: NotificationRoute.page, path: '/noti'),
         CupertinoRoute(page: PrivacyRoute.page, path: '/privacy'),
         CupertinoRoute(

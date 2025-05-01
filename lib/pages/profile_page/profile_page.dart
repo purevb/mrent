@@ -12,6 +12,7 @@ import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
 import 'package:mrent/pages/profile_page/pages/pages/my_properties.dart';
 import 'package:mrent/pages/profile_page/pages/pages/order_page/orders_page.dart';
+import 'package:mrent/pages/profile_page/pages/pages/payment_page/payment_page.dart';
 import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/route/route.gr.dart';
@@ -39,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
     },
     1: {
       "iconPath": "assets/profile/Vector-1.svg",
-      "description": "Төлбөр төлөлт",
+      "description": "Тайлан",
       "path": "/payment"
     },
     2: {
@@ -287,6 +288,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         MaterialPageRoute(builder: (context) {
                                       return PersonalInformationPage(
                                         mongoUser: userData,
+                                      );
+                                    }));
+                                  } else if (path == "/payment") {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return PaymentPage(
+                                        user: userData,
                                       );
                                     }));
                                   } else {

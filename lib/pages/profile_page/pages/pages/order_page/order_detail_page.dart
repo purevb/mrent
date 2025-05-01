@@ -212,10 +212,21 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   userId: widget.orderData.userId?.id ?? "",
                                 )
                                   .then((_) async {
-                                  await api.updateBookingStatus(
+                                  await api
+                                      .updateBookingStatus(
                                     bookingid: widget.orderData.id!,
                                     approved: true,
-                                  );
+                                  )
+                                      .then((_) async {
+                                    await api.postEarning(
+                                      bookingId: widget.orderData.id!,
+                                      userId: widget.orderData.userId?.id ?? "",
+                                    );
+                                    await api.postPayment(
+                                      bookingId: widget.orderData.id!,
+                                      userId: widget.orderData.userId?.id ?? "",
+                                    );
+                                  });
                                 })
                               : await api.deleteBookingRequest(
                                   widget.orderData.id ?? "");

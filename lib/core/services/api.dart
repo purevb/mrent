@@ -2,9 +2,11 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:mrent/core/services/api_dio.dart';
 import 'package:mrent/model/average_rating_model.dart';
+import 'package:mrent/model/earnings_model.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
+import 'package:mrent/model/payments_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_table_calendar.dart';
 import 'package:mrent/model/property_type.dart';
@@ -429,5 +431,39 @@ class Api {
     return data.map((json) {
       return PropertyTableCalendar.fromJson(json);
     }).toList();
+  }
+
+  Future<List<PaymentsModel>> getPaymentData(String userId) async {
+    final res = await api.get("/api/earnings/user/$userId");
+    List<dynamic> data = res.data;
+    return data.map((json) {
+      return PaymentsModel.fromJson(json);
+    }).toList();
+  }
+
+  Future<List<EarningsModel>> getEarningData(String userId) async {
+    final res = await api.get("/api/earnings/user/$userId");
+    List<dynamic> data = res.data;
+    return data.map((json) {
+      return EarningsModel.fromJson(json);
+    }).toList();
+  }
+
+  Future<int> postEarning(
+      {required String bookingId, required String userId}) async {
+    Map<String, dynamic> data = {};
+    data['booking_id'] = bookingId;
+    data['user_id'] = userId;
+    final res = await api.post("/api/earnings", data);
+    return res.statusCode!;
+  }
+
+  Future<int> postPayment(
+      {required String bookingId, required String userId}) async {
+    Map<String, dynamic> data = {};
+    data['booking_id'] = bookingId;
+    data['user_id'] = userId;
+    final res = await api.post("/api/payments", data);
+    return res.statusCode!;
   }
 }

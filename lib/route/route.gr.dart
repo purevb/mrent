@@ -175,19 +175,19 @@ class NotificationRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.PaymentPage]
-class PaymentRoute extends _i7.PageRouteInfo<void> {
-  const PaymentRoute({List<_i7.PageRouteInfo>? children})
-      : super(PaymentRoute.name, initialChildren: children);
+// class PaymentRoute extends _i7.PageRouteInfo<void> {
+//   const PaymentRoute({List<_i7.PageRouteInfo>? children})
+//       : super(PaymentRoute.name, initialChildren: children);
 
-  static const String name = 'PaymentRoute';
+//   static const String name = 'PaymentRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const _i3.PaymentPage();
-    },
-  );
-}
+//   static _i7.PageInfo page = _i7.PageInfo(
+//     name,
+//     builder: (data) {
+//       return const _i3.PaymentPage();
+//     },
+//   );
+// }
 
 // /// generated route for
 // /// [_i4.PersonalInformationPage]

@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/average_rating_model.dart';
+import 'package:mrent/model/earnings_model.dart';
 import 'package:mrent/model/favorite_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
+import 'package:mrent/model/payments_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/property_table_calendar.dart';
 import 'package:mrent/model/property_type.dart';
@@ -47,6 +49,32 @@ class DataController with ChangeNotifier {
 
   final ValueNotifier<List<PropertyTableCalendar>?> tableDateDataNotifier =
       ValueNotifier(null);
+
+  final ValueNotifier<List<EarningsModel>?> earningDataNotifier =
+      ValueNotifier(null);
+
+  final ValueNotifier<List<PaymentsModel>?> paymentDataNotifier =
+      ValueNotifier(null);
+
+  Future<void> getEarningDateData(String userId) async {
+    try {
+      var res = await api.getEarningData(userId);
+      earningDataNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> getPaymentData(String propertyId) async {
+    try {
+      var res = await api.getPaymentData(propertyId);
+      paymentDataNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   Future<void> getTableDateData(String propertyId) async {
     try {

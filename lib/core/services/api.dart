@@ -435,6 +435,7 @@ class Api {
 
   Future<List<PaymentsModel>> getPaymentData(String userId) async {
     final res = await api.get("/api/earnings/user/$userId");
+    log(res.toString());
     List<dynamic> data = res.data;
     return data.map((json) {
       return PaymentsModel.fromJson(json);

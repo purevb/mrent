@@ -12,6 +12,7 @@ import 'package:mrent/pages/profile_page/components/list_tiles.dart';
 import 'package:mrent/pages/profile_page/components/profile_image.dart';
 import 'package:mrent/pages/profile_page/pages/pages/my_properties.dart';
 import 'package:mrent/pages/profile_page/pages/pages/order_page/orders_page.dart';
+import 'package:mrent/pages/profile_page/pages/pages/earning_page/earning_page.dart';
 import 'package:mrent/pages/profile_page/pages/pages/payment_page/payment_page.dart';
 import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart';
 import 'package:mrent/providers/property_provider.dart';
@@ -95,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
           color: mRed,
           onRefresh: _refresh,
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: ValueListenableBuilder(
                 valueListenable: dataController.userNotifier,
                 builder: (context, userData, child) {
@@ -165,7 +167,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 width: 15,
                               ),
                               myContainers(
-                                () {},
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return PaymentPage(
+                                          user: widget.user,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
                                 width,
                                 "20",
                                 "Төлөлтүүд",
@@ -293,7 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   } else if (path == "/payment") {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
-                                      return PaymentPage(
+                                      return EarningPage(
                                         user: userData,
                                       );
                                     }));
@@ -331,9 +344,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 top: 20, right: 10.0, bottom: 20),
                             child: GestureDetector(
                               onTap: () async {
-                                AuthService authService = AuthService();
-                                await authService.signout(context);
-                                provider.clearFavoriteProperties();
+                                await provider.signOut(context);
                               },
                               child: Text(
                                 "Гарах",

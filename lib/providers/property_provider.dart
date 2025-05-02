@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/services/auth_service.dart';
 
 class PropertyProvider extends ChangeNotifier {
   Api api = Api();
+  AuthService authService = AuthService();
   List<String> favoritePropertyIds = [];
   List<PropertyModel> favoriteProperties = [];
 
@@ -74,9 +76,16 @@ class PropertyProvider extends ChangeNotifier {
         favoriteProperties.any((p) => p.id == propertyId);
   }
 
-  void clearFavoriteProperties() {
+  Future<void> clearFavoriteProperties() async {
     favoriteProperties.clear();
     favoritePropertyIds.clear();
+    fbUser = null;
     notifyListeners();
+  }
+
+  Future<dynamic> signOut(BuildContext context) async {
+    await clearFavoriteProperties();
+    // ignore: use_build_context_synchronously
+    return await authService.signout(context);
   }
 }

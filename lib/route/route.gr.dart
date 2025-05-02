@@ -20,7 +20,7 @@ import 'package:mrent/pages/profile_page/pages/pages/my_properties.dart';
 import 'package:mrent/pages/profile_page/pages/pages/notification_page/notification_page.dart'
     as _i2;
 import 'package:mrent/pages/profile_page/pages/pages/order_page/orders_page.dart';
-import 'package:mrent/pages/profile_page/pages/pages/payment_page/payment_page.dart'
+import 'package:mrent/pages/profile_page/pages/pages/earning_page/earning_page.dart'
     as _i3;
 import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart'
     as _i4;

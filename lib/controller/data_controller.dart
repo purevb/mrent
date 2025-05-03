@@ -59,6 +59,7 @@ class DataController with ChangeNotifier {
   Future<void> getEarningDateData(String userId) async {
     try {
       var res = await api.getEarningData(userId);
+
       earningDataNotifier.value = res;
       notifyListeners();
     } catch (e) {
@@ -66,9 +67,9 @@ class DataController with ChangeNotifier {
     }
   }
 
-  Future<void> getPaymentData(String propertyId) async {
+  Future<void> getPaymentData(String userId) async {
     try {
-      var res = await api.getPaymentData(propertyId);
+      var res = await api.getPaymentData(userId);
       paymentDataNotifier.value = res;
       notifyListeners();
     } catch (e) {

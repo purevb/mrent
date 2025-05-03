@@ -220,7 +220,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       .then((_) async {
                                     await api.postEarning(
                                       bookingId: widget.orderData.id!,
-                                      userId: widget.orderData.userId?.id ?? "",
+                                      userId: provider.getUser?.id ?? "",
                                     );
                                     await api.postPayment(
                                       bookingId: widget.orderData.id!,

@@ -434,8 +434,7 @@ class Api {
   }
 
   Future<List<PaymentsModel>> getPaymentData(String userId) async {
-    final res = await api.get("/api/earnings/user/$userId");
-    log(res.toString());
+    final res = await api.get("/api/payments/user/$userId");
     List<dynamic> data = res.data;
     return data.map((json) {
       return PaymentsModel.fromJson(json);
@@ -455,7 +454,9 @@ class Api {
     Map<String, dynamic> data = {};
     data['booking_id'] = bookingId;
     data['user_id'] = userId;
+
     final res = await api.post("/api/earnings", data);
+
     return res.statusCode!;
   }
 
@@ -465,6 +466,7 @@ class Api {
     data['booking_id'] = bookingId;
     data['user_id'] = userId;
     final res = await api.post("/api/payments", data);
+
     return res.statusCode!;
   }
 }

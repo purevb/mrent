@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
+import 'package:mrent/utils/constants.dart';
 
 @RoutePage()
 class PersonalInformationPage extends StatefulWidget {
@@ -36,7 +37,9 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
+        backgroundColor: backgroundColor,
         title: const Text("Мэдээллүүдээ шинэчлэх"),
         centerTitle: true,
         leading: IconButton(

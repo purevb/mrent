@@ -17,7 +17,6 @@ import 'package:mrent/pages/profile_page/pages/pages/payment_page/payment_page.d
 import 'package:mrent/pages/profile_page/pages/pages/personal_information_page/personal_information_page.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/route/route.gr.dart';
-import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -66,6 +65,8 @@ class _ProfilePageState extends State<ProfilePage> {
     dataController.getUserPropertiesData(widget.user.id!);
     dataController.getOrderDatas(widget.user.id!);
     dataController.getUserData(widget.user.firebaseId ?? "");
+    dataController.getPaymentData(widget.user.id ?? "");
+
     super.initState();
   }
 
@@ -73,6 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
     dataController.getUserPropertiesData(widget.user.id!);
     dataController.getOrderDatas(widget.user.id!);
     dataController.getUserData(widget.user.firebaseId ?? "");
+    dataController.getPaymentData(widget.user.id ?? "");
   }
 
   String firstLetterUpper(String name) {
@@ -166,22 +168,44 @@ class _ProfilePageState extends State<ProfilePage> {
                               const SizedBox(
                                 width: 15,
                               ),
-                              myContainers(
-                                () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return PaymentPage(
-                                          user: widget.user,
-                                        );
-                                      },
-                                    ),
+                              ValueListenableBuilder(
+                                valueListenable:
+                                    dataController.paymentDataNotifier,
+                                builder: (context, paymentData, child) {
+                                  if (paymentData == null) {
+                                    return Container(
+                                      width: width * 0.33 - 40,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(18),
+                                      ),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: mRed,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return myContainers(
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return PaymentPage(
+                                              user: widget.user,
+                                              paymentData: paymentData,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    width,
+                                    paymentData.length.toString(),
+                                    "Төлөлтүүд",
                                   );
                                 },
-                                width,
-                                "20",
-                                "Төлөлтүүд",
                               ),
                               const SizedBox(
                                 width: 15,

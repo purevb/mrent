@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
-import 'package:mrent/pages/login_dropback/component/continue_with.dart';
-import 'package:mrent/pages/login_dropback/component/login_form.dart';
-import 'package:mrent/pages/register_dropback/register.dart';
+import 'package:mrent/components/forget_password.dart';
+import 'package:mrent/components/login_dropback/component/continue_with.dart';
+import 'package:mrent/components/login_dropback/component/login_form.dart';
+import 'package:mrent/components/register_dropback/register.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -44,10 +45,12 @@ class _LoginState extends State<Login> {
         ),
       ),
       child: Column(
-        spacing: 10,
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const MappBar(),
+          const MappBar(
+            title: 'Нэвтрэх эсвэл бүртгүүлэх',
+          ),
           LoginForm(
             emailController: emailController,
             padsswordController: passwordController,
@@ -62,6 +65,28 @@ class _LoginState extends State<Login> {
               height: 55,
               width: width,
               text: "Үргэлжлүүлэх",
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: TextButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ForgotPasswordScreen();
+                  },
+                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => const ForgotPasswordScreen()),
+                // );
+              },
+              child: const Text(
+                "Нууц үг солих",
+                style: TextStyle(color: Color.fromARGB(255, 53, 53, 53)),
+              ),
             ),
           ),
           customDivider(height),
@@ -141,7 +166,7 @@ class _LoginState extends State<Login> {
 
   Container customDivider(double height) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: height * 0.01),
+      margin: EdgeInsets.only(bottom: height * 0.01),
       child: Row(
         children: [
           Expanded(

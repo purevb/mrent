@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mrent/core/services/api.dart';
-import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/review_component.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';

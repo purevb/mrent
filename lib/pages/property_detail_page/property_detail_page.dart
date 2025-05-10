@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/pages/property_detail_page/components/bottom_booking_bar.dart';
 import 'package:mrent/pages/property_detail_page/components/descripiont_tab_component.dart';
 import 'package:mrent/pages/property_detail_page/components/image_swiper.dart';
@@ -266,8 +266,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
             Tab(text: 'Сэтгэгдэл'),
           ],
         ),
-        SizedBox(
-          height: height * 1.4,
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: height * 0.6,
+            maxHeight: height * 0.8,
+          ),
           child: TabBarView(
             controller: _tabController,
             children: [

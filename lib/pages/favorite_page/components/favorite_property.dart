@@ -4,10 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/core/services/api.dart';
-import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/model/fb_user_model.dart';
-import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:provider/provider.dart';
 

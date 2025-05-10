@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/core/services/api.dart';
-import 'package:mrent/pages/booking_page/component/booking_period_chooser.dart';
 import 'package:mrent/pages/naviagation_page.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
@@ -78,15 +75,11 @@ class _AddListingScreenState extends State<AddListingScreen> {
     required TextEditingController additionalController,
     required double lattitude,
     required double longtitude,
-    required DateTime? firstSelectedDay,
-    required DateTime? secondSelectedDay,
     required List<String> photos,
     required BuildContext context,
   }) async {
     try {
       final nightlyPrice = int.tryParse(rentController.text) ?? 0;
-      final startDate = firstSelectedDay!;
-      final endDate = secondSelectedDay!;
 
       await api.postProperties(
         provinceId: provinceId,
@@ -101,8 +94,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
         description: additionalController.text,
         latitude: lattitude,
         longitude: longtitude,
-        startDate: startDate,
-        endDate: endDate,
         images: photos,
       );
 
@@ -169,7 +160,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
-    double height = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
@@ -261,15 +251,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
               },
             ),
             const SizedBox(height: 10),
-            BookingPeriodChooserComponent(
-              forAddProperties: true,
-              onDatesSelected: (start, end) {
-                setState(() {
-                  _firstSelectedDay = start;
-                  _secondSelectedDay = end;
-                });
-              },
-            ),
             const SizedBox(height: 20),
             Text(
               "Нэмэлт тайлбар",
@@ -317,8 +298,6 @@ class _AddListingScreenState extends State<AddListingScreen> {
                       additionalController: additionalController,
                       lattitude: widget.lattitude,
                       longtitude: widget.longtitude,
-                      firstSelectedDay: _firstSelectedDay!,
-                      secondSelectedDay: _secondSelectedDay!,
                       photos: widget.photos,
                       context: context,
                     );

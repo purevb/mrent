@@ -19,8 +19,8 @@ class CustomizeMap extends StatefulWidget {
     this.onLocationSelected,
     required this.hasFloatButton,
     this.propertyData,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final List<PropertyModel>? propertyData;
   final bool hasAppBar;
   final bool hasFloatButton;
@@ -35,9 +35,6 @@ class MapSampleState extends State<CustomizeMap>
   late final CustomInfoWindowController customInfoWindowController;
   late final TextEditingController searchController;
   late final ScrollController _scrollController;
-
-  // Remove the UniqueKey - this is part of the problem
-  // Key _mapKey = UniqueKey();
 
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
@@ -56,7 +53,7 @@ class MapSampleState extends State<CustomizeMap>
   );
 
   @override
-  bool get wantKeepAlive => true; // Keep the state alive
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -67,26 +64,12 @@ class MapSampleState extends State<CustomizeMap>
     dataController.getProvinceData();
     searchController.addListener(_onSearchChanged);
 
-    // Don't call _refreshMap in initState
     if (widget.propertyData != null && widget.propertyData!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && _mapController != null) {
           _addPropertyMarkers();
         }
       });
-    }
-  }
-
-  // Remove the _refreshMap method and replace with safer methods
-  void _resetMapView() {
-    if (_mapController != null && mounted) {
-      _mapController!
-          .animateCamera(CameraUpdate.newCameraPosition(_kUlaanbaatar));
-      _markers = {};
-      if (mounted) {
-        setState(() {});
-      }
-      _addPropertyMarkers();
     }
   }
 
@@ -172,8 +155,9 @@ class MapSampleState extends State<CustomizeMap>
   }
 
   void _addPropertyMarkers() {
-    if (!mounted || _mapController == null || widget.propertyData == null)
+    if (!mounted || _mapController == null || widget.propertyData == null) {
       return;
+    }
 
     final newMarkers = <Marker>{};
 
@@ -218,7 +202,7 @@ class MapSampleState extends State<CustomizeMap>
       maxLng = max(maxLng, prop.longitude!);
     }
 
-    final padding = 0.01;
+    const padding = 0.01;
     minLat -= padding;
     maxLat += padding;
     minLng -= padding;
@@ -231,7 +215,7 @@ class MapSampleState extends State<CustomizeMap>
             southwest: LatLng(minLat, minLng),
             northeast: LatLng(maxLat, maxLng),
           ),
-          50, // Add padding
+          50,
         ),
       );
     } else {
@@ -315,8 +299,9 @@ class MapSampleState extends State<CustomizeMap>
   }
 
   void _filterMarkersByProvince(String provinceName) {
-    if (!mounted || widget.propertyData == null || _mapController == null)
+    if (!mounted || widget.propertyData == null || _mapController == null) {
       return;
+    }
 
     final newMarkers = <Marker>{};
     final filteredProperties = provinceName == "Бүгд"
@@ -358,6 +343,7 @@ class MapSampleState extends State<CustomizeMap>
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.2),
               blurRadius: 10,
               spreadRadius: 2,
@@ -418,7 +404,7 @@ class MapSampleState extends State<CustomizeMap>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Required for AutomaticKeepAliveClientMixin
+    super.build(context);
 
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -426,7 +412,6 @@ class MapSampleState extends State<CustomizeMap>
     return Scaffold(
       appBar: widget.hasAppBar == true
           ? AppBar(
-              // forceMaterialTransparency: true,
               toolbarHeight: height * (0.08),
               elevation: 0.8,
               automaticallyImplyLeading: false,
@@ -442,6 +427,7 @@ class MapSampleState extends State<CustomizeMap>
                         color: backgroundColor,
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: textDefaultColor.withOpacity(0.15),
                             blurRadius: 2,
                             spreadRadius: 0,
@@ -474,6 +460,7 @@ class MapSampleState extends State<CustomizeMap>
                                       hintText: "Хайлт",
                                       labelStyle: GoogleFonts.inter(
                                         fontSize: 18,
+                                        // ignore: deprecated_member_use
                                         color: Colors.black.withOpacity(0.7),
                                       ),
                                       border: const OutlineInputBorder(
@@ -498,6 +485,7 @@ class MapSampleState extends State<CustomizeMap>
                           return SizedBox(
                             height: 70.0,
                             child: Shimmer.fromColors(
+                              // ignore: deprecated_member_use
                               baseColor: Colors.grey.withOpacity(0.2),
                               highlightColor: Colors.white,
                               child: ListView.separated(
@@ -566,6 +554,7 @@ class MapSampleState extends State<CustomizeMap>
                                   }
                                 },
                                 child: Container(
+                                  // ignore: deprecated_member_use
                                   color: backgroundColor.withOpacity(0),
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -637,20 +626,15 @@ class MapSampleState extends State<CustomizeMap>
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Remove the key from GoogleMap to prevent recreation issues
           GoogleMap(
-            // key: _mapKey, - REMOVE THIS LINE
             mapType: MapType.normal,
             initialCameraPosition: _kUlaanbaatar,
             onMapCreated: (GoogleMapController controller) {
-              // Prevent multiple initializations
               if (!mounted || _mapCreated) return;
               _mapCreated = true;
 
               _mapController = controller;
               customInfoWindowController.googleMapController = controller;
-
-              // Add a slight delay to ensure map is ready
               Future.delayed(const Duration(milliseconds: 300), () {
                 if (mounted && _mapController != null) {
                   _addPropertyMarkers();

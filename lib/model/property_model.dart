@@ -17,8 +17,7 @@ class PropertyModel {
   final String? description;
   final double? latitude;
   final double? longitude;
-  final String? startDate;
-  final String? endDate;
+
   final List<String>? images;
   final int? v;
   final String? createdAt;
@@ -39,8 +38,6 @@ class PropertyModel {
     this.description,
     this.latitude,
     this.longitude,
-    this.startDate,
-    this.endDate,
     this.images,
     this.v,
     this.createdAt,
@@ -71,8 +68,6 @@ class PropertyModel {
         description = json['description'] as String?,
         latitude = json['latitude'] as double?,
         longitude = json['longitude'] as double?,
-        startDate = json['start_date'] as String?,
-        endDate = json['end_date'] as String?,
         images =
             (json['images'] as List?)?.map((dynamic e) => e as String).toList(),
         v = json['__v'] as int?,
@@ -94,8 +89,6 @@ class PropertyModel {
         'description': description,
         'latitude': latitude,
         'longitude': longitude,
-        'start_date': startDate,
-        'end_date': endDate,
         'images': images,
         '__v': v,
         'createdAt': createdAt,

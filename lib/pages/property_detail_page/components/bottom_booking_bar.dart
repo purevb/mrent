@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/pages/booking_page/booking_page.dart';
-import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:provider/provider.dart';
 

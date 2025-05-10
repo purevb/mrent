@@ -97,16 +97,11 @@ class Api {
     required String description,
     required double latitude,
     required double longitude,
-    required DateTime startDate,
-    required DateTime endDate,
     required List<String> images,
   }) async {
     try {
       if (images.isEmpty) {
         throw ArgumentError('At least one image is required');
-      }
-      if (startDate.isAfter(endDate)) {
-        throw ArgumentError('Start date must be before end date');
       }
 
       final requestData = {
@@ -123,8 +118,6 @@ class Api {
         "description": description.trim(),
         "latitude": latitude,
         "longitude": longitude,
-        "start_date": startDate.toIso8601String(),
-        "end_date": endDate.toIso8601String(),
         "images": images,
       };
 
@@ -136,6 +129,7 @@ class Api {
       if (response.statusCode == 200 || response.statusCode == 201) {
         log("Ajillsn");
       } else {
+        log(response.data);
         throw Exception('Failed to post property: ${response.statusCode}');
       }
     } on DioException catch (e) {
@@ -398,7 +392,7 @@ class Api {
     return data.map((datas) => RentedPropertiesModel.fromJson(datas)).toList();
   }
 
-  Future<int> deleteBookingRequest(String bookingId) async {
+  Future<int> deleteBookingRequest({required String bookingId}) async {
     final res = await api.delete("/api/bookings/$bookingId", {});
     if (res.statusCode == 200) {
       log("${res.statusCode} amjilttai ustlaa");

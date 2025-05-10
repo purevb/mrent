@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/button.dart';
-import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/utils/constants.dart';
 
 class UnauthorizedUserProfilePage extends StatefulWidget {

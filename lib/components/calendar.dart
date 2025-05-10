@@ -39,7 +39,6 @@ class _SimpleDatePickerState extends State<SimpleDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
     const textDarkColor = Colors.black87;
     const textMediumColor = Colors.black54;
 

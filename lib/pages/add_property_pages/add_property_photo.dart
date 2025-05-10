@@ -1,15 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:dio/dio.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mrent/pages/add_property_pages/add_listing_screen_details.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';

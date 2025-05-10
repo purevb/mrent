@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mrent/model/fb_user_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/pages/favorite_page/favorite_page.dart';
 import 'package:mrent/pages/favorite_page/unauthorized_user_favorite_page.dart';

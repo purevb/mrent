@@ -276,7 +276,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       );
                                     } else {
                                       await api.deleteBookingRequest(
-                                          widget.orderData.id ?? "");
+                                          bookingId: widget.orderData.id ?? "");
                                     }
 
                                     if (mounted) {

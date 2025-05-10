@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
-import 'package:mrent/pages/register_dropback/components/mForm.dart';
+import 'package:mrent/components/register_dropback/components/mForm.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -84,7 +84,9 @@ class _RegisterState extends State<Register> {
       child: Column(
         spacing: 10,
         children: [
-          const MappBar(),
+          const MappBar(
+            title: 'Нэвтрэх эсвэл бүртгүүлэх',
+          ),
           Container(
             height: height * 0.2,
             width: double.infinity,

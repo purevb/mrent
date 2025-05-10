@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
-import 'package:mrent/pages/login_dropback/login.dart';
+import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -84,9 +84,10 @@ class _TheObjectState extends State<TheObject> {
                     rating("5")
                   ],
                 ),
+                description(widget.propertyData.propertyTypeId?.typeName ?? ""),
+                description(
+                    widget.propertyData.placeTypeId?.provinceName ?? ""),
                 description(widget.propertyData.description ?? ""),
-                datet(
-                    "${widget.propertyData.startDate!.split("T")[0].replaceAll("-", "/")}-${widget.propertyData.endDate!.split("T")[0].replaceAll("-", "/")}"),
                 const SizedBox(
                   height: 5,
                 ),

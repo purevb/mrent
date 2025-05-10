@@ -136,7 +136,6 @@ class DataController with ChangeNotifier {
       log(e.toString());
     }
   }
-  //getHostsOrdersData
 
   Future<void> getPropertyTypeDatas() async {
     try {

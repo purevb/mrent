@@ -12,6 +12,7 @@ class PaymentPage extends StatefulWidget {
     required this.user,
     required this.paymentData,
   });
+
   final List<PaymentsModel> paymentData;
   final MongoUserModel user;
 
@@ -73,237 +74,13 @@ class _PaymentPageState extends State<PaymentPage> {
   DateTime? _parseDateTime(String? dateString) {
     if (dateString == null || dateString.isEmpty) return null;
     try {
-      return DateTime.parse(dateString);
-    } catch (e) {
+      return DateTime.parse(dateString.split("T")[0]);
+    } catch (_) {
       return null;
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        title: const Text(
-          "Төлөлт",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: _showSortOptions,
-          ),
-        ],
-      ),
-      body:
-          widget.paymentData.isEmpty ? _buildEmptyState() : _buildPaymentList(),
-    );
-  }
-
-  void _showSortOptions() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Эрэмбэлэх',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildSortOptionTile(
-                title: 'Хамгийн сүүлийн',
-                icon: Icons.arrow_downward,
-                option: SortOption.dateNewest,
-              ),
-              _buildSortOptionTile(
-                title: 'Хамгийн эхний',
-                icon: Icons.arrow_upward,
-                option: SortOption.dateOldest,
-              ),
-              _buildSortOptionTile(
-                title: 'Үнэ - Их → Бага',
-                icon: Icons.arrow_downward,
-                option: SortOption.priceHighest,
-              ),
-              _buildSortOptionTile(
-                title: 'Үнэ - Бага → Их',
-                icon: Icons.arrow_upward,
-                option: SortOption.priceLowest,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSortOptionTile({
-    required String title,
-    required IconData icon,
-    required SortOption option,
-  }) {
-    return ListTile(
-      title: Text(title),
-      leading: Icon(icon),
-      selected: _currentSortOption == option,
-      selectedTileColor: Colors.blue.withOpacity(0.1),
-      selectedColor: Colors.blue,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      onTap: () {
-        Navigator.pop(context);
-        setState(() {
-          _currentSortOption = option;
-          _sortPayments();
-        });
-      },
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.payment_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Төлөлтийн түүх хоосон байна",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[700],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Таны төлөлтийн түүх энд харагдах болно",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPaymentList() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Text(
-                  "Төлөлтийн түүх",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _getSortIcon(),
-                        size: 16,
-                        color: Colors.blue,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        _getSortLabel(),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _sortedPayments.length,
-            itemBuilder: (context, index) {
-              final payment = _sortedPayments[index];
-              return ClipRRect(
-                child: Slidable(
-                  endActionPane: ActionPane(
-                      extentRatio: 0.1,
-                      motion: const BehindMotion(),
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            api.deletePayment(
-                              paymentId: widget.paymentData[index].id!,
-                            );
-                          },
-                          child: CustomSlidableAction(
-                            onPressed: (context) {
-                              // _handleDeleteProperty(index);
-                            },
-                            backgroundColor: const Color(0xffFF2761),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(25),
-                              bottomLeft: Radius.circular(25),
-                            ),
-                            child: Center(
-                              child: SizedBox(
-                                height: 25,
-                                width: 25,
-                                child: Image.asset(
-                                  "assets/trash.png",
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
-                  child: _buildPaymentItem(
-                    payment,
-                    context,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  String _formatAmount(num? amount) => "${(amount ?? 0).toStringAsFixed(0)} ₮";
 
   IconData _getSortIcon() {
     switch (_currentSortOption) {
@@ -329,72 +106,234 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
-  Widget _buildPaymentItem(PaymentsModel payment, BuildContext context) {
-    final String formattedAmount =
-        _formatAmount(payment.bookingId?.totalPrice ?? 0);
-
-    return Card(
-      color: Colors.white,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: CachedNetworkImageProvider(
-                payment.bookingId?.propertyId?.userId?.profileImage ??
-                    "https://cdn-icons-png.flaticon.com/128/4140/4140048.png",
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        title:
+            const Text("Төлөлт", style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (_) => Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text("Эрэмбэлэх",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 16),
+                      ...SortOption.values.map((option) {
+                        return ListTile(
+                          title: Text(
+                            option == SortOption.dateNewest
+                                ? 'Хамгийн сүүлийн'
+                                : option == SortOption.dateOldest
+                                    ? 'Хамгийн эхний'
+                                    : option == SortOption.priceHighest
+                                        ? 'Үнэ - Их → Бага'
+                                        : 'Үнэ - Бага → Их',
+                          ),
+                          leading: Icon(option == SortOption.dateNewest ||
+                                  option == SortOption.priceHighest
+                              ? Icons.arrow_downward
+                              : Icons.arrow_upward),
+                          selected: _currentSortOption == option,
+                          selectedTileColor: Colors.blue.withOpacity(0.1),
+                          selectedColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          onTap: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              _currentSortOption = option;
+                              _sortPayments();
+                            });
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: widget.paymentData.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.payment_outlined,
+                      size: 80, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text("Төлөлтийн түүх хоосон байна",
+                      style: TextStyle(fontSize: 18, color: Colors.grey[700])),
+                  const SizedBox(height: 8),
+                  Text("Таны төлөлтийн түүх энд харагдах болно",
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                ],
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    payment.bookingId?.propertyId?.propertyName ?? "Байршил",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      children: [
+                        Text("Төлөлтийн түүх",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800])),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(_getSortIcon(),
+                                  size: 16, color: Colors.blue),
+                              const SizedBox(width: 4),
+                              Text(_getSortLabel(),
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    payment.bookingId?.createdAt ?? "",
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
+                  ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _sortedPayments.length,
+                    itemBuilder: (context, index) {
+                      final payment = _sortedPayments[index];
+                      final date =
+                          payment.bookingId?.createdAt?.split("T") ?? ["", ""];
+                      return ClipRRect(
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            extentRatio: 0.1,
+                            motion: const BehindMotion(),
+                            children: [
+                              CustomSlidableAction(
+                                padding: EdgeInsets.zero,
+                                onPressed: (context) => api
+                                    .deletePayment(paymentId: payment.id!)
+                                    .then((value) {
+                                  if (value == 200) {
+                                    widget.paymentData.removeAt(index);
+                                  }
+                                }),
+                                backgroundColor: const Color(0xffFF2761),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  bottomLeft: Radius.circular(12),
+                                ),
+                                child: SizedBox(
+                                  height: 35,
+                                  child: Image.asset(
+                                    "assets/trash.png",
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: Card(
+                            color: Colors.white,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 6),
+                            elevation: 0.5,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                spacing: 16,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      payment.bookingId?.propertyId?.userId
+                                              ?.profileImage ??
+                                          "https://cdn-icons-png.flaticon.com/128/4140/4140048.png",
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          payment.bookingId?.propertyId
+                                                  ?.propertyName ??
+                                              "Байршил",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "${date[0]} ${date.length > 1 ? date[1].split(".")[0] : ""}",
+                                          style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        _formatAmount(
+                                            payment.bookingId?.totalPrice),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 4),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  formattedAmount,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
-  }
-
-  String _formatAmount(num? amount) {
-    if (amount == null) return "0 ₮";
-    return "${amount.toStringAsFixed(0)} ₮";
   }
 }

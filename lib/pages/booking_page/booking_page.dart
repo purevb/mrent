@@ -160,7 +160,6 @@ class _BookingPageState extends State<BookingPage> {
                           );
                           return;
                         }
-
                         api
                             .postBookingRequest(
                           propertyId: widget.propertyData.id ?? "",

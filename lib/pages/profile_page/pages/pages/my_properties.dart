@@ -52,8 +52,6 @@ class _MyPropertiesPageState extends State<MyPropertiesPage>
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    // double responsiveExtentRatio = width > 600 ? 0.15 : 0.2;
-
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -127,13 +125,8 @@ class _MyPropertiesPageState extends State<MyPropertiesPage>
                             ),
                           ],
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.05,
-                          ),
-                          child: HorizontalProperty(
-                            propertyData: widget.userPropertyDatas[index],
-                          ),
+                        child: HorizontalProperty(
+                          propertyData: widget.userPropertyDatas[index],
                         ),
                       ),
                     ),

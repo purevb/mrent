@@ -44,8 +44,8 @@ class DataController with ChangeNotifier {
   final ValueNotifier<List<UsersReviewModel>?> propertyReviewNotifier =
       ValueNotifier(null);
 
-  final ValueNotifier<List<RentedPropertiesModel>?> rentedPropertiesNotifier =
-      ValueNotifier(null);
+  ValueNotifier<List<RentedPropertiesModel>?> rentedPropertiesNotifier =
+      ValueNotifier<List<RentedPropertiesModel>?>(null);
 
   final ValueNotifier<List<PropertyTableCalendar>?> tableDateDataNotifier =
       ValueNotifier(null);

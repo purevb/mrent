@@ -77,7 +77,6 @@ class _PropertyImageGalleryState extends State<PropertyImageGallery> {
     final height = MediaQuery.of(context).size.height;
 
     return SizedBox(
-      height: height * 0.2,
       width: width,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

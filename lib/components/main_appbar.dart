@@ -179,7 +179,7 @@ class _MainAppBarState extends State<MainAppBar> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return CustomizeMap(
+                                        return const CustomizeMap(
                                           hasFloatButton: true,
                                           hasAppBar: true,
                                         );

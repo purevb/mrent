@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mrent/controller/data_controller.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/earnings_model.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 
@@ -19,7 +23,11 @@ class EarningPage extends StatefulWidget {
 }
 
 class _EarningPageState extends State<EarningPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  late SlidableController controller;
+
+  Api api = Api();
+
   final DataController dataController = DataController();
   late TabController _tabController;
   String _selectedTimeframe = 'Сар';
@@ -28,6 +36,7 @@ class _EarningPageState extends State<EarningPage>
   @override
   void initState() {
     super.initState();
+    controller = SlidableController(this);
     _tabController = TabController(length: 2, vsync: this);
     if (widget.user.id != null) {
       dataController.getEarningDateData(widget.user.id!);
@@ -75,14 +84,12 @@ class _EarningPageState extends State<EarningPage>
         body: ValueListenableBuilder(
           valueListenable: dataController.earningDataNotifier,
           builder: (context, earningData, child) {
-            // Handle null data gracefully
             if (earningData == null) {
               return Center(
                 child: CircularProgressIndicator(color: mRed),
               );
             }
 
-            // Handle empty data
             if (earningData.isEmpty) {
               return Center(
                 child: Column(
@@ -117,7 +124,6 @@ class _EarningPageState extends State<EarningPage>
               );
             }
 
-            // Cast to the proper type - with null safety
             final List<EarningsModel> earnings = [];
             try {
               for (var item in earningData) {
@@ -132,7 +138,6 @@ class _EarningPageState extends State<EarningPage>
               );
             }
 
-            // Calculate total earnings and other stats - safely
             final double totalEarnings = earnings.fold(
                 0,
                 (sum, item) =>
@@ -143,7 +148,6 @@ class _EarningPageState extends State<EarningPage>
             final double previousMonthEarnings =
                 _calculatePreviousMonthEarnings(earnings);
 
-            // Avoid division by zero
             final double changePercentage = previousMonthEarnings > 0
                 ? ((thisMonthEarnings - previousMonthEarnings) /
                         previousMonthEarnings) *
@@ -153,7 +157,6 @@ class _EarningPageState extends State<EarningPage>
             return TabBarView(
               controller: _tabController,
               children: [
-                // Overview Tab
                 SingleChildScrollView(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -174,8 +177,6 @@ class _EarningPageState extends State<EarningPage>
                     ],
                   ),
                 ),
-
-                // Transactions Tab
                 _buildTransactionsTab(earnings),
               ],
             );
@@ -185,7 +186,6 @@ class _EarningPageState extends State<EarningPage>
     );
   }
 
-  // Calculate earnings for current month - with error handling
   double _calculateMonthlyEarnings(List<EarningsModel> earnings) {
     try {
       final now = DateTime.now();
@@ -200,7 +200,6 @@ class _EarningPageState extends State<EarningPage>
               return sum + (earning.bookingId?.totalPrice?.toDouble() ?? 0);
             }
           } catch (e) {
-            // Skip invalid dates
             debugPrint("Invalid date format: ${earning.createdAt}");
           }
         }
@@ -212,11 +211,9 @@ class _EarningPageState extends State<EarningPage>
     }
   }
 
-  // Calculate earnings for previous month - with error handling
   double _calculatePreviousMonthEarnings(List<EarningsModel> earnings) {
     try {
       final now = DateTime.now();
-      // Handle December case properly
       final int year = now.month == 1 ? now.year - 1 : now.year;
       final int month = now.month == 1 ? 12 : now.month - 1;
       final previousMonth = DateTime(year, month);
@@ -230,7 +227,6 @@ class _EarningPageState extends State<EarningPage>
               return sum + (earning.bookingId?.totalPrice?.toDouble() ?? 0);
             }
           } catch (e) {
-            // Skip invalid dates
             debugPrint("Invalid date format: ${earning.createdAt}");
           }
         }
@@ -414,16 +410,12 @@ class _EarningPageState extends State<EarningPage>
   }
 
   Widget _buildEarningChart(List<EarningsModel> earnings) {
-    // Generate data points for the chart based on the last 7 days
     final List<FlSpot> spots = _generateChartData(earnings);
 
-    // Find the max Y value to set chart scale appropriately
-    double maxY = 10000; // Default minimum value
+    double maxY = 10000;
     if (spots.isNotEmpty) {
       maxY = spots.fold(0.0, (max, spot) => spot.y > max ? spot.y : max);
-      // Add 20% padding to the max value
       maxY = maxY * 1.2;
-      // Make sure maxY is at least 10000 for better visualization
       maxY = maxY < 10000 ? 10000 : maxY;
     }
 
@@ -466,7 +458,7 @@ class _EarningPageState extends State<EarningPage>
                     gridData: FlGridData(
                       show: true,
                       drawVerticalLine: false,
-                      horizontalInterval: maxY / 5, // Adaptive grid lines
+                      horizontalInterval: maxY / 5,
                       getDrawingHorizontalLine: (value) {
                         return FlLine(
                           color: Colors.grey.withOpacity(0.2),
@@ -530,7 +522,6 @@ class _EarningPageState extends State<EarningPage>
                               return const Text('');
                             }
 
-                            // Format large numbers appropriately
                             String label;
                             if (value >= 1000000) {
                               label =
@@ -583,19 +574,15 @@ class _EarningPageState extends State<EarningPage>
     );
   }
 
-  // Generate chart data based on earnings - with error handling
   List<FlSpot> _generateChartData(List<EarningsModel> earnings) {
     try {
-      // Get the last 7 days
       final now = DateTime.now();
       final Map<int, double> dayTotals = {};
 
-      // Initialize with zeros for each day
       for (int i = 0; i < 7; i++) {
         dayTotals[i] = 0;
       }
 
-      // Calculate totals for each day
       for (var earning in earnings) {
         if (earning.createdAt != null) {
           try {
@@ -608,13 +595,11 @@ class _EarningPageState extends State<EarningPage>
                   (earning.bookingId?.totalPrice?.toDouble() ?? 0);
             }
           } catch (e) {
-            // Skip invalid dates
             debugPrint("Invalid date format: ${earning.createdAt}");
           }
         }
       }
 
-      // Convert to FlSpot list
       return List.generate(
           7, (index) => FlSpot(index.toDouble(), dayTotals[index] ?? 0));
     } catch (e) {
@@ -625,7 +610,6 @@ class _EarningPageState extends State<EarningPage>
 
   Widget _buildEarningBreakdown(List<EarningsModel> earnings) {
     try {
-      // Group earnings by property
       final Map<String, double> propertyTotals = {};
       final Map<String, Color> propertyColors = {};
       final List<Color> colorPalette = [
@@ -640,7 +624,6 @@ class _EarningPageState extends State<EarningPage>
 
       int colorIndex = 0;
 
-      // Calculate totals for each property
       for (var earning in earnings) {
         final propertyName =
             earning.bookingId?.propertyId?.propertyName ?? "Unknown";
@@ -649,7 +632,6 @@ class _EarningPageState extends State<EarningPage>
         propertyTotals[propertyName] =
             (propertyTotals[propertyName] ?? 0) + amount;
 
-        // Assign a color if not already assigned
         if (!propertyColors.containsKey(propertyName)) {
           propertyColors[propertyName] =
               colorPalette[colorIndex % colorPalette.length];
@@ -657,7 +639,6 @@ class _EarningPageState extends State<EarningPage>
         }
       }
 
-      // Handle empty properties case
       if (propertyTotals.isEmpty) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -696,12 +677,10 @@ class _EarningPageState extends State<EarningPage>
         );
       }
 
-      // Sort properties by amount (descending)
       final List<MapEntry<String, double>> sortedProperties =
           propertyTotals.entries.toList()
             ..sort((a, b) => b.value.compareTo(a.value));
 
-      // Take top 4 properties (or less if fewer exist)
       final int topCount =
           sortedProperties.length > 4 ? 4 : sortedProperties.length;
       final List<Map<String, dynamic>> propertyBreakdown = sortedProperties
@@ -750,11 +729,9 @@ class _EarningPageState extends State<EarningPage>
             ),
             child: Column(
               children: propertyBreakdown.map((property) {
-                // Guard against division by zero
                 final double percentage =
                     total > 0 ? (property['amount'] as num) / total * 100 : 0;
 
-                // Get screen width safely to avoid platform channel errors
                 final double screenWidth = MediaQuery.of(context).size.width;
                 final double barWidth = (screenWidth - 72) * percentage / 100;
 
@@ -836,7 +813,6 @@ class _EarningPageState extends State<EarningPage>
 
   Widget _buildRecentTransactions(List<EarningsModel> earnings) {
     try {
-      // Sort earnings by date (newest first)
       final sortedEarnings = List<EarningsModel>.from(earnings)
         ..sort((a, b) {
           try {
@@ -853,7 +829,6 @@ class _EarningPageState extends State<EarningPage>
           }
         });
 
-      // Only show top 3 transactions (or fewer if less available)
       final transactions = sortedEarnings
           .take(sortedEarnings.length < 3 ? sortedEarnings.length : 3)
           .toList();
@@ -927,11 +902,9 @@ class _EarningPageState extends State<EarningPage>
           const SizedBox(height: 8),
           ...transactions.map((transaction) {
             try {
-              // Get data from transaction
               final String propertyName =
                   transaction.bookingId?.propertyId?.propertyName ?? "Байршил";
 
-              // Format date to be more readable
               String formattedDate = "Огноо байхгүй";
               if (transaction.createdAt != null) {
                 try {
@@ -1032,7 +1005,6 @@ class _EarningPageState extends State<EarningPage>
 
   Widget _buildTransactionsTab(List<EarningsModel> earnings) {
     try {
-      // Sort earnings by date (newest first)
       final sortedEarnings = List<EarningsModel>.from(earnings)
         ..sort((a, b) {
           try {
@@ -1049,7 +1021,6 @@ class _EarningPageState extends State<EarningPage>
           }
         });
 
-      // Group transactions by month
       final Map<String, List<EarningsModel>> groupedTransactions = {};
 
       for (var transaction in sortedEarnings) {
@@ -1102,14 +1073,13 @@ class _EarningPageState extends State<EarningPage>
 
       return ListView.builder(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         itemCount: groupedTransactions.length,
         itemBuilder: (context, index) {
           try {
             final monthKey = groupedTransactions.keys.elementAt(index);
             final transactions = groupedTransactions[monthKey]!;
 
-            // Format the month for display
             String monthDisplay;
             try {
               final date = DateTime.parse("$monthKey-01");
@@ -1119,7 +1089,6 @@ class _EarningPageState extends State<EarningPage>
               debugPrint("Error formatting month: $e");
             }
 
-            // Calculate total for this month
             final double monthTotal = transactions.fold(
                 0,
                 (sum, transaction) =>
@@ -1129,7 +1098,10 @@ class _EarningPageState extends State<EarningPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 20,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -1154,12 +1126,10 @@ class _EarningPageState extends State<EarningPage>
                 ),
                 ...transactions.map((transaction) {
                   try {
-                    // Get data from transaction
                     final String propertyName =
                         transaction.bookingId?.propertyId?.propertyName ??
                             "Байршил";
 
-                    // Format date to be more readable
                     String formattedDate = "Огноо байхгүй";
                     if (transaction.createdAt != null) {
                       try {
@@ -1174,71 +1144,121 @@ class _EarningPageState extends State<EarningPage>
                     final double amount =
                         transaction.bookingId?.totalPrice?.toDouble() ?? 0;
 
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 4,
-                            offset: const Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: mRed.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.home_outlined,
-                              color: mRed,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    return Column(
+                      children: [
+                        ClipRRect(
+                          child: Slidable(
+                            endActionPane: ActionPane(
+                              extentRatio: 0.15,
+                              motion: const BehindMotion(),
                               children: [
-                                Text(
-                                  propertyName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                CustomSlidableAction(
+                                  onPressed: (context) {
+                                    log(transaction.id!);
+                                    api
+                                        .deleteEarning(
+                                      earningId: transaction.id!,
+                                    )
+                                        .then((statusCode) {
+                                      if (statusCode == 200) {
+                                        if (mounted) {
+                                          setState(() {
+                                            transactions.removeAt(index);
+                                          });
+                                          refresh();
+                                        }
+                                      }
+                                    });
+                                  },
+                                  backgroundColor: const Color(0xffFF2761),
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    bottomLeft: Radius.circular(12),
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  formattedDate,
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontSize: 14,
+                                  child: Expanded(
+                                    child: Image.asset(
+                                      "assets/trash.png",
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Text(
-                            currencyFormat.format(amount),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black87,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                left: 20,
+                                right: 20,
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: mRed.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Icons.home_outlined,
+                                      color: mRed,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          propertyName,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          formattedDate,
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    currencyFormat.format(amount),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
                     );
                   } catch (e) {
                     debugPrint("Error rendering transaction: $e");

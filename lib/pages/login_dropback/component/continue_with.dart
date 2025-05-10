@@ -23,7 +23,7 @@ class ContinueWith extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             width: width,
             margin: const EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
@@ -36,8 +36,8 @@ class ContinueWith extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
-                  height: 25,
-                  width: 25,
+                  height: 20,
+                  width: 20,
                   child: Image.asset(path),
                 ),
                 Text(
@@ -61,28 +61,12 @@ class ContinueWith extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  "Working",
+                  "Ажиллаж байгаа",
                   style: GoogleFonts.inter(fontSize: 10),
                 ),
               ),
             ),
           ],
-          // if (working == false) ...[
-          //   FractionalTranslation(
-          //     translation: const Offset(3.5, -0.5),
-          //     child: Container(
-          //       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          //       decoration: BoxDecoration(
-          //         color: Colors.red,
-          //         borderRadius: BorderRadius.circular(10),
-          //       ),
-          //       child: const Text(
-          //         "Not working",
-          //         style: GoogleFonts. Inter(color: Colors.white),
-          //       ),
-          //     ),
-          //   ),
-          // ]
         ],
       ),
     );

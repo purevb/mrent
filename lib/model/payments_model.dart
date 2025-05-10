@@ -2,12 +2,14 @@ import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/order_model.dart';
 
 class PaymentsModel {
+  final String? id;
   final BookingModel? bookingId;
   final MongoUserModel? userId;
   final String? createdAt;
   final String? updatedAt;
 
   PaymentsModel({
+    this.id,
     this.bookingId,
     this.userId,
     this.createdAt,
@@ -15,7 +17,8 @@ class PaymentsModel {
   });
 
   PaymentsModel.fromJson(Map<String, dynamic> json)
-      : bookingId = (json['booking_id'] as Map<String, dynamic>?) != null
+      : id = json['_id'] as String,
+        bookingId = (json['booking_id'] as Map<String, dynamic>?) != null
             ? BookingModel.fromJson(json['booking_id'] as Map<String, dynamic>)
             : null,
         userId = (json['user_id'] as Map<String, dynamic>?) != null

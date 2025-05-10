@@ -14,7 +14,7 @@ import 'package:mrent/utils/constants.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CustomizeMap extends StatefulWidget {
-  CustomizeMap({
+  const CustomizeMap({
     required this.hasAppBar,
     this.onLocationSelected,
     required this.hasFloatButton,
@@ -30,11 +30,15 @@ class CustomizeMap extends StatefulWidget {
   State<CustomizeMap> createState() => MapSampleState();
 }
 
-class MapSampleState extends State<CustomizeMap> {
+class MapSampleState extends State<CustomizeMap>
+    with AutomaticKeepAliveClientMixin {
   late final CustomInfoWindowController customInfoWindowController;
   late final TextEditingController searchController;
   late final ScrollController _scrollController;
-  final _mapKey = GlobalKey();
+
+  // Remove the UniqueKey - this is part of the problem
+  // Key _mapKey = UniqueKey();
+
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
   LatLng _selectedLocation = const LatLng(47.921230, 106.918556);
@@ -43,6 +47,7 @@ class MapSampleState extends State<CustomizeMap> {
   PropertyModel? _selectedProperty;
   int currentIndex = 0;
   String searchText = "";
+  bool _mapCreated = false;
 
   DataController dataController = DataController();
   static const CameraPosition _kUlaanbaatar = CameraPosition(
@@ -51,44 +56,71 @@ class MapSampleState extends State<CustomizeMap> {
   );
 
   @override
+  bool get wantKeepAlive => true; // Keep the state alive
+
+  @override
   void initState() {
     super.initState();
     customInfoWindowController = CustomInfoWindowController();
     searchController = TextEditingController();
     _scrollController = ScrollController();
-
     dataController.getProvinceData();
     searchController.addListener(_onSearchChanged);
+
+    // Don't call _refreshMap in initState
     if (widget.propertyData != null && widget.propertyData!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _addPropertyMarkers();
+        if (mounted && _mapController != null) {
+          _addPropertyMarkers();
+        }
       });
+    }
+  }
+
+  // Remove the _refreshMap method and replace with safer methods
+  void _resetMapView() {
+    if (_mapController != null && mounted) {
+      _mapController!
+          .animateCamera(CameraUpdate.newCameraPosition(_kUlaanbaatar));
+      _markers = {};
+      if (mounted) {
+        setState(() {});
+      }
+      _addPropertyMarkers();
     }
   }
 
   @override
   void dispose() {
-    _mapController?.dispose();
+    if (_mapController != null) {
+      _mapController!.dispose();
+      _mapController = null;
+    }
     customInfoWindowController.dispose();
+    searchController.removeListener(_onSearchChanged);
     searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   void _onSearchChanged() {
-    setState(() {
-      searchText = searchController.text;
-    });
+    if (mounted) {
+      setState(() {
+        searchText = searchController.text;
+      });
+    }
     _filterPropertiesBySearch();
   }
 
   void _filterPropertiesBySearch() {
+    if (!mounted || _mapController == null) return;
+
     if (searchText.isEmpty || widget.propertyData == null) {
       _addPropertyMarkers();
       return;
     }
 
-    _markers = {};
+    final filteredMarkers = <Marker>{};
     final String searchLower = searchText.toLowerCase();
 
     final filteredProperties = widget.propertyData!.where((property) {
@@ -103,37 +135,64 @@ class MapSampleState extends State<CustomizeMap> {
 
     for (var property in filteredProperties) {
       if (property.latitude != null && property.longitude != null) {
-        _addMarkerForProperty(property);
+        final marker = _createMarkerForProperty(property);
+        if (marker != null) {
+          filteredMarkers.add(marker);
+        }
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        _markers = filteredMarkers;
+      });
+    }
 
     if (filteredProperties.isNotEmpty) {
       _fitMarkersInView(filteredProperties);
     }
   }
 
-  void _addMarkerForProperty(PropertyModel property) {
-    if (property.latitude != null &&
-        property.longitude != null &&
-        property.latitude! >= -90 &&
-        property.latitude! <= 90 &&
-        property.longitude! >= -180 &&
-        property.longitude! <= 180) {
-      _markers.add(
-        Marker(
-          markerId: MarkerId(property.id ?? UniqueKey().toString()),
-          position: LatLng(property.latitude!, property.longitude!),
-          onTap: () => _handleMarkerTap(property),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        ),
-      );
+  Marker? _createMarkerForProperty(PropertyModel property) {
+    if (property.latitude == null ||
+        property.longitude == null ||
+        property.latitude! < -90 ||
+        property.latitude! > 90 ||
+        property.longitude! < -180 ||
+        property.longitude! > 180) {
+      return null;
+    }
+
+    return Marker(
+      markerId: MarkerId(property.id ?? UniqueKey().toString()),
+      position: LatLng(property.latitude!, property.longitude!),
+      onTap: () => _handleMarkerTap(property),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+  }
+
+  void _addPropertyMarkers() {
+    if (!mounted || _mapController == null || widget.propertyData == null)
+      return;
+
+    final newMarkers = <Marker>{};
+
+    for (var property in widget.propertyData!) {
+      final marker = _createMarkerForProperty(property);
+      if (marker != null) {
+        newMarkers.add(marker);
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _markers = newMarkers;
+      });
     }
   }
 
   void _fitMarkersInView(List<PropertyModel> properties) {
-    if (properties.isEmpty || _mapController == null) return;
+    if (properties.isEmpty || _mapController == null || !mounted) return;
 
     final validProperties = properties
         .where((prop) =>
@@ -159,6 +218,12 @@ class MapSampleState extends State<CustomizeMap> {
       maxLng = max(maxLng, prop.longitude!);
     }
 
+    final padding = 0.01;
+    minLat -= padding;
+    maxLat += padding;
+    minLng -= padding;
+    maxLng += padding;
+
     if (minLat != maxLat && minLng != maxLng) {
       _mapController!.animateCamera(
         CameraUpdate.newLatLngBounds(
@@ -166,7 +231,7 @@ class MapSampleState extends State<CustomizeMap> {
             southwest: LatLng(minLat, minLng),
             northeast: LatLng(maxLat, maxLng),
           ),
-          0,
+          50, // Add padding
         ),
       );
     } else {
@@ -200,6 +265,8 @@ class MapSampleState extends State<CustomizeMap> {
   }
 
   void _updateSelectedLocation(LatLng location) async {
+    if (!mounted) return;
+
     setState(() => _isLoading = true);
     try {
       List<Placemark> placemarks =
@@ -211,30 +278,24 @@ class MapSampleState extends State<CustomizeMap> {
             "${place.street}, ${place.locality}, ${place.country}";
       }
 
-      setState(() {
-        _selectedLocation = location;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _selectedLocation = location;
+          _isLoading = false;
+        });
+      }
 
       widget.onLocationSelected?.call(_selectedLocation, _selectedAddress);
     } catch (e) {
       debugPrint("Error updating location: $e");
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
-  }
-
-  void _addPropertyMarkers() {
-    if (!mounted) return;
-
-    _markers = {};
-    for (var property in widget.propertyData ?? []) {
-      _addMarkerForProperty(property);
-    }
-    setState(() {});
   }
 
   void _handleMarkerTap(PropertyModel property) {
-    if (!mounted) return;
+    if (!mounted || _mapController == null) return;
 
     setState(() {
       _selectedProperty = property;
@@ -254,9 +315,10 @@ class MapSampleState extends State<CustomizeMap> {
   }
 
   void _filterMarkersByProvince(String provinceName) {
-    if (widget.propertyData == null) return;
+    if (!mounted || widget.propertyData == null || _mapController == null)
+      return;
 
-    _markers = {};
+    final newMarkers = <Marker>{};
     final filteredProperties = provinceName == "Бүгд"
         ? widget.propertyData
         : widget.propertyData!
@@ -265,9 +327,17 @@ class MapSampleState extends State<CustomizeMap> {
             .toList();
 
     for (var property in filteredProperties!) {
-      _addMarkerForProperty(property);
+      final marker = _createMarkerForProperty(property);
+      if (marker != null) {
+        newMarkers.add(marker);
+      }
     }
-    setState(() {});
+
+    if (mounted) {
+      setState(() {
+        _markers = newMarkers;
+      });
+    }
   }
 
   Widget _buildInfoWindowContent(PropertyModel property) {
@@ -348,6 +418,8 @@ class MapSampleState extends State<CustomizeMap> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -437,7 +509,7 @@ class MapSampleState extends State<CustomizeMap> {
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
                                     margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                        vertical: 20),
                                     height: 30,
                                     width: 100,
                                     decoration: BoxDecoration(
@@ -565,15 +637,25 @@ class MapSampleState extends State<CustomizeMap> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
+          // Remove the key from GoogleMap to prevent recreation issues
           GoogleMap(
-            key: _mapKey,
+            // key: _mapKey, - REMOVE THIS LINE
             mapType: MapType.normal,
             initialCameraPosition: _kUlaanbaatar,
             onMapCreated: (GoogleMapController controller) {
-              if (!mounted) return;
+              // Prevent multiple initializations
+              if (!mounted || _mapCreated) return;
+              _mapCreated = true;
+
               _mapController = controller;
               customInfoWindowController.googleMapController = controller;
-              _addPropertyMarkers();
+
+              // Add a slight delay to ensure map is ready
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (mounted && _mapController != null) {
+                  _addPropertyMarkers();
+                }
+              });
             },
             markers: _markers,
             myLocationEnabled: true,

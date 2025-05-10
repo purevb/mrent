@@ -34,7 +34,6 @@ class _DescriptionTabState extends State<DescriptionTab> {
 
   @override
   Widget build(BuildContext context) {
-    var today = DateTime.now();
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final Map<int, Map<String, dynamic>> filledAdvantages = {
@@ -90,15 +89,15 @@ class _DescriptionTabState extends State<DescriptionTab> {
           user: widget.propertyData.userId!,
         ),
         const SizedBox(height: 10),
-        ValueListenableBuilder(
-            valueListenable: dataController.tableDateDataNotifier,
-            builder: (context, tableDateData, child) {
-              return SimpleDatePicker(
-                rangeStart: DateTime.now(),
-                rangeEnd: DateTime.now().add(const Duration(days: 7)),
-                onSelectDateRange: (start, end) {},
-              );
-            }),
+        // ValueListenableBuilder(
+        //     valueListenable: dataController.tableDateDataNotifier,
+        //     builder: (context, tableDateData, child) {
+        //       return SimpleDatePicker(
+        //         rangeStart: DateTime.now(),
+        //         rangeEnd: DateTime.now().add(const Duration(days: 7)),
+        //         onSelectDateRange: (start, end) {},
+        //       );
+        //     }),
         const SizedBox(height: 10),
         const Row(
           children: const [

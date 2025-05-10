@@ -16,7 +16,7 @@ class HorizontalProperty extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 2, bottom: 2),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       height: 200,
       width: width,

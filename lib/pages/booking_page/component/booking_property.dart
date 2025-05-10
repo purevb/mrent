@@ -99,7 +99,7 @@ class _BookingPropertyComponentState extends State<BookingPropertyComponent> {
                     ),
                     const Spacer(),
                     SizedBox(
-                      height: height * 0.12,
+                      height: height * 0.1,
                       child: ListView.separated(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,

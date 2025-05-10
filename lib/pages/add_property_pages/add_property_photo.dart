@@ -378,8 +378,7 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
                                   _uploadedImageUrls.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content:
-                                        Text("Please add at least one image."),
+                                    content: Text("Ядаж нэг зураг оруулна уу."),
                                   ),
                                 );
                                 return;

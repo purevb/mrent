@@ -45,6 +45,9 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
       setState(() {
         bookingData = List.from(dataController.rentedPropertiesNotifier.value!);
         properties = bookingData
+            .where((booking) =>
+                booking.bookingId != null &&
+                booking.bookingId!.propertyId != null)
             .map((booking) => booking.bookingId!.propertyId!)
             .toList();
       });
@@ -227,13 +230,13 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
             ),
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(60),
+            preferredSize: const Size.fromHeight(70),
             child: ValueListenableBuilder(
               valueListenable: dataController.propertyTypeNotifier,
               builder: (context, propertyTypeData, child) {
                 if (propertyTypeData == null) {
                   return SizedBox(
-                    height: 30.0,
+                    height: 40.0,
                     child: Shimmer.fromColors(
                       baseColor: Colors.grey.withOpacity(0.2),
                       highlightColor: Colors.white,
@@ -247,6 +250,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                           return Row(
                             children: [
                               Container(
+                                margin: const EdgeInsets.only(bottom: 10),
                                 height: 30,
                                 width: 100,
                                 decoration: BoxDecoration(
@@ -357,6 +361,9 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                   setState(() {
                     bookingData = List.from(value);
                     properties = bookingData
+                        .where((booking) =>
+                            booking.bookingId != null &&
+                            booking.bookingId!.propertyId != null)
                         .map((booking) => booking.bookingId!.propertyId!)
                         .toList();
                   });
@@ -382,7 +389,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
               return Container(
                 padding: const EdgeInsets.only(
                   left: 20,
-                  top: 20,
+                  top: 5,
                   right: 20,
                   bottom: 100,
                 ),
@@ -393,7 +400,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                     final currentProperty = displayItems[index];
                     final correspondingOrder = bookingData.firstWhere(
                       (booking) =>
-                          booking.bookingId!.propertyId!.id ==
+                          booking.bookingId?.propertyId?.id ==
                           currentProperty.id,
                       orElse: () => bookingData.first,
                     );

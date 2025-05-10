@@ -176,7 +176,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       appBar: AppBar(
         forceMaterialTransparency: true,
         backgroundColor: backgroundColor,
-        title: const Text("Add Listing"),
+        title: const Text("Дэлгэрэнгүй"),
       ),
       body: Padding(
         padding: const EdgeInsets.only(

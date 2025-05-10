@@ -106,52 +106,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
             ),
           ),
           const Spacer(),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              height: 40,
-              width: 40,
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 0.1,
-                  )
-                ],
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
-              child: SvgPicture.asset("assets/property_detail/Vector.svg"),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            height: 40,
-            width: 40,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 0.1,
-                )
-              ],
-            ),
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                CupertinoIcons.ellipsis_vertical,
-                color: Colors.black,
-              ),
-            ),
-          )
         ],
       ),
       body: Stack(
         children: [
           SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
             child: Column(
               children: [
                 ImageSwiper(
@@ -307,7 +267,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
           ],
         ),
         SizedBox(
-          height: height * 1.1,
+          height: height * 1.4,
           child: TabBarView(
             controller: _tabController,
             children: [

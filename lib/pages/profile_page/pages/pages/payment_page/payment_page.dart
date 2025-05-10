@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/payments_model.dart';
 import 'package:mrent/utils/constants.dart';
@@ -22,6 +24,7 @@ enum SortOption { dateNewest, dateOldest, priceHighest, priceLowest }
 class _PaymentPageState extends State<PaymentPage> {
   List<PaymentsModel> _sortedPayments = [];
   SortOption _currentSortOption = SortOption.dateNewest;
+  Api api = Api();
 
   @override
   void initState() {
@@ -255,7 +258,46 @@ class _PaymentPageState extends State<PaymentPage> {
             itemCount: _sortedPayments.length,
             itemBuilder: (context, index) {
               final payment = _sortedPayments[index];
-              return _buildPaymentItem(payment, context);
+              return ClipRRect(
+                child: Slidable(
+                  endActionPane: ActionPane(
+                      extentRatio: 0.1,
+                      motion: const BehindMotion(),
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            api.deletePayment(
+                              paymentId: widget.paymentData[index].id!,
+                            );
+                          },
+                          child: CustomSlidableAction(
+                            onPressed: (context) {
+                              // _handleDeleteProperty(index);
+                            },
+                            backgroundColor: const Color(0xffFF2761),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              bottomLeft: Radius.circular(25),
+                            ),
+                            child: Center(
+                              child: SizedBox(
+                                height: 25,
+                                width: 25,
+                                child: Image.asset(
+                                  "assets/trash.png",
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                  child: _buildPaymentItem(
+                    payment,
+                    context,
+                  ),
+                ),
+              );
             },
           ),
         ],

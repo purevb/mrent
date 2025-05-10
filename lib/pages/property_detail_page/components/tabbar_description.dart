@@ -21,7 +21,7 @@ class _TabbarDescriptionState extends State<TabbarDescription> {
     double width = MediaQuery.of(context).size.width;
     return Container(
       margin: const EdgeInsets.all(5),
-      width: width * 0.176,
+      width: (width - 116) / 4,
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         // ignore: deprecated_member_use

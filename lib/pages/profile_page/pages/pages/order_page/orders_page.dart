@@ -104,7 +104,7 @@ class _OrdersPageState extends State<OrdersPage> {
               ),
             )
           : Container(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              padding: const EdgeInsets.fromLTRB(0, 10, 20, 10),
               width: width,
               height: height,
               child: ListView.separated(
@@ -140,7 +140,8 @@ class _OrdersPageState extends State<OrdersPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
+                              padding:
+                                  const EdgeInsets.only(left: 25.0, bottom: 10),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

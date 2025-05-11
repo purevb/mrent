@@ -237,15 +237,6 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
                 hintText: widget.propertyData.description.toString(),
               ),
               _buildPropertyCountFields(width),
-              BookingPeriodChooserComponent(
-                forAddProperties: true,
-                onDatesSelected: (start, end) {
-                  setState(() {
-                    _firstSelectedDay = start;
-                    _secondSelectedDay = end;
-                  });
-                },
-              ),
               ProvinceDropdown(
                 dataController: dataController,
                 formKey: _formKey,

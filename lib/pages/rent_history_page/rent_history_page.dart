@@ -165,10 +165,11 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
       child: Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
-          shadowColor: Colors.black,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: backgroundColor,
+          // ignore: deprecated_member_use
+          shadowColor: Colors.black.withOpacity(0.5),
           elevation: 1,
+          automaticallyImplyLeading: false,
           title: onSearch == false ? const Text("Түрээсэлсэн") : const Text(""),
           centerTitle: true,
           actions: [

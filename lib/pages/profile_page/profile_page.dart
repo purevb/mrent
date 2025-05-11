@@ -44,16 +44,11 @@ class _ProfilePageState extends State<ProfilePage> {
       "path": "/payment"
     },
     2: {
-      "iconPath": "assets/profile/Vector-2.svg",
-      "description": "Notificattion",
-      "path": "/noti"
-    },
-    3: {
       "iconPath": "assets/profile/Icon.svg",
       "description": "Нууцлал",
       "path": "/privacy",
     },
-    4: {
+    3: {
       "iconPath": "assets/profile/property-svgrepo-com.svg",
       "description": "Cууц түрээслүүлэх",
       "path": "/add_property",

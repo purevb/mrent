@@ -412,11 +412,13 @@ class MapSampleState extends State<CustomizeMap>
     return Scaffold(
       appBar: widget.hasAppBar == true
           ? AppBar(
-              toolbarHeight: height * (0.08),
-              elevation: 0.8,
+              shadowColor: Colors.black,
+              toolbarHeight: height * (0.1),
+              elevation: 1,
+              backgroundColor: backgroundColor,
               automaticallyImplyLeading: false,
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(70),
+                preferredSize: const Size.fromHeight(55),
                 child: Column(
                   children: [
                     Container(

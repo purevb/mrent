@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -35,7 +34,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         email: _emailController.text.trim(),
       );
       setState(() {
-        _message = 'Password reset email sent. Please check your inbox.';
+        _message = 'Та имэйл хаягаа шалгана уу.';
       });
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -62,81 +61,90 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Dialog(
       child: Container(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-        height: height * 0.3,
-        width: width,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        height: 250,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              right: -12,
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.cancel),
-              ),
-            ),
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              const Text(
-                "Нууц үг сэргээх",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  hintText: "Email",
-                  prefixIcon: Icon(Icons.email),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                      .hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              MyButton(
-                  canPress: true,
-                  onPress: () {
-                    _isLoading ? null : _sendPasswordResetEmail;
+        child: Form(
+          key: _formKey,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
-                  height: 50,
-                  width: width,
-                  text: "Илгээх"),
-              if (_message != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Text(
-                    _message!,
+                  icon: const Icon(Icons.cancel),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    "Нууц үг сэргээх",
                     style: TextStyle(
-                      color: _message!.startsWith('Password reset')
-                          ? Colors.green
-                          : Colors.red,
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                ),
-            ]),
-          ],
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: "Email",
+                      prefixIcon: Icon(Icons.email),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: MyButton(
+                      canPress: !_isLoading,
+                      onPress: _sendPasswordResetEmail,
+                      height: 50,
+                      width: width,
+                      text: _isLoading ? "Илгээж байна..." : "Илгээх",
+                    ),
+                  ),
+                  if (_message != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        _message!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: _message!.startsWith('Password reset')
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

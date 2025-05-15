@@ -71,5 +71,10 @@
 	<string>We need access to your photo library to select images.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to your microphone to record videos.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>sms</string>
+		<string>tel</string>
+	</array>
 </dict>
 </plist>

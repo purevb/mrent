@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/pages/naviagation_page.dart';
@@ -12,6 +13,7 @@ import 'package:mrent/utils/constants.dart';
 class AuthService {
   final _auth = FirebaseAuth.instance;
   Api api = Api();
+
   Future<UserCredential?> loginWithGoogle(BuildContext context) async {
     try {
       showDialog(
@@ -109,7 +111,7 @@ class AuthService {
           phone: phone,
         );
         showToast(
-          'Registration successful!',
+          'Та амжилттай бүртгүүллээ.',
           // ignore: use_build_context_synchronously
           context: context,
           axis: Axis.horizontal,
@@ -179,15 +181,6 @@ class AuthService {
       required String password,
       required BuildContext context}) async {
     try {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-          child: CircularProgressIndicator(
-            color: mRed,
-          ),
-        ),
-      );
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       String userId = userCredential.user!.uid;
@@ -210,6 +203,7 @@ class AuthService {
         log(message);
       } else if (e.code == 'invalid-credential') {
         message = 'Wrong password provided for that user.';
+        Navigator.pop(context);
         showToast('Password эсвэл нэвтрэх нэр буруу байна. ',
             // ignore: use_build_context_synchronously
             context: context,

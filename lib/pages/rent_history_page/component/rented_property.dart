@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/model/order_model.dart';
+import 'package:mrent/pages/rent_history_page/component/rating_component.dart';
+import 'package:mrent/utils/constants.dart';
 
-class RentedProperty extends StatelessWidget {
+class RentedProperty extends StatefulWidget {
   const RentedProperty({
     required this.bookingdata,
     super.key,
   });
   final BookingModel bookingdata;
 
+  @override
+  State<RentedProperty> createState() => _RentedPropertyState();
+}
+
+class _RentedPropertyState extends State<RentedProperty> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -44,7 +52,7 @@ class RentedProperty extends StatelessWidget {
             child: CarouselSlider(
               height: height,
               width: width * 0.5,
-              images: bookingdata.propertyId?.images ?? [],
+              images: widget.bookingdata.propertyId?.images ?? [],
             ),
           ),
           Expanded(
@@ -53,14 +61,14 @@ class RentedProperty extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  bookingdata.propertyId?.propertyName.toString() ?? "",
+                  widget.bookingdata.propertyId?.propertyName.toString() ?? "",
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
-                  bookingdata.propertyId?.description.toString() ?? "",
+                  widget.bookingdata.propertyId?.description.toString() ?? "",
                   maxLines: 4,
                   style: GoogleFonts.inter(
                     fontSize: 12,
@@ -68,17 +76,47 @@ class RentedProperty extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Эхлэсэн өдөр:${bookingdata.checkinDate!.split("T")[0].replaceAll("-", "/")}",
+                  "Эхлэсэн өдөр:${widget.bookingdata.checkinDate!.split("T")[0].replaceAll("-", "/")}",
                 ),
                 Text(
-                  "Дууссан өдөр:${bookingdata.checkoutDate!.split("T")[0].replaceAll("-", "/")}",
+                  "Дууссан өдөр:${widget.bookingdata.checkoutDate!.split("T")[0].replaceAll("-", "/")}",
                 ),
                 //-
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return RatingComponent(
+                          propertyId: widget.bookingdata.propertyId?.id ?? "",
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        // ignore: deprecated_member_use
+                        color: mRed.withOpacity(0.3),
+                        border: Border.all(color: mRed)),
+                    child: const Text(
+                      "Үнэлгээ өгөх",
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
                 const Spacer(),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "₮${bookingdata.propertyId?.nightlyPrice.toString()}",
+                    "₮${widget.bookingdata.propertyId?.nightlyPrice.toString()}",
                     style: GoogleFonts.inter(
                       fontSize: 19,
                       fontWeight: FontWeight.w600,

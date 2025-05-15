@@ -349,83 +349,87 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: ValueListenableBuilder(
-            valueListenable: dataController.rentedPropertiesNotifier,
-            builder: (BuildContext context, value, Widget? child) {
-              if (value == null) {
-                return const ShimmerForRentHistory();
-              }
+        body: RefreshIndicator(
+          color: mRed,
+          onRefresh: _refresh,
+          child: SingleChildScrollView(
+            child: ValueListenableBuilder(
+              valueListenable: dataController.rentedPropertiesNotifier,
+              builder: (BuildContext context, value, Widget? child) {
+                if (value == null) {
+                  return const ShimmerForRentHistory();
+                }
 
-              if (properties.isEmpty && value.isNotEmpty) {
-                Future.microtask(() {
-                  setState(() {
-                    bookingData = List.from(value);
-                    properties = bookingData
-                        .where((booking) =>
-                            booking.bookingId != null &&
-                            booking.bookingId!.propertyId != null)
-                        .map((booking) => booking.bookingId!.propertyId!)
-                        .toList();
+                if (properties.isEmpty && value.isNotEmpty) {
+                  Future.microtask(() {
+                    setState(() {
+                      bookingData = List.from(value);
+                      properties = bookingData
+                          .where((booking) =>
+                              booking.bookingId != null &&
+                              booking.bookingId!.propertyId != null)
+                          .map((booking) => booking.bookingId!.propertyId!)
+                          .toList();
+                    });
                   });
-                });
-              }
+                }
 
-              if (displayItems.isEmpty) {
-                return SizedBox(
-                  height: height - 185,
-                  child: Center(
-                    child: Text(
-                      onSearch
-                          ? "Хайлтад тохирох сууц олдсонгүй."
-                          : "Танд одоогоор түрээсэлсэн сууц алга байна.",
-                      style: GoogleFonts.inter(
-                        color: textDefaultColor,
+                if (displayItems.isEmpty) {
+                  return SizedBox(
+                    height: height - 185,
+                    child: Center(
+                      child: Text(
+                        onSearch
+                            ? "Хайлтад тохирох сууц олдсонгүй."
+                            : "Танд одоогоор түрээсэлсэн сууц алга байна.",
+                        style: GoogleFonts.inter(
+                          color: textDefaultColor,
+                        ),
                       ),
                     ),
+                  );
+                }
+
+                return Container(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    top: 5,
+                    right: 20,
+                    bottom: 100,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      final currentProperty = displayItems[index];
+                      final correspondingOrder = bookingData.firstWhere(
+                        (booking) =>
+                            booking.bookingId?.propertyId?.id ==
+                            currentProperty.id,
+                        orElse: () => bookingData.first,
+                      );
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PropertyDetailPage(
+                                propertyData: currentProperty,
+                              ),
+                            ),
+                          );
+                        },
+                        child: RentedProperty(
+                          bookingdata: correspondingOrder.bookingId!,
+                        ),
+                      );
+                    },
+                    itemCount: displayItems.length,
                   ),
                 );
-              }
-
-              return Container(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  top: 5,
-                  right: 20,
-                  bottom: 100,
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    final currentProperty = displayItems[index];
-                    final correspondingOrder = bookingData.firstWhere(
-                      (booking) =>
-                          booking.bookingId?.propertyId?.id ==
-                          currentProperty.id,
-                      orElse: () => bookingData.first,
-                    );
-
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PropertyDetailPage(
-                              propertyData: currentProperty,
-                            ),
-                          ),
-                        );
-                      },
-                      child: RentedProperty(
-                        bookingdata: correspondingOrder.bookingId!,
-                      ),
-                    );
-                  },
-                  itemCount: displayItems.length,
-                ),
-              );
-            },
+              },
+            ),
           ),
         ),
       ),

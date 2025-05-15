@@ -39,16 +39,16 @@ class _PaymentPageState extends State<PaymentPage> {
       switch (_currentSortOption) {
         case SortOption.dateNewest:
           _sortedPayments.sort((a, b) {
-            DateTime? dateA = _parseDateTime(a.bookingId?.createdAt);
-            DateTime? dateB = _parseDateTime(b.bookingId?.createdAt);
+            DateTime? dateA = _parseDateTime(a.createdAt);
+            DateTime? dateB = _parseDateTime(b.createdAt);
             if (dateA == null || dateB == null) return 0;
             return dateB.compareTo(dateA);
           });
           break;
         case SortOption.dateOldest:
           _sortedPayments.sort((a, b) {
-            DateTime? dateA = _parseDateTime(a.bookingId?.createdAt);
-            DateTime? dateB = _parseDateTime(b.bookingId?.createdAt);
+            DateTime? dateA = _parseDateTime(a.createdAt);
+            DateTime? dateB = _parseDateTime(b.createdAt);
             if (dateA == null || dateB == null) return 0;
             return dateA.compareTo(dateB);
           });
@@ -233,8 +233,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     itemCount: _sortedPayments.length,
                     itemBuilder: (context, index) {
                       final payment = _sortedPayments[index];
-                      final date =
-                          payment.bookingId?.createdAt?.split("T") ?? ["", ""];
+                      final date = payment.createdAt?.split("T") ?? ["", ""];
                       return ClipRRect(
                         child: Slidable(
                           endActionPane: ActionPane(
@@ -247,7 +246,9 @@ class _PaymentPageState extends State<PaymentPage> {
                                     .deletePayment(paymentId: payment.id!)
                                     .then((value) {
                                   if (value == 200) {
-                                    widget.paymentData.removeAt(index);
+                                    setState(() {
+                                      widget.paymentData.removeAt(index);
+                                    });
                                   }
                                 }),
                                 backgroundColor: const Color(0xffFF2761),

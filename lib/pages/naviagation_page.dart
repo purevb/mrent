@@ -118,6 +118,7 @@ class _NavigationPageState extends State<NavigationPage> {
                   propertyDatas: propertyData ?? [],
                 ),
                 CustomizeMap(
+                  refresh: _refreshData,
                   key: mapKey,
                   propertyData: propertyData ?? [],
                   hasFloatButton: false,

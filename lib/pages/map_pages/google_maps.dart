@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mrent/components/carousel_slider.dart';
@@ -19,12 +20,14 @@ class CustomizeMap extends StatefulWidget {
     this.onLocationSelected,
     required this.hasFloatButton,
     this.propertyData,
+    this.refresh,
     super.key,
   });
   final List<PropertyModel>? propertyData;
   final bool hasAppBar;
   final bool hasFloatButton;
   final Function(LatLng, String)? onLocationSelected;
+  final RefreshCallback? refresh;
 
   @override
   State<CustomizeMap> createState() => MapSampleState();
@@ -84,6 +87,23 @@ class MapSampleState extends State<CustomizeMap>
     searchController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(CustomizeMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.propertyData != oldWidget.propertyData &&
+        _mapController != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _addPropertyMarkers();
+          if (widget.propertyData != null && widget.propertyData!.isNotEmpty) {
+            _fitMarkersInView(widget.propertyData!);
+          }
+        }
+      });
+    }
   }
 
   void _onSearchChanged() {
@@ -409,263 +429,282 @@ class MapSampleState extends State<CustomizeMap>
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: widget.hasAppBar == true
-          ? AppBar(
-              shadowColor: Colors.black,
-              toolbarHeight: height * (0.1),
-              elevation: 1,
-              backgroundColor: backgroundColor,
-              automaticallyImplyLeading: false,
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(55),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 30, right: 30),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: backgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            // ignore: deprecated_member_use
-                            color: textDefaultColor.withOpacity(0.15),
-                            blurRadius: 2,
-                            spreadRadius: 0,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      height: height * 0.07,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: width * 0.8 - 60,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: SvgPicture.asset(
-                                    fit: BoxFit.fitHeight,
-                                    "assets/search/searchbutton.svg",
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: TextField(
-                                    controller: searchController,
-                                    decoration: InputDecoration(
-                                      hintText: "Хайлт",
-                                      labelStyle: GoogleFonts.inter(
-                                        fontSize: 18,
-                                        // ignore: deprecated_member_use
-                                        color: Colors.black.withOpacity(0.7),
-                                      ),
-                                      border: const OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                      ),
-                                    ),
-                                    onSubmitted: (value) {
-                                      _filterPropertiesBySearch();
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: dataController.proviceNotifier,
-                      builder: (context, provinceData, child) {
-                        if (provinceData == null) {
-                          return SizedBox(
-                            height: 70.0,
-                            child: Shimmer.fromColors(
+    return FocusDetector(
+      onFocusGained: () async {
+        if (widget.refresh != null) {
+          widget.refresh!();
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted &&
+                _mapController != null &&
+                widget.propertyData != null) {
+              _addPropertyMarkers();
+              _fitMarkersInView(widget.propertyData!);
+            }
+          });
+        }
+      },
+      child: Scaffold(
+        appBar: widget.hasAppBar == true
+            ? AppBar(
+                shadowColor: Colors.black,
+                toolbarHeight: height * (0.1),
+                elevation: 1,
+                backgroundColor: backgroundColor,
+                automaticallyImplyLeading: false,
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(55),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 30, right: 30),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: backgroundColor,
+                          boxShadow: [
+                            BoxShadow(
                               // ignore: deprecated_member_use
-                              baseColor: Colors.grey.withOpacity(0.2),
-                              highlightColor: Colors.white,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  left: 30,
-                                ),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 5,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 20),
-                                    height: 30,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
+                              color: textDefaultColor.withOpacity(0.15),
+                              blurRadius: 2,
+                              spreadRadius: 0,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        height: height * 0.07,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: width * 0.8 - 60,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: SvgPicture.asset(
+                                      fit: BoxFit.fitHeight,
+                                      "assets/search/searchbutton.svg",
                                     ),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const SizedBox(
-                                    width: 10,
-                                  );
-                                },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: searchController,
+                                      decoration: InputDecoration(
+                                        hintText: "Хайлт",
+                                        labelStyle: GoogleFonts.inter(
+                                          fontSize: 18,
+                                          // ignore: deprecated_member_use
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                        ),
+                                      ),
+                                      onSubmitted: (value) {
+                                        _filterPropertiesBySearch();
+                                      },
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                          );
-                        }
+                          ],
+                        ),
+                      ),
+                      ValueListenableBuilder(
+                        valueListenable: dataController.proviceNotifier,
+                        builder: (context, provinceData, child) {
+                          if (provinceData == null) {
+                            return SizedBox(
+                              height: 70.0,
+                              child: Shimmer.fromColors(
+                                // ignore: deprecated_member_use
+                                baseColor: Colors.grey.withOpacity(0.2),
+                                highlightColor: Colors.white,
+                                child: ListView.separated(
+                                  padding: const EdgeInsets.only(
+                                    left: 30,
+                                  ),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 5,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 20),
+                                      height: 30,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      width: 10,
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          }
 
-                        if (provinceData.isEmpty) {
-                          return const SizedBox(height: 70);
-                        }
+                          if (provinceData.isEmpty) {
+                            return const SizedBox(height: 70);
+                          }
 
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 6),
-                          height: 70,
-                          alignment: const Alignment(0, 0),
-                          child: ListView.separated(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              final typeName = index == 0
-                                  ? "Бүгд"
-                                  : provinceData[index - 1].provinceName ?? "";
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    currentIndex = index;
-                                  });
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 6),
+                            height: 70,
+                            alignment: const Alignment(0, 0),
+                            child: ListView.separated(
+                              controller: _scrollController,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                final typeName = index == 0
+                                    ? "Бүгд"
+                                    : provinceData[index - 1].provinceName ??
+                                        "";
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      currentIndex = index;
+                                    });
 
-                                  _scrollToIndex(index);
+                                    _scrollToIndex(index);
 
-                                  if (index == 0) {
-                                    _filterMarkersByProvince("Бүгд");
-                                  } else if (index > 0 &&
-                                      index <= provinceData.length) {
-                                    final provinceName =
-                                        provinceData[index - 1].provinceName;
-                                    if (provinceName != null) {
-                                      _filterMarkersByProvince(provinceName);
+                                    if (index == 0) {
+                                      _filterMarkersByProvince("Бүгд");
+                                    } else if (index > 0 &&
+                                        index <= provinceData.length) {
+                                      final provinceName =
+                                          provinceData[index - 1].provinceName;
+                                      if (provinceName != null) {
+                                        _filterMarkersByProvince(provinceName);
+                                      }
                                     }
-                                  }
-                                },
-                                child: Container(
-                                  // ignore: deprecated_member_use
-                                  color: backgroundColor.withOpacity(0),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          FractionalTranslation(
-                                            translation: index == 0
-                                                ? const Offset(0, -0.028)
-                                                : const Offset(0, 0),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Container(
-                                            alignment: Alignment.bottomCenter,
-                                            height: 55,
-                                            child: Text(
-                                              typeName,
-                                              style: GoogleFonts.inter(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500,
+                                  },
+                                  child: Container(
+                                    // ignore: deprecated_member_use
+                                    color: backgroundColor.withOpacity(0),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            FractionalTranslation(
+                                              translation: index == 0
+                                                  ? const Offset(0, -0.028)
+                                                  : const Offset(0, 0),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Container(
+                                              alignment: Alignment.bottomCenter,
+                                              height: 55,
+                                              child: Text(
+                                                typeName,
+                                                style: GoogleFonts.inter(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        switchInCurve: Easing.legacy,
-                                        child: currentIndex == index
-                                            ? Container(
-                                                width: 40,
-                                                key: ValueKey<int>(index),
-                                                height: 2,
-                                                decoration: BoxDecoration(
-                                                  color: mRed,
-                                                ),
-                                              )
-                                            : const SizedBox.shrink(),
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                        const SizedBox(height: 5),
+                                        AnimatedSwitcher(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          switchInCurve: Easing.legacy,
+                                          child: currentIndex == index
+                                              ? Container(
+                                                  width: 40,
+                                                  key: ValueKey<int>(index),
+                                                  height: 2,
+                                                  decoration: BoxDecoration(
+                                                    color: mRed,
+                                                  ),
+                                                )
+                                              : const SizedBox.shrink(),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            itemCount: provinceData.length + 1,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(
-                                width: 5,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                                );
+                              },
+                              itemCount: provinceData.length + 1,
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const SizedBox(
+                                  width: 5,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          : null,
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: _kUlaanbaatar,
-            onMapCreated: (GoogleMapController controller) {
-              if (!mounted || _mapCreated) return;
-              _mapCreated = true;
+              )
+            : null,
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: _kUlaanbaatar,
+              onMapCreated: (GoogleMapController controller) {
+                if (!mounted || _mapCreated) return;
+                _mapCreated = true;
 
-              _mapController = controller;
-              customInfoWindowController.googleMapController = controller;
-              Future.delayed(const Duration(milliseconds: 300), () {
-                if (mounted && _mapController != null) {
-                  _addPropertyMarkers();
-                }
-              });
-            },
-            markers: _markers,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            onTap: (position) {
-              customInfoWindowController.hideInfoWindow!();
-              _updateSelectedLocation(position);
-            },
-            onCameraMove: (position) {
-              customInfoWindowController.onCameraMove!();
-            },
-            padding: EdgeInsets.only(
-              top: widget.hasAppBar ? 100 : 0,
-              bottom: widget.hasFloatButton ? 100 : 0,
+                _mapController = controller;
+                customInfoWindowController.googleMapController = controller;
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (mounted && _mapController != null) {
+                    _addPropertyMarkers();
+                  }
+                });
+              },
+              markers: _markers,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              onTap: (position) {
+                customInfoWindowController.hideInfoWindow!();
+                _updateSelectedLocation(position);
+              },
+              onCameraMove: (position) {
+                customInfoWindowController.onCameraMove!();
+              },
+              padding: EdgeInsets.only(
+                top: widget.hasAppBar ? 100 : 0,
+                bottom: widget.hasFloatButton ? 100 : 0,
+              ),
             ),
-          ),
-          if (_isLoading) const Center(child: CircularProgressIndicator()),
-          CustomInfoWindow(
-            controller: customInfoWindowController,
-            height: 220,
-            width: 225,
-            offset: 50,
-          ),
-        ],
+            if (_isLoading) const Center(child: CircularProgressIndicator()),
+            CustomInfoWindow(
+              controller: customInfoWindowController,
+              height: 220,
+              width: 225,
+              offset: 50,
+            ),
+          ],
+        ),
       ),
     );
   }

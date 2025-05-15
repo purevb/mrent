@@ -125,7 +125,12 @@ class _AddListingScreenState extends State<AddListingScreen> {
                     );
                   }
                 },
-                child: const Text("OK"),
+                child: Text(
+                  "OK",
+                  style: TextStyle(
+                    color: mRed,
+                  ),
+                ),
               ),
             ],
           );
@@ -151,182 +156,189 @@ class _AddListingScreenState extends State<AddListingScreen> {
     }
   }
 
-  final Map<String, int> propertyFeatures = {
-    'Bedroom': 3,
-    'Bathroom': 2,
-    'Balcony': 2,
-  };
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: backgroundColor,
       appBar: AppBar(
         forceMaterialTransparency: true,
         backgroundColor: backgroundColor,
         title: const Text("Дэлгэрэнгүй"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(
-          right: 20,
-          left: 20,
-          top: 10,
-          bottom: 40,
-        ),
-        child: ListView(
-          children: [
-            _buildPriceField("Өдрийн түрээс", "₮ 30000", (value) {
-              setState(() {
-                rentPrice = value;
-              });
-            }),
-            const SizedBox(height: 20),
-            Text(
-              "Бусад",
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 20,
+              left: 20,
+              top: 10,
+              bottom: 0,
             ),
-            const SizedBox(height: 10),
-            _buildPropertyFeatures(
-              "Унтлагын өрөө",
-              bedRoomsCount,
-              onDecrement: () {
-                setState(() {
-                  if (bedRoomsCount > 0) bedRoomsCount--;
-                });
-              },
-              onIncrement: () {
-                setState(() {
-                  bedRoomsCount++;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            _buildPropertyFeatures(
-              "Угаалгын өрөө",
-              bathroomCount,
-              onDecrement: () {
-                setState(() {
-                  if (bathroomCount > 0) bathroomCount--;
-                });
-              },
-              onIncrement: () {
-                setState(() {
-                  bathroomCount++;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            _buildPropertyFeatures(
-              "Хүн хүлээн авах чадал",
-              humanCount,
-              onDecrement: () {
-                setState(() {
-                  if (humanCount > 0) humanCount--;
-                });
-              },
-              onIncrement: () {
-                setState(() {
-                  humanCount++;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            _buildPropertyFeatures(
-              "Ор",
-              bedCount,
-              onDecrement: () {
-                setState(() {
-                  if (bedCount > 0) bedCount--;
-                });
-              },
-              onIncrement: () {
-                setState(() {
-                  bedCount++;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            const SizedBox(height: 20),
-            Text(
-              "Нэмэлт тайлбар",
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              textInputAction: TextInputAction.done,
-              controller: additionalController,
-              maxLines: 5,
-              decoration: InputDecoration(
-                errorText: _validate ? "Бүрэн бөглөнө үү." : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                fillColor: const Color.fromARGB(255, 227, 226, 230),
-                filled: true,
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
+            child: ListView(
+              children: [
+                _buildPriceField("Өдрийн түрээс", "₮ 30000", (value) {
                   setState(() {
-                    _validate = rentController.text.isEmpty ||
-                        additionalController.text.isEmpty;
+                    rentPrice = value;
                   });
-                  if (rentController.text.isNotEmpty &&
-                      additionalController.text.isNotEmpty) {
-                    postPropertyAndShowDialog(
-                      provinceId: widget.provinceID,
-                      propertyTypeId: widget.propertyTypeId,
-                      userId: provider.getUser?.id ?? "",
-                      rentController: rentController,
-                      propertyName: widget.propertyName,
-                      humanCount: humanCount,
-                      bedCount: bedCount,
-                      bedRoomsCount: bedRoomsCount,
-                      bathroomCount: bathroomCount,
-                      additionalController: additionalController,
-                      lattitude: widget.lattitude,
-                      longtitude: widget.longtitude,
-                      photos: widget.photos,
-                      context: context,
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Forum-ыг бүрэн бөглө."),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  backgroundColor: const Color(0xff8BC83F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Text(
-                  "Дуусгах",
+                }),
+                const SizedBox(height: 20),
+                Text(
+                  "Бусад",
                   style: GoogleFonts.inter(
-                    fontSize: 18,
-                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                const SizedBox(height: 10),
+                _buildPropertyFeatures(
+                  "Унтлагын өрөө",
+                  bedRoomsCount,
+                  onDecrement: () {
+                    setState(() {
+                      if (bedRoomsCount > 0) bedRoomsCount--;
+                    });
+                  },
+                  onIncrement: () {
+                    setState(() {
+                      bedRoomsCount++;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildPropertyFeatures(
+                  "Угаалгын өрөө",
+                  bathroomCount,
+                  onDecrement: () {
+                    setState(() {
+                      if (bathroomCount > 0) bathroomCount--;
+                    });
+                  },
+                  onIncrement: () {
+                    setState(() {
+                      bathroomCount++;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildPropertyFeatures(
+                  "Хүн хүлээн авах чадал",
+                  humanCount,
+                  onDecrement: () {
+                    setState(() {
+                      if (humanCount > 0) humanCount--;
+                    });
+                  },
+                  onIncrement: () {
+                    setState(() {
+                      humanCount++;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildPropertyFeatures(
+                  "Ор",
+                  bedCount,
+                  onDecrement: () {
+                    setState(() {
+                      if (bedCount > 0) bedCount--;
+                    });
+                  },
+                  onIncrement: () {
+                    setState(() {
+                      bedCount++;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                const SizedBox(height: 20),
+                Text(
+                  "Нэмэлт тайлбар",
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  textInputAction: TextInputAction.done,
+                  controller: additionalController,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    errorText: _validate ? "Бүрэн бөглөнө үү." : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: const Color.fromARGB(255, 227, 226, 230),
+                    filled: true,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _validate = rentController.text.isEmpty ||
+                            additionalController.text.isEmpty;
+                      });
+                      if (rentController.text.isNotEmpty &&
+                          additionalController.text.isNotEmpty) {
+                        try {
+                          postPropertyAndShowDialog(
+                            provinceId: widget.provinceID,
+                            propertyTypeId: widget.propertyTypeId,
+                            userId: provider.getUser?.id ?? "",
+                            rentController: rentController,
+                            propertyName: widget.propertyName,
+                            humanCount: humanCount,
+                            bedCount: bedCount,
+                            bedRoomsCount: bedRoomsCount,
+                            bathroomCount: bathroomCount,
+                            additionalController: additionalController,
+                            lattitude: widget.lattitude,
+                            longtitude: widget.longtitude,
+                            photos: widget.photos,
+                            context: context,
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Алдаа гарлаа: ${e.toString()}"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Forum-ыг бүрэн бөглө."),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: const Color(0xff8BC83F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Дуусгах",
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

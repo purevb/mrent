@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListingAgent extends StatefulWidget {
   const ListingAgent({required this.user, super.key});
@@ -14,6 +15,53 @@ class ListingAgent extends StatefulWidget {
 }
 
 class _ListingAgentState extends State<ListingAgent> {
+  Future<void> _makePhoneCall(String? phoneNumber) async {
+    if (phoneNumber == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text("Энэ хэрэглэгчтэй одоохондоо холбогдох боломжгүй байна."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+      if (await canLaunchUrl(launchUri)) {
+        await launchUrl(launchUri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Утасны дуудлага хийх боломжгүй байна."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _sendSMS(String? phoneNumber) async {
+    if (phoneNumber == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Энэ хэрэглэгчтэй мессеж илгээх боломжгүй байна."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      final Uri launchUri = Uri(scheme: 'sms', path: phoneNumber);
+      if (await canLaunchUrl(launchUri)) {
+        await launchUrl(launchUri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Мессеж илгээх боломжгүй байна."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -51,19 +99,25 @@ class _ListingAgentState extends State<ListingAgent> {
           ),
         ),
         const Spacer(),
-        SvgPicture.asset(
-          "assets/property_detail/eva_email-fill.svg",
-          colorFilter: ColorFilter.mode(
-              // ignore: deprecated_member_use
-              textDefaultColor.withOpacity(0.7),
-              BlendMode.srcIn),
+        GestureDetector(
+          onTap: () => _sendSMS(widget.user.phone),
+          child: SvgPicture.asset(
+            "assets/property_detail/eva_email-fill.svg",
+            colorFilter: ColorFilter.mode(
+                // ignore: deprecated_member_use
+                textDefaultColor.withOpacity(0.7),
+                BlendMode.srcIn),
+          ),
         ),
-        SvgPicture.asset(
-          "assets/property_detail/mingcute_phone-fill.svg",
-          colorFilter: ColorFilter.mode(
-              // ignore: deprecated_member_use
-              textDefaultColor.withOpacity(0.7),
-              BlendMode.srcIn),
+        GestureDetector(
+          onTap: () => _makePhoneCall(widget.user.phone),
+          child: SvgPicture.asset(
+            "assets/property_detail/mingcute_phone-fill.svg",
+            colorFilter: ColorFilter.mode(
+                // ignore: deprecated_member_use
+                textDefaultColor.withOpacity(0.7),
+                BlendMode.srcIn),
+          ),
         ),
       ],
     );

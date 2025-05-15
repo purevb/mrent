@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
             child: MyButton(
               canPress: true,
               onPress: () async {
-                signUserIn();
+                await signUserIn();
               },
               height: 55,
               width: width,

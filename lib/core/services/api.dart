@@ -291,9 +291,9 @@ class Api {
   }
 
   Future<int> postRating({
-    String? userId,
-    String? propertyId,
-    int? rating,
+    required String userId,
+    required String propertyId,
+    required double rating,
   }) async {
     final Map<String, dynamic> updateData = {};
     updateData['property_id'] = propertyId;

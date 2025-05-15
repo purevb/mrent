@@ -43,7 +43,7 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
   Widget build(BuildContext context) {
     // double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         forceMaterialTransparency: true,
         backgroundColor: backgroundColor,
@@ -66,86 +66,98 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
               ),
             );
           } else {
-            return Padding(
-              padding: const EdgeInsets.only(
-                  left: 20, top: 0, right: 20, bottom: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  RichText(
-                    text: TextSpan(
-                      text:
-                          "Сайн байна уу ? ${capitalizeFirstLetter(widget.name.replaceAll(" ", ""))} ,Та түрээслэх cууцын мэдээлэлүүдээ оруулна уу.",
-                      style:
-                          GoogleFonts.inter(fontSize: 16, color: Colors.black),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    "Нэр",
-                    style: GoogleFonts.inter(
-                      fontSize: 22,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: propertyNameController,
-                            decoration: InputDecoration(
-                              errorText:
-                                  _validate ? "Хоосон байж болохгүй" : null,
-                              hintText: "Саравчтай байшин",
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              hintStyle: const TextStyle(
-                                color: Color(0xff252B5C),
-                              ),
+            return Stack(
+              children: [
+                ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, top: 0, right: 20, bottom: 40),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
+                          RichText(
+                            text: TextSpan(
+                              text:
+                                  "Сайн байна уу ? ${capitalizeFirstLetter(widget.name.replaceAll(" ", ""))} ,Та түрээслэх cууцын мэдээлэлүүдээ оруулна уу.",
+                              style: GoogleFonts.inter(
+                                  fontSize: 16, color: Colors.black),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Image.asset(
-                            "assets/add_property/House.png",
+                          const SizedBox(height: 20),
+                          Text(
+                            "Нэр",
+                            style: GoogleFonts.inter(
+                              fontSize: 22,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: propertyNameController,
+                                    decoration: InputDecoration(
+                                      errorText: _validate
+                                          ? "Хоосон байж болохгүй"
+                                          : null,
+                                      hintText: "Саравчтай байшин",
+                                      border: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      hintStyle: const TextStyle(
+                                        color: Color(0xff252B5C),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: Image.asset(
+                                    "assets/add_property/House.png",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            "Сууцын төрлүүд",
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              for (int i = 0; i < typeData.length; i++)
+                                _typeXi(
+                                  typeData[i],
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    "Сууцын төрлүүд",
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: [
-                      for (int i = 0; i < typeData.length; i++)
-                        _typeXi(
-                          typeData[i],
-                        ),
-                    ],
-                  ),
-                  const Spacer(),
-                  GestureDetector(
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
                     onTap: () {
                       setState(() {
                         _validate = propertyNameController.text.isEmpty;
@@ -175,6 +187,12 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                       }
                     },
                     child: Container(
+                      margin: const EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        bottom: 20,
+                      ),
+                      height: 50,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
@@ -193,8 +211,8 @@ class _AddPropertyDetailsState extends State<AddPropertyDetailsPage> {
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }
         },

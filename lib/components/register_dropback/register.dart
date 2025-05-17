@@ -301,121 +301,148 @@ class _RegisterState extends State<Register> {
     }
 
     return Container(
-      padding: const EdgeInsets.only(bottom: 30),
-      height: height * 0.92,
-      width: width,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        top: 5,
+      ),
+      margin: const EdgeInsets.only(
+        top: 65,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        spacing: 10,
-        children: [
-          const MappBar(title: 'Нэвтрэх эсвэл бүртгүүлэх'),
-          Container(
-            height: height * 0.2,
-            width: double.infinity,
-            padding: EdgeInsets.only(left: width * 0.25),
-            child: SvgPicture.asset(
-              "assets/signup/signup_background.svg",
-              fit: BoxFit.contain,
-            ),
-          ),
-          MForm(
-            controller: emailController,
-            hintText: "E-mail (Gmail хаяг)",
-            hasObscure: false,
-          ),
-          MForm(
-            controller: nameController,
-            hintText: "Нэр",
-            hasObscure: false,
-          ),
-          MForm(
-            controller: phoneNumberController,
-            hintText: "Утасны дугаар",
-            hasObscure: false,
-          ),
-          MForm(
-            controller: passwordController,
-            hintText: "Нууц үг",
-            hasObscure: true,
-          ),
-          MForm(
-            controller: verifypasswordController,
-            hintText: "Нууц үг давтах",
-            hasObscure: true,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: isCheck,
-                  onChanged: (value) {
-                    setState(() {
-                      isCheck = value!;
-                    });
-                  },
-                ),
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      style:
-                          GoogleFonts.inter(fontSize: 10, color: Colors.black),
-                      children: [
-                        const TextSpan(text: 'Та '),
-                        TextSpan(
-                          text: 'шаардлага',
-                          style: GoogleFonts.inter(
-                            color: mRed,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        const TextSpan(text: ' ба '),
-                        TextSpan(
-                          text: 'нөхцөлийг',
-                          style: GoogleFonts.inter(
-                            color: mRed,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        const TextSpan(
-                          text:
-                              ' зөвшөөрснөөр бүртгүүлэх боломжтой болно. Та имэйл хаягаа заавал баталгаажуулах шаардлагатай.',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: MyButton(
-                canPress: isCheck && !isLoading,
-                onPress: () => checkInputsAndSignUp(),
-                height: height * 0.07,
-                width: width,
-                text: isLoading ? "Бүртгэж байна..." : "Бүртгүүлэх",
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Align(
+                alignment: Alignment.topCenter,
+                child: MappBar(title: 'Нэвтрэх эсвэл бүртгүүлэх'),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "Бүртгүүлсний дараа имэйл хаягаа заавал баталгаажуулна уу!",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              fontSize: 10,
-              color: mRed,
-              fontWeight: FontWeight.w500,
+            Container(
+              margin: EdgeInsets.only(top: 40),
+              child: SingleChildScrollView(
+                child: Container(
+                  height: height * 0.92,
+                  width: width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    spacing: 10,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 10,
+                        ),
+                        height: height * 0.2,
+                        width: double.infinity,
+                        padding: EdgeInsets.only(left: width * 0.25),
+                        child: SvgPicture.asset(
+                          "assets/signup/signup_background.svg",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      MForm(
+                        controller: emailController,
+                        hintText: "E-mail (Gmail хаяг)",
+                        hasObscure: false,
+                      ),
+                      MForm(
+                        controller: nameController,
+                        hintText: "Нэр",
+                        hasObscure: false,
+                      ),
+                      MForm(
+                        controller: phoneNumberController,
+                        hintText: "Утасны дугаар",
+                        hasObscure: false,
+                      ),
+                      MForm(
+                        controller: passwordController,
+                        hintText: "Нууц үг",
+                        hasObscure: true,
+                      ),
+                      MForm(
+                        controller: verifypasswordController,
+                        hintText: "Нууц үг давтах",
+                        hasObscure: true,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: isCheck,
+                              onChanged: (value) {
+                                setState(() {
+                                  isCheck = value!;
+                                });
+                              },
+                            ),
+                            Flexible(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.inter(
+                                      fontSize: 10, color: Colors.black),
+                                  children: [
+                                    const TextSpan(text: 'Та '),
+                                    TextSpan(
+                                      text: 'шаардлага',
+                                      style: GoogleFonts.inter(
+                                        color: mRed,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                    const TextSpan(text: ' ба '),
+                                    TextSpan(
+                                      text: 'нөхцөлийг',
+                                      style: GoogleFonts.inter(
+                                        color: mRed,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                    const TextSpan(
+                                      text:
+                                          ' зөвшөөрснөөр бүртгүүлэх боломжтой болно. Та имэйл хаягаа заавал баталгаажуулах шаардлагатай.',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: MyButton(
+                            canPress: isCheck && !isLoading,
+                            onPress: () => checkInputsAndSignUp(),
+                            height: height * 0.07,
+                            width: width,
+                            text: isLoading ? "Бүртгэж байна..." : "Бүртгүүлэх",
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

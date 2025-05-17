@@ -422,8 +422,12 @@ class _MyPropertiesPageState extends State<MyPropertiesPage>
                                   ),
                                 ],
                               ),
-                              child: HorizontalProperty(
-                                propertyData: property,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: HorizontalProperty(
+                                  propertyData: property,
+                                ),
                               ),
                             ),
                           ),

@@ -28,7 +28,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   Widget build(BuildContext context) {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
+        backgroundColor: backgroundColor,
         title: const Text("Захиалгын дэлгэрэнгүй"),
       ),
       body: Padding(
@@ -178,165 +180,186 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           return Dialog(
             backgroundColor: Colors.white,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 20,
               ),
-              height: 400,
-              margin: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
+              height: 300,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.cancel,
+                      ),
+                    ),
+                  ),
                   Lottie.asset(
-                    height: 150,
-                    width: 150,
+                    height: 100,
+                    width: 100,
                     forApprove == true
                         ? 'assets/animation/approve.json'
                         : 'assets/animation/cancel.json',
                     fit: BoxFit.contain,
                   ),
-                  Text(
-                    textAlign: TextAlign.center,
-                    forApprove == true
-                        ? 'Та зөвшөөрөхдөө итгэлтэй байна уу ?'
-                        : "Та цуцлахдаа итгэлтэй байна уу ?",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  Row(
+                  const Spacer(),
+                  Column(
                     spacing: 10,
                     children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: isDialogProcessing
-                              ? null
-                              : () {
-                                  Navigator.pop(context);
-                                },
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: isDialogProcessing
-                                  ? Colors.grey.shade300
-                                  : Colors.grey,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 1,
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text("Үгүй"),
-                          ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        forApprove == true
+                            ? 'Та зөвшөөрөх үү?'
+                            : "Та цуцлахдаа итгэлтэй байна уу ?",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: isDialogProcessing
-                              ? null
-                              : () async {
-                                  if (isDialogProcessing) return;
-
-                                  setDialogState(() {
-                                    isDialogProcessing = true;
-                                  });
-
-                                  setState(() {
-                                    _isProcessing = true;
-                                  });
-
-                                  try {
-                                    if (forApprove == true) {
-                                      await api.approveBookingRequest(
-                                        orderId: widget.orderData.id ?? "",
-                                        hostId: provider!.getUser!.id!,
-                                        userId:
-                                            widget.orderData.userId?.id ?? "",
-                                      );
-
-                                      await api.updateBookingStatus(
-                                        bookingid: widget.orderData.id!,
-                                        approved: true,
-                                      );
-
-                                      await api.postEarning(
-                                        bookingId: widget.orderData.id!,
-                                        userId: provider.getUser?.id ?? "",
-                                      );
-
-                                      await api.postPayment(
-                                        bookingId: widget.orderData.id!,
-                                        userId:
-                                            widget.orderData.userId?.id ?? "",
-                                      );
-                                    } else {
-                                      await api.deleteBookingRequest(
-                                          bookingId: widget.orderData.id ?? "");
-                                    }
-
-                                    if (mounted) {
-                                      Navigator.pop(context);
-                                      Navigator.pop(context, true);
-                                    }
-                                  } catch (e) {
-                                    debugPrint("Error processing request: $e");
-                                    if (mounted) {
-                                      setDialogState(() {
-                                        isDialogProcessing = false;
-                                      });
-
-                                      setState(() {
-                                        _isProcessing = false;
-                                      });
-
-                                      // Show error message to user
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text("Error: $e"),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: isDialogProcessing
-                                  ? Colors.grey.shade300
-                                  : mRed,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 1,
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            alignment: Alignment.center,
-                            child: isDialogProcessing
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  )
-                                : const Text(
-                                    "Тийм",
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    child: Row(
+                      spacing: 10,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: isDialogProcessing
+                                ? null
+                                : () {
+                                    Navigator.pop(context);
+                                  },
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 1,
                                   ),
+                                ],
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text("Үгүй"),
+                            ),
                           ),
                         ),
-                      )
-                    ],
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: isDialogProcessing
+                                ? null
+                                : () async {
+                                    if (isDialogProcessing) return;
+
+                                    setDialogState(() {
+                                      isDialogProcessing = true;
+                                    });
+
+                                    setState(() {
+                                      _isProcessing = true;
+                                    });
+
+                                    try {
+                                      if (forApprove == true) {
+                                        await api.approveBookingRequest(
+                                          orderId: widget.orderData.id ?? "",
+                                          hostId: provider!.getUser!.id!,
+                                          userId:
+                                              widget.orderData.userId?.id ?? "",
+                                        );
+
+                                        await api.updateBookingStatus(
+                                          bookingid: widget.orderData.id!,
+                                          approved: true,
+                                        );
+
+                                        await api.postEarning(
+                                          bookingId: widget.orderData.id!,
+                                          userId: provider.getUser?.id ?? "",
+                                        );
+
+                                        await api.postPayment(
+                                          bookingId: widget.orderData.id!,
+                                          userId:
+                                              widget.orderData.userId?.id ?? "",
+                                        );
+                                      } else {
+                                        await api.deleteBookingRequest(
+                                            bookingId:
+                                                widget.orderData.id ?? "");
+                                      }
+
+                                      if (mounted) {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context, true);
+                                      }
+                                    } catch (e) {
+                                      debugPrint(
+                                          "Error processing request: $e");
+                                      if (mounted) {
+                                        setDialogState(() {
+                                          isDialogProcessing = false;
+                                        });
+
+                                        setState(() {
+                                          _isProcessing = false;
+                                        });
+
+                                        // Show error message to user
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text("Error: $e"),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: isDialogProcessing
+                                    ? Colors.grey.shade300
+                                    : mRed,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 1,
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              alignment: Alignment.center,
+                              child: isDialogProcessing
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Тийм",
+                                    ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

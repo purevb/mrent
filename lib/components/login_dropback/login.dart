@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
@@ -20,12 +21,27 @@ class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthService _auth = AuthService();
+  final RegExp gmailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$');
+
   Future<void> signUserIn() async {
-    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      await AuthService().signin(
-          email: emailController.text,
-          password: passwordController.text,
-          context: context);
+    if (gmailRegex.hasMatch(emailController.text)) {
+      if (emailController.text.isNotEmpty &&
+          passwordController.text.isNotEmpty) {
+        await AuthService().signin(
+            email: emailController.text,
+            password: passwordController.text,
+            context: context);
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: "Зөвхөн Gmail хаяг оруулна уу",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
     }
   }
 

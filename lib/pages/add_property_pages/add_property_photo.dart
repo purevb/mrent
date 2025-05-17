@@ -163,6 +163,7 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
         return true;
       },
       child: Scaffold(
+        backgroundColor: backgroundColor,
         appBar: AppBar(
           forceMaterialTransparency: true,
           title: const Text("Зураг нэмэх"),

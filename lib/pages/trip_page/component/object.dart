@@ -4,12 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/components/login_dropback/login.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TheObject extends StatefulWidget {
   const TheObject({
@@ -23,11 +25,14 @@ class TheObject extends StatefulWidget {
 }
 
 class _TheObjectState extends State<TheObject> {
+  DataController dataController = DataController();
+
   Api api = Api();
   bool favorite = false;
   @override
   void initState() {
     super.initState();
+    dataController.getRatingData(widget.propertyData.id ?? "");
   }
 
   @override
@@ -81,7 +86,27 @@ class _TheObjectState extends State<TheObject> {
                       CupertinoIcons.star_fill,
                       size: 15,
                     ),
-                    rating("5")
+                    ValueListenableBuilder(
+                        valueListenable: dataController.propertyRatingNotifier,
+                        builder: (context, ratingData, child) {
+                          if (ratingData == null) {
+                            return Shimmer.fromColors(
+                              // ignore: deprecated_member_use
+                              baseColor: Colors.grey.withOpacity(0.2),
+                              highlightColor: Colors.white,
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 2),
+                                height: 20,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: Colors.amber,
+                                ),
+                              ),
+                            );
+                          }
+                          return rating(ratingData.averageRating.toString());
+                        }),
                   ],
                 ),
                 description(widget.propertyData.propertyTypeId?.typeName ?? ""),

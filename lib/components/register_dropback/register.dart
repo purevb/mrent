@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/components/register_dropback/components/mForm.dart';
+import 'package:mrent/pages/naviagation_page.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -24,47 +28,200 @@ class _RegisterState extends State<Register> {
       TextEditingController();
 
   bool isCheck = false;
-  bool canCreate = false;
+  bool isLoading = false;
+  bool isVerifying = false;
+  bool canResendEmail = true;
+  int resendCooldown = 0;
+  Timer? verificationTimer;
+  Timer? cooldownTimer;
 
-  // final Map<int, Map<String, String>> properties = {
-  //   1: {
-  //     "booster": "assets/subscription_loyalty/backgrounds/nbooster.png",
-  //     "background": "assets/subscription_loyalty/backgrounds/nnbackground.png",
-  //   },
-  //   2: {
-  //     "booster": "assets/subscription_loyalty/backgrounds/ubooster.png",
-  //     "background": "assets/subscription_loyalty/backgrounds/ubackground.png",
-  //   },
-  //   3: {
-  //     "booster": "assets/subscription_loyalty/backgrounds/obooster.png",
-  //     "background": "assets/subscription_loyalty/backgrounds/obackground.png",
-  //   },
-  // };
-  Map<int, Map<String, String>> profileListTile = {
-    0: {"icon": ""}
-  };
-  Future<void> checkTwoPasswordsEqualThenSignUp(
-      String password, String verifyPassword) async {
-    if (password == verifyPassword) {
-      setState(() {
-        canCreate = true;
-      });
-      AuthService authService = AuthService();
-      await authService.signup(
-          name: nameController.text,
-          phone: phoneNumberController.text,
-          email: emailController.text,
-          password: passwordController.text,
-          context: context);
-    } else {
+  final RegExp gmailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$');
+  final RegExp phoneRegex = RegExp(r'^[89][0-9]{7}$');
+
+  @override
+  void dispose() {
+    verificationTimer?.cancel();
+    cooldownTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> checkEmailVerified() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await user.reload();
+
+    if (user.emailVerified) {
+      verificationTimer?.cancel();
+      await AuthService().updateEmailVerificationStatus(user.uid);
+      if (mounted) {
+        setState(() {
+          isVerifying = false;
+        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NavigationPage(id: user.uid),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> resendVerificationEmail() async {
+    if (!canResendEmail) return;
+
+    setState(() {
+      canResendEmail = false;
+      resendCooldown = 60;
+    });
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.sendEmailVerification();
+    }
+
+    cooldownTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) {
+        if (mounted) {
+          setState(() {
+            if (resendCooldown > 0) {
+              resendCooldown--;
+            } else {
+              canResendEmail = true;
+              timer.cancel();
+            }
+          });
+        }
+      },
+    );
+  }
+
+  Future<void> checkInputsAndSignUp() async {
+    String email = emailController.text.trim();
+    String phone = phoneNumberController.text.trim();
+    String password = passwordController.text;
+    String verifyPassword = verifypasswordController.text;
+
+    if (!gmailRegex.hasMatch(email)) {
       Fluttertoast.showToast(
-          msg: "Passwords have to equal",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: "Зөвхөн Gmail хаяг оруулна уу",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+
+    if (!phoneRegex.hasMatch(phone)) {
+      Fluttertoast.showToast(
+        msg:
+            "Утасны дугаар буруу байна (8 оронтой, 8 эсвэл 9-р эхэлсэн байх ёстой)",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      Fluttertoast.showToast(
+        msg: "Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+
+    if (password != verifyPassword) {
+      Fluttertoast.showToast(
+        msg: "Нууц үг таарахгүй байна",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      if (userCredential.user != null) {
+        await AuthService().addUserDetails(
+          userId: userCredential.user!.uid,
+          gmail: email,
+          name: nameController.text,
+          phone: phone,
+        );
+
+        await userCredential.user!.sendEmailVerification();
+
+        setState(() {
+          isLoading = false;
+          isVerifying = true;
+        });
+
+        verificationTimer = Timer.periodic(
+          const Duration(seconds: 3),
+          (_) => checkEmailVerified(),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(
+        msg: _getFirebaseErrorMessage(e.code),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(
+        msg: "Алдаа гарлаа: ${e.toString()}",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
+  String _getFirebaseErrorMessage(String code) {
+    switch (code) {
+      case 'weak-password':
+        return 'The password provided is too weak.';
+      case 'email-already-in-use':
+        return 'An account already exists with that email.';
+      case 'invalid-email':
+        return 'The email address is not valid.';
+      case 'operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'too-many-requests':
+        return 'Too many requests. Try again later.';
+      default:
+        return 'Signup failed. Please try again.';
     }
   }
 
@@ -72,6 +229,76 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    if (isVerifying) {
+      return Container(
+        padding: const EdgeInsets.only(bottom: 30, top: 10),
+        height: height * 0.52,
+        width: width,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 60,
+              height: 10,
+              decoration: BoxDecoration(
+                  color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+            ),
+            const SizedBox(height: 60),
+            Text(
+              "Имэйл хаягаа баталгаажуулна уу",
+              style: GoogleFonts.inter(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Text(
+                "Бүртгэлээ баталгаажуулах холбоос бүхий имэйл ${emailController.text.trim()} хаяг руу илгээгдсэн байгаа. Таны имэйл хаягийг баталгаажуулснаар бид таныг хамгаалж чадна.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: MyButton(
+                  canPress: canResendEmail,
+                  onPress: resendVerificationEmail,
+                  height: height * 0.07,
+                  width: width * 0.7,
+                  text: canResendEmail
+                      ? "Имэйл дахин илгээх"
+                      : "Дахин илгээх ($resendCooldownс)",
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () => checkEmailVerified(),
+              child: Text(
+                "Би аль хэдийн баталгаажуулсан",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: mRed,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.only(bottom: 30),
@@ -84,19 +311,19 @@ class _RegisterState extends State<Register> {
       child: Column(
         spacing: 10,
         children: [
-          const MappBar(
-            title: 'Нэвтрэх эсвэл бүртгүүлэх',
-          ),
+          const MappBar(title: 'Нэвтрэх эсвэл бүртгүүлэх'),
           Container(
             height: height * 0.2,
             width: double.infinity,
             padding: EdgeInsets.only(left: width * 0.25),
             child: SvgPicture.asset(
-                fit: BoxFit.contain, "assets/signup/signup_background.svg"),
+              "assets/signup/signup_background.svg",
+              fit: BoxFit.contain,
+            ),
           ),
           MForm(
             controller: emailController,
-            hintText: "E-mail",
+            hintText: "E-mail (Gmail хаяг)",
             hasObscure: false,
           ),
           MForm(
@@ -125,10 +352,11 @@ class _RegisterState extends State<Register> {
               children: [
                 Checkbox(
                   value: isCheck,
-                  onChanged: ((value) {
-                    setState(() {});
-                    isCheck = value!;
-                  }),
+                  onChanged: (value) {
+                    setState(() {
+                      isCheck = value!;
+                    });
+                  },
                 ),
                 Expanded(
                   child: RichText(
@@ -136,9 +364,7 @@ class _RegisterState extends State<Register> {
                       style:
                           GoogleFonts.inter(fontSize: 10, color: Colors.black),
                       children: [
-                        const TextSpan(
-                          text: 'Та ',
-                        ),
+                        const TextSpan(text: 'Та '),
                         TextSpan(
                           text: 'шаардлага',
                           style: GoogleFonts.inter(
@@ -155,7 +381,8 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         const TextSpan(
-                          text: 'зөвшөөрснөөр бүртгүүлэх боломжтой болно.г',
+                          text:
+                              ' зөвшөөрснөөр бүртгүүлэх боломжтой болно. Та имэйл хаягаа заавал баталгаажуулах шаардлагатай.',
                         ),
                       ],
                     ),
@@ -170,50 +397,22 @@ class _RegisterState extends State<Register> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: MyButton(
-                canPress: isCheck == true ? true : false,
-                onPress: () {
-                  checkTwoPasswordsEqualThenSignUp(
-                    passwordController.text,
-                    verifypasswordController.text,
-                  );
-                },
+                canPress: isCheck && !isLoading,
+                onPress: () => checkInputsAndSignUp(),
                 height: height * 0.07,
                 width: width,
-                text: "Бүртгүүлэх",
+                text: isLoading ? "Бүртгэж байна..." : "Бүртгүүлэх",
               ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Container customDivider() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 50),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(
-                left: 30,
-                right: 15,
-              ),
-              height: 1,
-              // ignore: deprecated_member_use
-              color: Colors.black.withOpacity(0.4),
             ),
           ),
-          const Text("or"),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(
-                left: 15,
-                right: 30,
-              ),
-              // ignore: deprecated_member_use
-              color: Colors.black.withOpacity(0.4),
-              height: 1,
+          const SizedBox(height: 10),
+          Text(
+            "Бүртгүүлсний дараа имэйл хаягаа заавал баталгаажуулна уу!",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: 10,
+              color: mRed,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

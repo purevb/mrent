@@ -94,15 +94,17 @@ class AuthService {
     return null;
   }
 
-  Future<void> signup(
-      {required String name,
-      required String phone,
-      required String email,
-      required String password,
-      required BuildContext context}) async {
+  Future<bool> signup({
+    required String name,
+    required String phone,
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
       if (userCredential.user != null) {
         await addUserDetails(
           userId: userCredential.user!.uid,
@@ -110,55 +112,60 @@ class AuthService {
           name: name,
           phone: phone,
         );
+
         showToast(
           'Та амжилттай бүртгүүллээ.',
-          // ignore: use_build_context_synchronously
           context: context,
           axis: Axis.horizontal,
           alignment: Alignment.center,
           position: StyledToastPosition.bottom,
         );
-        api.postSyncUserFromFirebase().then((_) {
-          // ignore: use_build_context_synchronously
-          Navigator.pop(context);
-        });
+
+        await api.postSyncUserFromFirebase();
+        Navigator.pop(context);
+        Navigator.pop(context);
+
+        return true;
       }
+      return false;
     } on FirebaseAuthException catch (e) {
-      String message = '';
-      if (e.code == 'weak-password') {
-        message = 'The password provided is too weak.';
-        showToast(
-          message.isNotEmpty ? message : 'An error occurred during signup',
-          // ignore: use_build_context_synchronously
-          context: context,
-          axis: Axis.horizontal,
-          alignment: Alignment.center,
-          position: StyledToastPosition.bottom,
-        );
-      } else if (e.code == 'email-already-in-use') {
-        message = 'An account already exists with that email.';
-        showToast(
-          message.isNotEmpty ? message : 'An error occurred during signup',
-          // ignore: use_build_context_synchronously
-          context: context,
-          axis: Axis.horizontal,
-          alignment: Alignment.center,
-          position: StyledToastPosition.bottom,
-        );
-      }
-
+      String message = _getFirebaseErrorMessage(e.code);
       showToast(
-          message.isNotEmpty ? message : 'An error occurred during signup',
-          // ignore: use_build_context_synchronously
-          context: context,
-          axis: Axis.horizontal,
-          alignment: Alignment.center,
-          position: StyledToastPosition.bottom);
-
-      log(e.code);
-      log(message);
+        message,
+        context: context,
+        axis: Axis.horizontal,
+        alignment: Alignment.center,
+        position: StyledToastPosition.bottom,
+      );
+      log('Signup Error: ${e.code} - $message');
+      return false;
     } catch (e) {
-      log(e.toString());
+      showToast(
+        'An unexpected error occurred',
+        context: context,
+        axis: Axis.horizontal,
+        alignment: Alignment.center,
+        position: StyledToastPosition.bottom,
+      );
+      log('Unexpected Signup Error: ${e.toString()}');
+      return false;
+    }
+  }
+
+  String _getFirebaseErrorMessage(String code) {
+    switch (code) {
+      case 'weak-password':
+        return 'The password provided is too weak.';
+      case 'email-already-in-use':
+        return 'An account already exists with that email.';
+      case 'invalid-email':
+        return 'The email address is not valid.';
+      case 'operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'too-many-requests':
+        return 'Too many requests. Try again later.';
+      default:
+        return 'Signup failed. Please try again.';
     }
   }
 
@@ -217,6 +224,25 @@ class AuthService {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<bool> checkEmailVerified() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    await user?.reload();
+    return user?.emailVerified ?? false;
+  }
+
+  Future<void> resendVerificationEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
+  }
+
+  Future<void> updateEmailVerificationStatus(String userId) async {
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'emailVerified': true,
+    });
   }
 
   Future<void> signout(BuildContext context) async {

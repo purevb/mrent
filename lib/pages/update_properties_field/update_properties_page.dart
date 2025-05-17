@@ -194,6 +194,7 @@ class _UpdatePropertiesPageState extends State<UpdatePropertiesPage> {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         forceMaterialTransparency: true,
         title: Text(

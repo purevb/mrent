@@ -193,13 +193,13 @@ class _ReviewTabState extends State<ReviewTab> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Review posted successfully"),
+          content: Text("Таны сэтгэгдэл амжилттай бүртгэгдлээ"),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
       Navigator.pop(context);
-      _showErrorSnackbar("Failed to post review: ${e.toString()}");
+      _showErrorSnackbar("Алдаа гарлаа: ${e.toString()}");
     }
   }
 

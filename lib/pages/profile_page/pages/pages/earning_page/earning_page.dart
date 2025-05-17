@@ -1175,10 +1175,8 @@ class _EarningPageState extends State<EarningPage>
                                     topLeft: Radius.circular(12),
                                     bottomLeft: Radius.circular(12),
                                   ),
-                                  child: Expanded(
-                                    child: Image.asset(
-                                      "assets/trash.png",
-                                    ),
+                                  child: Image.asset(
+                                    "assets/trash.png",
                                   ),
                                 ),
                               ],

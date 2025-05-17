@@ -171,7 +171,6 @@ class _OrdersPageState extends State<OrdersPage> {
                               motion: const BehindMotion(),
                               children: [
                                 CustomSlidableAction(
-                                  padding: EdgeInsets.zero,
                                   onPressed: (context) async {
                                     if (order.id == null) return;
                                     final responseCode =
@@ -195,22 +194,29 @@ class _OrdersPageState extends State<OrdersPage> {
                                   },
                                   backgroundColor: const Color(0xffFF2761),
                                   borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    bottomLeft: Radius.circular(12),
+                                    topLeft: Radius.circular(25),
+                                    bottomLeft: Radius.circular(25),
                                   ),
-                                  child: SizedBox(
-                                    height: 35,
-                                    child: Image.asset(
-                                      "assets/trash.png",
-                                      fit: BoxFit.fill,
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 55,
+                                      width: 55,
+                                      child: Image.asset(
+                                        "assets/trash.png",
+                                        fit: BoxFit.fill,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                             child: order.propertyId != null
-                                ? HorizontalProperty(
-                                    propertyData: order.propertyId!)
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: HorizontalProperty(
+                                        propertyData: order.propertyId!),
+                                  )
                                 : const SizedBox.shrink(),
                           ),
                         ],

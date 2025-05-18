@@ -171,6 +171,8 @@ class _OrdersPageState extends State<OrdersPage> {
                               motion: const BehindMotion(),
                               children: [
                                 CustomSlidableAction(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 2),
                                   onPressed: (context) async {
                                     if (order.id == null) return;
                                     final responseCode =
@@ -199,7 +201,7 @@ class _OrdersPageState extends State<OrdersPage> {
                                   ),
                                   child: Center(
                                     child: SizedBox(
-                                      height: 55,
+                                      height: 45,
                                       width: 55,
                                       child: Image.asset(
                                         "assets/trash.png",

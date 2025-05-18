@@ -4,6 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
+import 'package:mrent/core/services/api.dart';
+import 'package:mrent/model/users_review_model.dart';
+import 'package:mrent/providers/property_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ReviewComponent extends StatefulWidget {
@@ -23,6 +27,7 @@ class ReviewComponent extends StatefulWidget {
 class _ReviewComponentState extends State<ReviewComponent> {
   final DataController dataController = DataController();
   StreamSubscription? _refreshSubscription;
+  Api api = Api();
 
   @override
   void initState() {
@@ -46,8 +51,23 @@ class _ReviewComponentState extends State<ReviewComponent> {
     dataController.getReviewData(widget.propertyId);
   }
 
+  Future<void> _deleteComment(int index) async {
+    final commentData = dataController.propertyReviewNotifier.value;
+    if (commentData == null || index >= commentData.length) return;
+
+    final commentId = commentData[index].id ?? "";
+    final response = await api.deleteComment(commentId);
+
+    if (response == 200) {
+      final List<UsersReviewModel> newList = List.from(commentData)
+        ..removeAt(index);
+      dataController.propertyReviewNotifier.value = newList;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
     return ValueListenableBuilder(
       valueListenable: dataController.propertyReviewNotifier,
       builder: (context, commentData, child) {
@@ -97,7 +117,7 @@ class _ReviewComponentState extends State<ReviewComponent> {
         if (commentData.isEmpty) {
           return Center(
             child: Text(
-              "No reviews yet",
+              "Энэ сууцад сэтгэгдэл алга",
               style: GoogleFonts.inter(
                 fontSize: 16,
                 color: Colors.black.withOpacity(0.6),
@@ -148,12 +168,26 @@ class _ReviewComponentState extends State<ReviewComponent> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            commentData[index].userId?.name ?? "",
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                commentData[index].userId?.name ?? "",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              if (provider.getUser!.id ==
+                                  commentData[index].userId?.id) ...[
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: () => _deleteComment(index),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                           Text(
                             commentData[index].comment?[0].text ?? "",

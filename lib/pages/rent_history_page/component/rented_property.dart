@@ -24,7 +24,7 @@ class _RentedPropertyState extends State<RentedProperty> {
     double height = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(right: 20),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       height: 250,
       width: width,
@@ -116,7 +116,7 @@ class _RentedPropertyState extends State<RentedProperty> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "₮${widget.bookingdata.propertyId?.nightlyPrice.toString()}",
+                    "₮${widget.bookingdata.totalPrice.toString()}",
                     style: GoogleFonts.inter(
                       fontSize: 19,
                       fontWeight: FontWeight.w600,

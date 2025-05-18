@@ -476,8 +476,30 @@ class Api {
   }
 
   Future<int> deleteEarning({required String earningId}) async {
-    log(earningId);
     final res = await api.delete("/api/earnings/$earningId", {});
     return res.statusCode!;
+  }
+
+  Future<int> deleteComment(String propertyId) async {
+    final response = await api.delete(
+      "/api/users_review/$propertyId",
+      {},
+    );
+    return response.statusCode!;
+  }
+
+  // rented
+  Future<int> deleteRentedProperyHistory({
+    required String bookingId,
+    required String userId,
+  }) async {
+    Map<String, dynamic> data = {};
+    data['booking_id'] = bookingId;
+    data['user_id'] = userId;
+    final response = await api.delete(
+      "/api/rented",
+      data,
+    );
+    return response.statusCode!;
   }
 }

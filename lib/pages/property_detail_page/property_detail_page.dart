@@ -157,7 +157,9 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                                   );
                                 }
                                 return Text(
-                                  ratingData.averageRating.toString(),
+                                  ratingData.averageRating
+                                          ?.toStringAsFixed(2) ??
+                                      "0.0",
                                   style: GoogleFonts.inter(
                                     color: const Color(0xff8997A9),
                                     fontSize: 16,

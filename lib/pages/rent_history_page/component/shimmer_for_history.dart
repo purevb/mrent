@@ -16,7 +16,7 @@ class ShimmerForRentHistory extends StatelessWidget {
       child: Shimmer.fromColors(
         baseColor: Colors.grey.withOpacity(0.2),
         highlightColor: Colors.white,
-        child: GridView.builder(
+        child: ListView.separated(
           padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
@@ -30,12 +30,11 @@ class ShimmerForRentHistory extends StatelessWidget {
             );
           },
           itemCount: 10,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            mainAxisExtent: height * 0.25,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 20,
-            crossAxisCount: 2,
-          ),
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(
+              height: 10,
+            );
+          },
         ),
       ),
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
 import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/rented_properties_model.dart';
@@ -29,6 +31,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
   String selectedType = "Бүгд";
   List<RentedPropertiesModel> bookingData = [];
   List<PropertyModel> properties = [];
+  Api api = Api();
 
   @override
   void initState() {
@@ -353,6 +356,7 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
           color: mRed,
           onRefresh: _refresh,
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: ValueListenableBuilder(
               valueListenable: dataController.rentedPropertiesNotifier,
               builder: (BuildContext context, value, Widget? child) {
@@ -391,14 +395,16 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                 }
 
                 return Container(
-                  padding: const EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                     left: 20,
                     top: 5,
-                    right: 20,
                     bottom: 100,
                   ),
-                  child: ListView.builder(
+                  child: ListView.separated(
                     shrinkWrap: true,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       final currentProperty = displayItems[index];
@@ -420,12 +426,63 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                             ),
                           );
                         },
-                        child: RentedProperty(
-                          bookingdata: correspondingOrder.bookingId!,
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            extentRatio: 0.15,
+                            motion: const BehindMotion(),
+                            children: [
+                              CustomSlidableAction(
+                                padding: EdgeInsets.zero,
+                                onPressed: (context) async {
+                                  await api
+                                      .deleteRentedProperyHistory(
+                                    bookingId:
+                                        correspondingOrder.bookingId?.id ?? "",
+                                    userId: widget.user.id ?? "",
+                                  )
+                                      .then((value) {
+                                    if (value == 200) {
+                                      final newList =
+                                          List<RentedPropertiesModel>.from(
+                                              dataController
+                                                      .rentedPropertiesNotifier
+                                                      .value ??
+                                                  []);
+                                      newList.removeWhere((booking) =>
+                                          booking.bookingId?.id ==
+                                          correspondingOrder.bookingId?.id);
+
+                                      dataController.rentedPropertiesNotifier
+                                          .value = newList;
+                                    }
+                                  });
+                                },
+                                backgroundColor: const Color(0xffFF2761),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  bottomLeft: Radius.circular(12),
+                                ),
+                                child: Image.asset(
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.fill,
+                                  "assets/trash.png",
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: RentedProperty(
+                            bookingdata: correspondingOrder.bookingId!,
+                          ),
                         ),
                       );
                     },
                     itemCount: displayItems.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(
+                        height: 10,
+                      );
+                    },
                   ),
                 );
               },

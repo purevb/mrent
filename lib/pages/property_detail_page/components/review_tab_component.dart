@@ -16,7 +16,6 @@ import 'package:mrent/utils/constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-// Import statements remain the same
 
 class ReviewTab extends StatefulWidget {
   const ReviewTab({

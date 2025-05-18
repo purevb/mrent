@@ -1,18 +1,21 @@
 import 'package:mrent/model/mongo_user_model.dart';
 
 class UsersReviewModel {
+  final String? id;
   final String? propertyId;
   final MongoUserModel? userId;
   final List<UsersReviewModelComment>? comment;
 
   UsersReviewModel({
+    this.id,
     this.propertyId,
     this.userId,
     this.comment,
   });
 
   UsersReviewModel.fromJson(Map<String, dynamic> json)
-      : propertyId = json['property_id'] as String?,
+      : id = json['_id'] as String?,
+        propertyId = json['property_id'] as String?,
         userId = (json['user_id'] as Map<String, dynamic>?) != null
             ? MongoUserModel.fromJson(json['user_id'] as Map<String, dynamic>)
             : null,

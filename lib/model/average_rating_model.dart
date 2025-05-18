@@ -1,16 +1,22 @@
 class AverageRatingModel {
+  final String? id;
   final String? propertyId;
-  final int? averageRating;
+  final double? averageRating;
 
   AverageRatingModel({
+    this.id,
     this.propertyId,
     this.averageRating,
   });
 
   AverageRatingModel.fromJson(Map<String, dynamic> json)
-      : propertyId = json['propertyId'] as String?,
-        averageRating = json['averageRating'] as int?;
+      : id = json['_id']?.toString(),
+        propertyId = json['propertyId']?.toString(),
+        averageRating = json['averageRating']?.toDouble();
 
-  Map<String, dynamic> toJson() =>
-      {'propertyId': propertyId, 'averageRating': averageRating};
+  Map<String, dynamic> toJson() => {
+        '_id': id,
+        'propertyId': propertyId,
+        'averageRating': averageRating,
+      };
 }

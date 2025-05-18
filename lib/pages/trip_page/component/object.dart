@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
@@ -105,7 +107,7 @@ class _TheObjectState extends State<TheObject> {
                               ),
                             );
                           }
-                          return rating(ratingData.averageRating.toString());
+                          return rating(ratingData.averageRating ?? 0);
                         }),
                   ],
                 ),
@@ -247,9 +249,9 @@ class _TheObjectState extends State<TheObject> {
     );
   }
 
-  Text rating(String rate) {
+  Text rating(double rate) {
     return Text(
-      rate,
+      rate.toStringAsFixed(2),
       style: GoogleFonts.inter(
         fontWeight: FontWeight.bold,
         fontSize: 15,

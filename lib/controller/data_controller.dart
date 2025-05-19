@@ -56,6 +56,19 @@ class DataController with ChangeNotifier {
   final ValueNotifier<List<PaymentsModel>?> paymentDataNotifier =
       ValueNotifier(null);
 
+  final ValueNotifier<List<BookingModel>?> userBookingsDataNotifier =
+      ValueNotifier(null);
+
+  Future<void> getUsersBookingData(String userId) async {
+    try {
+      var res = await api.getUserBookingsData(userId);
+      userBookingsDataNotifier.value = res;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future<void> getEarningDateData(String userId) async {
     try {
       var res = await api.getEarningData(userId);

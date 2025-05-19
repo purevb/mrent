@@ -7,6 +7,7 @@ import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/users_review_model.dart';
 import 'package:mrent/providers/property_provider.dart';
+import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -62,6 +63,34 @@ class _ReviewComponentState extends State<ReviewComponent> {
       final List<UsersReviewModel> newList = List.from(commentData)
         ..removeAt(index);
       dataController.propertyReviewNotifier.value = newList;
+    }
+  }
+
+  Future<void> _editComment(int index) async {
+    final commentData = dataController.propertyReviewNotifier.value;
+    if (commentData == null || index >= commentData.length) return;
+
+    final review = commentData[index];
+    final commentId = review.id ?? "";
+
+    final editedComment = await showDialog<String>(
+      context: context,
+      builder: (context) => EditCommentDialog(
+        initialText: review.comment?[0].text ?? "",
+        initialImages: review.comment?[0].images ?? [],
+      ),
+    );
+
+    if (editedComment != null) {
+      final response = await api.updateReviewComment(
+        id: commentId,
+        comment: editedComment,
+        images: review.comment?[0].images,
+      );
+
+      if (response == 200) {
+        _loadReviews();
+      }
     }
   }
 
@@ -132,6 +161,8 @@ class _ReviewComponentState extends State<ReviewComponent> {
           itemCount: commentData.length,
           physics: const BouncingScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
+            int reversedIndex = commentData.length - index - 1;
+            final comment = commentData[reversedIndex];
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
@@ -147,7 +178,7 @@ class _ReviewComponentState extends State<ReviewComponent> {
                     child: ClipOval(
                       child: CachedNetworkImage(
                         fit: BoxFit.fill,
-                        imageUrl: commentData[index].userId?.profileImage ?? "",
+                        imageUrl: comment.userId?.profileImage ?? "",
                         errorWidget: (context, url, error) {
                           return const Icon(Icons.person, color: Colors.white);
                         },
@@ -171,28 +202,30 @@ class _ReviewComponentState extends State<ReviewComponent> {
                           Row(
                             children: [
                               Text(
-                                commentData[index].userId?.name ?? "",
+                                comment.userId?.name ?? "",
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
                               ),
                               if (provider.getUser!.id ==
-                                  commentData[index].userId?.id) ...[
+                                  comment.userId?.id) ...[
                                 const Spacer(),
                                 IconButton(
-                                  onPressed: () => _deleteComment(index),
-                                  icon: const Icon(
-                                    Icons.delete,
-                                  ),
+                                  onPressed: () => _editComment(reversedIndex),
+                                  icon: const Icon(Icons.edit),
+                                ),
+                                IconButton(
+                                  onPressed: () =>
+                                      _deleteComment(reversedIndex),
+                                  icon: const Icon(Icons.delete),
                                 ),
                               ],
                             ],
                           ),
                           Text(
-                            commentData[index].comment?[0].text ?? "",
+                            comment.comment?[0].text ?? "",
                             style: GoogleFonts.inter(
-                              // ignore: deprecated_member_use
                               color: Colors.black.withOpacity(0.6),
                               fontSize: 15,
                             ),
@@ -202,17 +235,15 @@ class _ReviewComponentState extends State<ReviewComponent> {
                             spacing: 10,
                             runSpacing: 10,
                             children: List.generate(
-                              commentData[index].comment?[0].images?.length ??
-                                  0,
+                              comment.comment?[0].images?.length ?? 0,
                               (imgIndex) {
                                 return SizedBox(
                                   height: 80,
                                   width: 80,
                                   child: CachedNetworkImage(
-                                    imageUrl: commentData[index]
-                                            .comment?[0]
-                                            .images?[imgIndex] ??
-                                        "",
+                                    imageUrl:
+                                        comment.comment?[0].images?[imgIndex] ??
+                                            "",
                                     fit: BoxFit.cover,
                                     errorWidget: (context, url, error) =>
                                         const Icon(Icons.image_not_supported),
@@ -231,6 +262,130 @@ class _ReviewComponentState extends State<ReviewComponent> {
           },
         );
       },
+    );
+  }
+}
+
+class EditCommentDialog extends StatefulWidget {
+  final String initialText;
+  final List<String> initialImages;
+
+  const EditCommentDialog({
+    required this.initialText,
+    required this.initialImages,
+    super.key,
+  });
+
+  @override
+  State<EditCommentDialog> createState() => _EditCommentDialogState();
+}
+
+class _EditCommentDialogState extends State<EditCommentDialog> {
+  late TextEditingController _controller;
+  List<String> images = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialText);
+    images = List.from(widget.initialImages);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: backgroundColor,
+      title: const Text('Сэтгэгдэл өөрчлөх'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _controller,
+              maxLines: 5,
+              decoration: InputDecoration(
+                focusColor: mRed,
+                fillColor: mRed,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: mRed, width: 2),
+                ),
+                border: const OutlineInputBorder(),
+                labelText: 'Сэтгэгдэл',
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (images.isNotEmpty)
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                alignment: WrapAlignment.start,
+                children: images.map((image) {
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl: image,
+                          width: 90,
+                          height: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        left: 5,
+                        top: 5,
+                        child: GestureDetector(
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: Icon(
+                              Icons.close,
+                              size: 16,
+                              color: mRed,
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              images.remove(image);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text(
+            'Гарах',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, _controller.text),
+          child: const Text(
+            'Хадгалах',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
     );
   }
 }

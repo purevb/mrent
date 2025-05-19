@@ -171,7 +171,7 @@ class _OrdersPageState extends State<OrdersPage> {
                               motion: const BehindMotion(),
                               children: [
                                 CustomSlidableAction(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 2),
                                   onPressed: (context) async {
                                     if (order.id == null) return;

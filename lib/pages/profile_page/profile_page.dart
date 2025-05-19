@@ -52,6 +52,11 @@ class _ProfilePageState extends State<ProfilePage> {
       "iconPath": "assets/profile/property-svgrepo-com.svg",
       "description": "Cууц түрээслүүлэх",
       "path": "/add_property",
+    },
+    4: {
+      "iconPath": "assets/profile/request-approval-svgrepo-com.svg",
+      "description": "Түрээслэх хүсэлт",
+      "path": "/req",
     }
   };
 
@@ -329,6 +334,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         user: userData,
                                       );
                                     }));
+                                  } else if (path == "/req") {
+                                    context.router.push(
+                                      RentReqRoute(user: widget.user),
+                                    );
                                   } else {
                                     context.router.pushNamed(path);
                                   }

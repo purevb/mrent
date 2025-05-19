@@ -502,4 +502,78 @@ class Api {
     );
     return response.statusCode!;
   }
+
+  Future<List<BookingModel>> getUserBookingsData(String userId) async {
+    final res = await api.get("/api/bookings/user/$userId");
+    final List<dynamic> data = res.data;
+    return data.map((json) {
+      return BookingModel.fromJson(json);
+    }).toList();
+  }
+
+  Future<int> deleteUserBookingsData(String bookingId) async {
+    final res = await api.delete("/api/bookings/$bookingId", {});
+    log(res.toString());
+    return res.statusCode!;
+  }
+
+  Future<int> updateBooking({
+    required String bookingId,
+    DateTime? checkinDate,
+    DateTime? checkoutDate,
+    String? additionalRequest,
+  }) async {
+    try {
+      final Map<String, dynamic> updateData = {
+        if (checkinDate != null) 'checkin_date': checkinDate.toIso8601String(),
+        if (checkoutDate != null)
+          'checkout_date': checkoutDate.toIso8601String(),
+        if (additionalRequest != null) 'additional_request': additionalRequest,
+      };
+      log("data: $updateData");
+      final res = await api.putData("/api/bookings/$bookingId", updateData);
+      if (res.statusCode == 200) {
+        log("Booking successfully updated: ${res.statusCode}");
+      } else {
+        log("Failed to update booking: ${res.statusCode}");
+      }
+
+      return res.statusCode ?? 500;
+    } catch (e, stackTrace) {
+      log("Error updating booking", error: e, stackTrace: stackTrace);
+
+      if (e is DioException) {
+        log("Dio error details:");
+        log("Type: ${e.type}");
+        log("Message: ${e.message}");
+        log("Response: ${e.response?.data}");
+        log("Status code: ${e.response?.statusCode}");
+
+        return e.response?.statusCode ?? 500;
+      }
+
+      return 500;
+    }
+  }
+
+  Future<int> updateReviewComment({
+    required String id,
+    String? comment,
+    List<String>? images,
+  }) async {
+    try {
+      final Map<String, dynamic> updateData = {};
+      if (comment != null) {
+        updateData['comment'] = {'text': comment};
+      }
+      if (images != null) {
+        updateData['images'] = images;
+      }
+      final res = await api.putData("/api/users_review/$id", updateData);
+      return res.statusCode ?? 500;
+    } catch (e, stackTrace) {
+      log("Error updating review", error: e, stackTrace: stackTrace);
+      return 500;
+    }
+  }
 }

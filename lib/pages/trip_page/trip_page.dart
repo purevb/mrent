@@ -179,27 +179,37 @@ class _TripPageState extends State<TripPage> {
                 _loadFavorites(),
               ]);
             },
-            child: ListView.separated(
-              itemCount: displayData.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (context, index) {
-                int reversedIndex = displayData.length - index - 1;
-                final property = displayData[reversedIndex];
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PropertyDetailPage(
-                        propertyData: property,
-                      ),
+            child: displayData.isEmpty
+                ? const Center(
+                    child: Text(
+                      "Уучлаарай энэ төрөлд сууц алга...",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black),
                     ),
+                  )
+                : ListView.separated(
+                    itemCount: displayData.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      int reversedIndex = displayData.length - index - 1;
+                      final property = displayData[reversedIndex];
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PropertyDetailPage(
+                              propertyData: property,
+                            ),
+                          ),
+                        ),
+                        child: TheObject(
+                          propertyData: property,
+                        ),
+                      );
+                    },
                   ),
-                  child: TheObject(
-                    propertyData: property,
-                  ),
-                );
-              },
-            ),
           );
         }
       }),

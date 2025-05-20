@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/appbar.dart';
 import 'package:mrent/components/button.dart';
 import 'package:mrent/components/register_dropback/components/mForm.dart';
+import 'package:mrent/core/services/api.dart';
 import 'package:mrent/pages/naviagation_page.dart';
 import 'package:mrent/services/auth_service.dart';
 import 'package:mrent/utils/constants.dart';
@@ -20,6 +21,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  Api api = Api();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
@@ -170,6 +172,7 @@ class _RegisterState extends State<Register> {
         );
 
         await userCredential.user!.sendEmailVerification();
+        await api.postSyncUserFromFirebase();
 
         setState(() {
           isLoading = false;

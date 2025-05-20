@@ -40,11 +40,13 @@ class _ReviewTabState extends State<ReviewTab> {
   double _uploadProgress = 0;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final Uuid _uuid = Uuid();
+  final FocusNode _reviewFocusNode = FocusNode();
 
   @override
   void dispose() {
     _reviewController.dispose();
     _refreshController.close();
+    _reviewFocusNode.dispose();
     super.dispose();
   }
 
@@ -146,7 +148,7 @@ class _ReviewTabState extends State<ReviewTab> {
 
   Future<void> _postReview() async {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
-
+    _reviewFocusNode.unfocus();
     if (provider.getUser == null) {
       showModalBottomSheet(
         elevation: 0,
@@ -207,154 +209,163 @@ class _ReviewTabState extends State<ReviewTab> {
     double height = MediaQuery.of(context).size.height;
     final provider = Provider.of<PropertyProvider>(context, listen: false);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 10),
-        Text(
-          'Сэтгэгдэл',
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+    return GestureDetector(
+      onTap: () {
+        _reviewFocusNode.unfocus();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Text(
+            'Сэтгэгдэл',
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        AnimatedContainer(
-          height: _selectedImages.isEmpty ? height * 0.2 : height * 0.25,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.linear,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 40,
-                width: 40,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black,
-                ),
-                child: provider.getUser?.profileImage != null
-                    ? ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: provider.getUser?.profileImage ?? "",
-                          fit: BoxFit.cover,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.person, color: Colors.white),
-                        ),
-                      )
-                    : const Icon(Icons.person, color: Colors.white),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(20),
+          const SizedBox(height: 10),
+          AnimatedContainer(
+            height: _selectedImages.isEmpty ? height * 0.2 : height * 0.25,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.linear,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 40,
+                  width: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextField(
-                        controller: _reviewController,
-                        decoration: const InputDecoration(
-                          hintText: "Санал бодлоо хүваалцаарай :)",
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
+                  child: provider.getUser?.profileImage != null
+                      ? ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: provider.getUser?.profileImage ?? "",
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.person, color: Colors.white),
                           ),
+                        )
+                      : const Icon(Icons.person, color: Colors.white),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextField(
+                          controller: _reviewController,
+                          focusNode: _reviewFocusNode,
+                          decoration: const InputDecoration(
+                            hintText: "Санал бодлоо хүваалцаарай :)",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          maxLines: 2,
                         ),
-                        maxLines: 2,
-                      ),
-                      if (_selectedImages.isNotEmpty)
-                        SizedBox(
-                          height: 60,
-                          child: ListView.separated(
-                            padding: const EdgeInsets.only(left: 10, right: 20),
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.file(
-                                      _selectedImages[index],
-                                      fit: BoxFit.cover,
-                                      height: 50,
-                                      width: 50,
+                        if (_selectedImages.isNotEmpty)
+                          SizedBox(
+                            height: 60,
+                            child: ListView.separated(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 20),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.file(
+                                        _selectedImages[index],
+                                        fit: BoxFit.cover,
+                                        height: 50,
+                                        width: 50,
+                                      ),
                                     ),
-                                  ),
-                                  Positioned(
-                                    top: 5,
-                                    right: 5,
-                                    child: GestureDetector(
-                                      onTap: () => _removeImage(index),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                          size: 20,
+                                    Positioned(
+                                      top: 5,
+                                      right: 5,
+                                      child: GestureDetector(
+                                        onTap: () => _removeImage(index),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                              ),
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(width: 11),
+                              itemCount: _selectedImages.length,
+                            ),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: _pickImageFromGallery,
+                              icon: const Icon(CupertinoIcons.camera),
+                            ),
+                            if (_isUploading)
+                              Expanded(
+                                child: LinearProgressIndicator(
+                                  value: _uploadProgress,
+                                  backgroundColor: Colors.grey[300],
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(mRed),
+                                ),
+                              )
+                            else
+                              const Spacer(),
+                            IconButton(
+                              onPressed: _isUploading ? null : _postReview,
+                              icon: Icon(
+                                Icons.send,
+                                color: _isUploading ? Colors.grey : mRed,
                               ),
                             ),
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(width: 11),
-                            itemCount: _selectedImages.length,
-                          ),
+                          ],
                         ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: _pickImageFromGallery,
-                            icon: const Icon(CupertinoIcons.camera),
-                          ),
-                          if (_isUploading)
-                            Expanded(
-                              child: LinearProgressIndicator(
-                                value: _uploadProgress,
-                                backgroundColor: Colors.grey[300],
-                                valueColor: AlwaysStoppedAnimation<Color>(mRed),
-                              ),
-                            )
-                          else
-                            const Spacer(),
-                          IconButton(
-                            onPressed: _isUploading ? null : _postReview,
-                            icon: Icon(
-                              Icons.send,
-                              color: _isUploading ? Colors.grey : mRed,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          child: ReviewComponent(
-            propertyId: widget.propertyId,
-            refreshTrigger: refreshStream,
+          Expanded(
+            child: ReviewComponent(
+              propertyId: widget.propertyId,
+              refreshTrigger: refreshStream,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

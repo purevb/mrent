@@ -238,8 +238,8 @@ class _ReviewComponentState extends State<ReviewComponent> {
                               comment.comment?[0].images?.length ?? 0,
                               (imgIndex) {
                                 return SizedBox(
-                                  height: 80,
-                                  width: 80,
+                                  height: 60,
+                                  width: 60,
                                   child: CachedNetworkImage(
                                     imageUrl:
                                         comment.comment?[0].images?[imgIndex] ??

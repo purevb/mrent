@@ -27,9 +27,9 @@ class MapSampleState extends State<MapComponent> {
 
     _markers = {
       Marker(
-        markerId: const MarkerId('custom_location'),
+        markerId: const MarkerId('loc'),
         position: LatLng(widget.latitude, widget.longitude),
-        infoWindow: const InfoWindow(title: 'My Location'),
+        infoWindow: const InfoWindow(title: 'location'),
       ),
     };
 
@@ -47,7 +47,7 @@ class MapSampleState extends State<MapComponent> {
 
     return Scaffold(
       body: GoogleMap(
-        mapType: MapType.terrain,
+        mapType: MapType.satellite,
         initialCameraPosition: initialPosition,
         markers: _markers,
         onMapCreated: (GoogleMapController controller) {

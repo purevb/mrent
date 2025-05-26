@@ -20,10 +20,10 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({this.user, this.id, super.key});
+  NavigationPage({this.user, this.id, super.key});
   final String? id;
   final MongoUserModel? user;
-
+  final Key _mapKey = UniqueKey();
   @override
   State<NavigationPage> createState() => _NavigationPageState();
 }
@@ -119,9 +119,9 @@ class _NavigationPageState extends State<NavigationPage> {
                 ),
                 CustomizeMap(
                   refresh: _refreshData,
-                  key: mapKey,
+                  key: widget._mapKey,
                   propertyData: propertyData ?? [],
-                  hasFloatButton: false,
+                  hasFloatButton: true,
                   hasAppBar: true,
                 ),
                 RentChecker(

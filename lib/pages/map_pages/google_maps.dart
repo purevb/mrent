@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:focus_detector/focus_detector.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mrent/components/carousel_slider.dart';
@@ -38,12 +40,14 @@ class MapSampleState extends State<CustomizeMap>
   late final CustomInfoWindowController customInfoWindowController;
   late final TextEditingController searchController;
   late final ScrollController _scrollController;
-
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
   LatLng _selectedLocation = const LatLng(47.921230, 106.918556);
   String _selectedAddress = "";
   bool _isLoading = false;
+  bool _isLocating = false;
   PropertyModel? _selectedProperty;
   int currentIndex = 0;
   String searchText = "";
@@ -73,6 +77,109 @@ class MapSampleState extends State<CustomizeMap>
           _addPropertyMarkers();
         }
       });
+    }
+  }
+
+  Future<void> _goToMyLocation() async {
+    if (_isLocating) return;
+
+    setState(() {
+      _isLocating = true;
+    });
+
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'Байршлын үйлчилгээ идэвхгүй байна. Тохиргооноос нээнэ үү.'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Байршлын зөвшөөрөл хэрэгтэй байна.'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Байршлын зөвшөөрлийг тохиргооноос нээнэ үү.'),
+              duration: Duration(seconds: 3),
+              action: SnackBarAction(
+                label: 'Тохиргоо',
+                onPressed: Geolocator.openAppSettings,
+              ),
+            ),
+          );
+        }
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
+      );
+
+      if (_mapController == null) {
+        final GoogleMapController controller = await _controller.future;
+        _mapController = controller;
+      }
+
+      if (_mapController != null && mounted) {
+        await _mapController!.animateCamera(
+          CameraUpdate.newLatLngZoom(
+            LatLng(position.latitude, position.longitude),
+            16.0,
+          ),
+        );
+
+        _updateSelectedLocation(LatLng(position.latitude, position.longitude));
+      }
+    } catch (e) {
+      debugPrint("Error getting location: $e");
+      if (mounted) {
+        String errorMessage = 'Байршил олж чадсангүй.';
+
+        if (e is TimeoutException) {
+          errorMessage = 'Байршил олоход хугацаа дууссан. Дахин оролдоно уу.';
+        } else if (e is LocationServiceDisabledException) {
+          errorMessage = 'Байршлын үйлчилгээ идэвхгүй байна.';
+        } else if (e is PermissionDeniedException) {
+          errorMessage = 'Байршлын зөвшөөрөл хэрэгтэй.';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLocating = false;
+        });
+      }
     }
   }
 
@@ -674,6 +781,7 @@ class MapSampleState extends State<CustomizeMap>
                 _mapCreated = true;
 
                 _mapController = controller;
+                _controller.complete(controller);
                 customInfoWindowController.googleMapController = controller;
                 Future.delayed(const Duration(milliseconds: 300), () {
                   if (mounted && _mapController != null) {
@@ -696,7 +804,11 @@ class MapSampleState extends State<CustomizeMap>
                 bottom: widget.hasFloatButton ? 100 : 0,
               ),
             ),
-            if (_isLoading) const Center(child: CircularProgressIndicator()),
+            if (_isLoading)
+              Center(
+                  child: CircularProgressIndicator(
+                color: mRed,
+              )),
             CustomInfoWindow(
               controller: customInfoWindowController,
               height: 220,
@@ -705,6 +817,24 @@ class MapSampleState extends State<CustomizeMap>
             ),
           ],
         ),
+        floatingActionButton: widget.hasFloatButton
+            ? FloatingActionButton(
+                onPressed: _isLocating ? null : _goToMyLocation,
+                backgroundColor: _isLocating ? Colors.grey : null,
+                child: _isLocating
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Icon(Icons.my_location),
+              )
+            : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }

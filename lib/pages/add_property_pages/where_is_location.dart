@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/pages/add_property_pages/add_property_photo.dart';
+import 'package:mrent/pages/add_property_pages/component/map_province_chooser.dart';
 import 'package:mrent/pages/map_pages/google_maps.dart';
 import 'package:mrent/utils/constants.dart';
 
@@ -26,6 +27,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
   DataController dataController = DataController();
   String _selectedAddress = "";
   String? _selectedProvince;
+  String? _selectedProvinceName; // Add this to store province name
 
   @override
   void initState() {
@@ -37,6 +39,15 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
     if (value != null) {
       setState(() {
         _selectedProvince = value;
+
+        final provinceData = dataController.proviceNotifier.value;
+        if (provinceData != null) {
+          final selectedProvinceObj = provinceData.firstWhere(
+            (province) => province.id == value,
+          );
+          _selectedProvinceName = selectedProvinceObj.provinceName;
+          print(_selectedProvinceName);
+        }
       });
     }
   }
@@ -150,7 +161,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                         Expanded(
                           child: Text(
                             _selectedAddress.isEmpty
-                                ? "Байршилaa сонгоно уу."
+                                ? "Байршлaa сонгоно уу."
                                 : _selectedAddress,
                             style: GoogleFonts.inter(fontSize: 16),
                           ),
@@ -167,9 +178,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                           children: [
                             SizedBox(
                               height: height * 0.43,
-                              child: CustomizeMap(
-                                hasFloatButton: true,
-                                hasAppBar: false,
+                              child: MapProvinceChooser(
                                 onLocationSelected:
                                     (LatLng location, String address) {
                                   setState(() {
@@ -177,6 +186,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                                     _selectedAddress = address;
                                   });
                                 },
+                                provinceName: _selectedProvinceName,
                               ),
                             ),
                             Container(
@@ -185,7 +195,7 @@ class _WhereIsLocationState extends State<WhereIsLocation> {
                               child: Center(
                                 child: Text(
                                   _selectedAddress.isEmpty
-                                      ? "Байршилaa сонго."
+                                      ? "Байршлaa сонго."
                                       : _selectedAddress,
                                   style: GoogleFonts.inter(fontSize: 16),
                                 ),

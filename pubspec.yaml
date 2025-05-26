@@ -69,11 +69,12 @@ dependencies:
   path: ^1.9.1
   lottie: ^3.3.1
   focus_detector: ^2.0.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   fl_chart: ^0.71.0
   flutter_keyboard_visibility: ^6.0.0
   url_launcher: ^6.3.1
   flutter_rating_stars: ^1.1.0
+  geolocator: ^14.0.0
 
 dev_dependencies:
   flutter_test:

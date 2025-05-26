@@ -540,7 +540,7 @@ class _EarningPageState extends State<EarningPage>
                               ),
                             );
                           },
-                          reservedSize: 40,
+                          reservedSize: 60,
                         ),
                       ),
                       rightTitles:
@@ -560,7 +560,7 @@ class _EarningPageState extends State<EarningPage>
                         color: mRed,
                         barWidth: 3,
                         isStrokeCapRound: true,
-                        dotData: FlDotData(show: false),
+                        dotData: const FlDotData(show: true),
                         belowBarData: BarAreaData(
                           show: true,
                           color: mRed.withOpacity(0.1),

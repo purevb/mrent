@@ -368,6 +368,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
               Expanded(
                 child: TextField(
                   controller: rentController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     errorText: _validate ? "Бүрэн бөглөнө үү." : null,
                     hintText: hint,

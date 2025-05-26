@@ -26,7 +26,7 @@ class _RentedPropertyState extends State<RentedProperty> {
     return Container(
       margin: const EdgeInsets.only(right: 20),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      height: 250,
+      height: 280,
       width: width,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -61,6 +61,7 @@ class _RentedPropertyState extends State<RentedProperty> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                  maxLines: 2,
                   widget.bookingdata.propertyId?.propertyName.toString() ?? "",
                   style: GoogleFonts.inter(
                     fontSize: 16,
@@ -69,7 +70,7 @@ class _RentedPropertyState extends State<RentedProperty> {
                 ),
                 Text(
                   widget.bookingdata.propertyId?.description.toString() ?? "",
-                  maxLines: 4,
+                  maxLines: 2,
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,

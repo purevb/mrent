@@ -251,7 +251,6 @@ class AuthService {
     Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => const NavigationPage()));
+        MaterialPageRoute(builder: (BuildContext context) => NavigationPage()));
   }
 }

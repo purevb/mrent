@@ -425,7 +425,7 @@ class _AddPropertyPhotoState extends State<AddPropertyPhoto> {
                               ],
                             )
                           : Text(
-                              "Next",
+                              "Дараах",
                               style: GoogleFonts.inter(
                                 fontSize: 18,
                                 color: Colors.white,

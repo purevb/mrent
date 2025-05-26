@@ -33,7 +33,7 @@ class PropertyProvider extends ChangeNotifier {
   void toggleFavorite(String userId, PropertyModel property) {
     final propertyId = property.id ?? "";
     if (propertyId.isEmpty) {
-      log("Property ID is empty");
+      log("Id null");
       return;
     }
 
@@ -42,26 +42,26 @@ class PropertyProvider extends ChangeNotifier {
         if (res == "200") {
           favoriteProperties.removeWhere((p) => p.id == propertyId);
           favoritePropertyIds.removeWhere((id) => id == propertyId);
-          log("Property removed from favorites");
+          log("removed");
           notifyListeners();
         } else {
-          log("Error removing from favorites: $res");
+          log("aldaa: $res");
         }
       }).catchError((error) {
-        log("Exception when removing favorite: $error");
+        log("$error");
       });
     } else {
       api.postFavorites(userId, propertyId).then((res) {
         if (res == "201") {
           favoriteProperties.add(property);
           favoritePropertyIds.add(propertyId);
-          log("Property added to favorites");
+          log("added");
           notifyListeners();
         } else {
-          log("Error adding to favorites: $res");
+          log("aldaa: $res");
         }
       }).catchError((error) {
-        log("Exception when adding favorite: $error");
+        log("$error");
       });
     }
   }

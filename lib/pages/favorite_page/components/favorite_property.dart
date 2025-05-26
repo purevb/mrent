@@ -153,19 +153,19 @@ class _FavoritePropertyState extends State<FavoriteProperty> {
                             fontSize: 10, color: Colors.black),
                         children: [
                           TextSpan(
-                            text: '₮',
-                            style: GoogleFonts.inter(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextSpan(
                             text: widget.propertyData.nightlyPrice.toString(),
                             style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '₮',
+                            style: GoogleFonts.inter(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           TextSpan(

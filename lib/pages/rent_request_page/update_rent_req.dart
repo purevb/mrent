@@ -159,7 +159,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${widget.booking.propertyId?.nightlyPrice ?? 0}₮ / өдөр',
+                                '${formatPoint(widget.booking.propertyId?.nightlyPrice ?? 0)}₮ / өдөр',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: mRed,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/model/property_model.dart';
+import 'package:mrent/utils/constants.dart';
 
 class HorizontalProperty extends StatelessWidget {
   const HorizontalProperty({
@@ -74,7 +75,7 @@ class HorizontalProperty extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "₮${propertyData.nightlyPrice.toString()}",
+                    "${formatPoint(propertyData.nightlyPrice ?? 0)}₮",
                     style: GoogleFonts.inter(
                       fontSize: 19,
                       fontWeight: FontWeight.w600,

@@ -85,7 +85,7 @@ class _TotalPriceComponentState extends State<TotalPriceComponent> {
           Text(text),
           const Spacer(),
           Text(
-            "${price.toString()}₮",
+            "${formatPoint(price)}₮",
           ),
         ],
       ),

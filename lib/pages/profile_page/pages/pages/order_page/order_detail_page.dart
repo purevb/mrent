@@ -113,7 +113,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               height: 10,
             ),
             Text(
-              "₮${widget.orderData.totalPrice}",
+              "${formatPoint(widget.orderData.totalPrice ?? 0)}₮",
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.w400,
                 fontSize: 18,

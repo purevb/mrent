@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/components/carousel_slider.dart';
 import 'package:mrent/model/order_model.dart';
+import 'package:mrent/utils/constants.dart';
 
 class RentedComponent extends StatelessWidget {
   const RentedComponent({
@@ -90,7 +91,7 @@ class RentedComponent extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "₮${bookingData.totalPrice.toString()}",
+                    "${formatPoint(bookingData.totalPrice ?? 0)}₮",
                     style: GoogleFonts.inter(
                       fontSize: 19,
                       fontWeight: FontWeight.w600,

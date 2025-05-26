@@ -59,14 +59,14 @@ class BottomBookingBar extends StatelessWidget {
                     style: GoogleFonts.inter(fontSize: 10, color: Colors.black),
                     children: [
                       TextSpan(
-                        text: '₮',
+                        text: propertyData.nightlyPrice.toString(),
                         style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 20,
                         ),
                       ),
                       TextSpan(
-                        text: propertyData.nightlyPrice.toString(),
+                        text: '₮',
                         style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 20,

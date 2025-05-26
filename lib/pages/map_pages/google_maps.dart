@@ -518,7 +518,7 @@ class MapSampleState extends State<CustomizeMap>
                 const Text('5'),
                 const Spacer(),
                 Text(
-                  '${property.nightlyPrice} MNT / night',
+                  '${property.nightlyPrice} MNT / өдөр',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],

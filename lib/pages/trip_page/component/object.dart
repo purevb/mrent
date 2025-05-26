@@ -118,7 +118,8 @@ class _TheObjectState extends State<TheObject> {
                 const SizedBox(
                   height: 5,
                 ),
-                nightlyPrice("₮${widget.propertyData.nightlyPrice} өдөрт"),
+                nightlyPrice(
+                    "${formatPoint(widget.propertyData.nightlyPrice ?? 0)}₮ өдөрт"),
               ],
             ),
           ),

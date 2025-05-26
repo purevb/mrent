@@ -117,7 +117,7 @@ class _RentedPropertyState extends State<RentedProperty> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "₮${widget.bookingdata.totalPrice.toString()}",
+                    "${formatPoint(widget.bookingdata.totalPrice ?? 0)}₮",
                     style: GoogleFonts.inter(
                       fontSize: 19,
                       fontWeight: FontWeight.w600,

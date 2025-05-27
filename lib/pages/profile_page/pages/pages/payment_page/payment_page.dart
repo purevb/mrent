@@ -246,7 +246,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   try {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Deleting payment...'),
+                                        content: Text('Төлөлт устгаж байна...'),
                                         duration: Duration(seconds: 1),
                                       ),
                                     );
@@ -266,8 +266,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
-                                            content: Text(
-                                                'Payment deleted successfully'),
+                                            content: Text('Төлөлт  устсан'),
                                             backgroundColor: Colors.green,
                                           ),
                                         );

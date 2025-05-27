@@ -64,9 +64,8 @@ class _BookingPageState extends State<BookingPage> {
 
   int getSelectedDaysDifference() {
     if (_firstSelectedDay != null && _secondSelectedDay != null) {
-      return _secondSelectedDay!.difference(_firstSelectedDay!).inDays;
+      return _secondSelectedDay!.difference(_firstSelectedDay!).inDays + 1;
     } else if (_firstSelectedDay != null) {
-      // Single day selected - default to 1 day
       return 1;
     }
     return 0;
@@ -134,7 +133,6 @@ class _BookingPageState extends State<BookingPage> {
                         setState(() {
                           _firstSelectedDay = start;
                           if (end == null) {
-                            // Single day selected - set checkout to next day
                             _secondSelectedDay = start.add(Duration(days: 1));
                           } else {
                             _secondSelectedDay = end;
@@ -166,10 +164,18 @@ class _BookingPageState extends State<BookingPage> {
                           );
                           return;
                         }
-
-                        // Ensure we have a checkout date
                         DateTime checkoutDate = _secondSelectedDay ??
-                            _firstSelectedDay!.add(Duration(days: 1));
+                            _firstSelectedDay!.add(const Duration(days: 1));
+                        print('--- Booking Request Data ---');
+                        print('Property ID: ${widget.propertyData.id ?? ""}');
+                        print('User ID: ${provider.getUser?.id ?? ""}');
+                        print(
+                            'Host ID: ${widget.propertyData.userId?.id ?? ""}');
+                        print(
+                            'Additional Request: ${additionalRequestController.text}');
+                        print('Check-in Date: $_firstSelectedDay');
+                        print('Checkout Date: $checkoutDate');
+                        print('Total Price: ${calculateTotalPayment()}');
 
                         api
                             .postBookingRequest(

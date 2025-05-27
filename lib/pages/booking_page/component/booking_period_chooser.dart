@@ -354,15 +354,13 @@ class _BookingPeriodChooserComponentState
             onDaySelected: (selectedDay, focusedDay) {
               setState(() {
                 if (_rangeStart == null) {
-                  // First selection - start of range
                   _selectedDay = null;
                   _rangeStart = selectedDay;
                   _rangeEnd = null;
                   _focusedDay = focusedDay;
-                  // Call callback with single day
+
                   widget.onDatesSelected(selectedDay, null);
                 } else if (_rangeEnd == null) {
-                  // Second selection - end of range or same day
                   if (selectedDay.isAfter(_rangeStart!) ||
                       selectedDay.isAtSameMomentAs(_rangeStart!)) {
                     _rangeEnd = selectedDay;
@@ -379,13 +377,11 @@ class _BookingPeriodChooserComponentState
                       _rangeEnd = null;
                     }
                   } else {
-                    // Selected earlier date, make it the new start
                     _rangeStart = selectedDay;
                     _rangeEnd = null;
                     widget.onDatesSelected(selectedDay, null);
                   }
                 } else {
-                  // Reset selection
                   _rangeStart = selectedDay;
                   _rangeEnd = null;
                   widget.onDatesSelected(selectedDay, null);
@@ -414,7 +410,6 @@ class _BookingPeriodChooserComponentState
                     _rangeEnd = null;
                   }
                 } else if (start != null) {
-                  // Single day selected via range selection
                   widget.onDatesSelected(start, null);
                 }
               });

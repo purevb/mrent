@@ -5,6 +5,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
@@ -43,87 +44,94 @@ class _TheObjectState extends State<TheObject> {
     final provider = Provider.of<PropertyProvider>(context, listen: true);
     // double height = MediaQuery.of(context).size.height;
 
-    return Container(
-      margin: const EdgeInsets.only(
-        top: 20,
-        left: 20,
-        right: 20,
-      ),
-      padding: const EdgeInsets.only(
-        bottom: 10,
-      ),
-      width: width,
-      // height: 440,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: textDefaultColor.withOpacity(0.2),
-            blurRadius: 3,
-            offset: const Offset(
-              0,
-              0.5,
+    return FocusDetector(
+      onFocusGained: () {
+        dataController.getRatingData(widget.propertyData.id ?? "");
+      },
+      child: Container(
+        margin: const EdgeInsets.only(
+          top: 20,
+          left: 20,
+          right: 20,
+        ),
+        padding: const EdgeInsets.only(
+          bottom: 10,
+        ),
+        width: width,
+        // height: 440,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              // ignore: deprecated_member_use
+              color: textDefaultColor.withOpacity(0.2),
+              blurRadius: 3,
+              offset: const Offset(
+                0,
+                0.5,
+              ),
             ),
-          ),
-        ],
-      ),
-      child: Column(
-        spacing: 5,
-        children: [
-          carouselImages(width, widget.propertyData.images, 360, provider),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  spacing: 4,
-                  children: [
-                    title(widget.propertyData.propertyName ?? ""),
-                    const Spacer(),
-                    const Icon(
-                      CupertinoIcons.star_fill,
-                      size: 15,
-                    ),
-                    ValueListenableBuilder(
-                        valueListenable: dataController.propertyRatingNotifier,
-                        builder: (context, ratingData, child) {
-                          if (ratingData == null) {
-                            return Shimmer.fromColors(
-                              // ignore: deprecated_member_use
-                              baseColor: Colors.grey.withOpacity(0.2),
-                              highlightColor: Colors.white,
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 2),
-                                height: 20,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.amber,
+          ],
+        ),
+        child: Column(
+          spacing: 5,
+          children: [
+            carouselImages(width, widget.propertyData.images, 360, provider),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    spacing: 4,
+                    children: [
+                      title(widget.propertyData.propertyName ?? ""),
+                      const Spacer(),
+                      const Icon(
+                        CupertinoIcons.star_fill,
+                        size: 15,
+                      ),
+                      ValueListenableBuilder(
+                          valueListenable:
+                              dataController.propertyRatingNotifier,
+                          builder: (context, ratingData, child) {
+                            if (ratingData == null) {
+                              return Shimmer.fromColors(
+                                // ignore: deprecated_member_use
+                                baseColor: Colors.grey.withOpacity(0.2),
+                                highlightColor: Colors.white,
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 2),
+                                  height: 20,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    color: Colors.amber,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                          return rating(ratingData.averageRating ?? 0);
-                        }),
-                  ],
-                ),
-                description(widget.propertyData.propertyTypeId?.typeName ?? ""),
-                description(
-                    widget.propertyData.placeTypeId?.provinceName ?? ""),
-                description(widget.propertyData.description ?? ""),
-                const SizedBox(
-                  height: 5,
-                ),
-                nightlyPrice(
-                    "${formatPoint(widget.propertyData.nightlyPrice ?? 0)}₮ өдөрт"),
-              ],
+                              );
+                            }
+                            return rating(ratingData.averageRating ?? 0);
+                          }),
+                    ],
+                  ),
+                  description(
+                      widget.propertyData.propertyTypeId?.typeName ?? ""),
+                  description(
+                      widget.propertyData.placeTypeId?.provinceName ?? ""),
+                  description(widget.propertyData.description ?? ""),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  nightlyPrice(
+                      "${formatPoint(widget.propertyData.nightlyPrice ?? 0)}₮ өдөрт"),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

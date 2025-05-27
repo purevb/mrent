@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mrent/controller/data_controller.dart';
 import 'package:mrent/core/services/api.dart';
 import 'package:mrent/model/mongo_user_model.dart';
-import 'package:mrent/model/property_model.dart';
 import 'package:mrent/model/rented_properties_model.dart';
 import 'package:mrent/pages/property_detail_page/property_detail_page.dart';
 import 'package:mrent/pages/rent_history_page/component/rented_property.dart';
@@ -26,40 +25,40 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
   bool onSearch = false;
   int currentIndex = 0;
   final ScrollController _scrollController = ScrollController();
-  DataController dataController = DataController();
+  final DataController dataController = DataController();
   final FocusNode _focusNode = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
+  final Api api = Api();
+
   String selectedType = "Бүгд";
   List<RentedPropertiesModel> bookingData = [];
-  List<PropertyModel> properties = [];
-  Api api = Api();
+  List<RentedPropertiesModel> _foundersBookings = [];
 
   @override
   void initState() {
     super.initState();
-    dataController.getRentedPropertiesData(widget.user.id ?? "");
+    _initializeData();
     _focusNode.addListener(_onFocusChange);
-    dataController.getPropertyTypeDatas();
-
-    dataController.rentedPropertiesNotifier.addListener(_updatePropertyList);
+    dataController.rentedPropertiesNotifier.addListener(_updateBookingList);
   }
 
-  void _updatePropertyList() {
-    if (dataController.rentedPropertiesNotifier.value != null) {
+  Future<void> _initializeData() async {
+    await dataController.getRentedPropertiesData(widget.user.id ?? "");
+    await dataController.getPropertyTypeDatas();
+  }
+
+  void _updateBookingList() {
+    final rentedProperties = dataController.rentedPropertiesNotifier.value;
+    if (rentedProperties != null && mounted) {
       setState(() {
-        bookingData = List.from(dataController.rentedPropertiesNotifier.value!);
-        properties = bookingData
-            .where((booking) =>
-                booking.bookingId != null &&
-                booking.bookingId!.propertyId != null)
-            .map((booking) => booking.bookingId!.propertyId!)
-            .toList();
+        bookingData = List.from(rentedProperties);
       });
     }
   }
 
   @override
   void dispose() {
-    dataController.rentedPropertiesNotifier.removeListener(_updatePropertyList);
+    dataController.rentedPropertiesNotifier.removeListener(_updateBookingList);
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
     _searchController.dispose();
@@ -67,19 +66,18 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
     super.dispose();
   }
 
-  final TextEditingController _searchController = TextEditingController();
-  List<PropertyModel> _founders = [];
-
   void _runFilter(String enteredKeyword) {
-    List<PropertyModel> results = [];
-    if (properties.isNotEmpty) {
+    if (!mounted) return;
+
+    List<RentedPropertiesModel> results = [];
+    if (bookingData.isNotEmpty) {
       if (enteredKeyword.isEmpty) {
-        results = properties;
+        results = bookingData;
       } else {
-        results = properties
-            .where((property) =>
-                property.propertyName != null &&
-                property.propertyName!
+        results = bookingData
+            .where((booking) =>
+                booking.bookingId?.propertyId?.propertyName != null &&
+                booking.bookingId!.propertyId!.propertyName!
                     .toLowerCase()
                     .contains(enteredKeyword.toLowerCase()))
             .toList();
@@ -87,32 +85,35 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
     }
 
     setState(() {
-      _founders = results;
+      _foundersBookings = results;
     });
   }
 
-  List<PropertyModel> _getFilteredProperties() {
+  List<RentedPropertiesModel> _getFilteredBookings() {
     if (selectedType.isEmpty || selectedType == "Бүгд") {
-      return properties;
+      return bookingData;
     }
 
-    return properties
-        .where((property) =>
-            property.propertyTypeId != null &&
-            property.propertyTypeId!.typeName == selectedType)
+    return bookingData
+        .where((booking) =>
+            booking.bookingId?.propertyId?.propertyTypeId?.typeName ==
+            selectedType)
         .toList();
   }
 
   void _onFocusChange() {
-    if (!_focusNode.hasFocus && onSearch) {
+    if (!_focusNode.hasFocus && onSearch && mounted) {
       setState(() {
         onSearch = false;
-        _founders = [];
+        _foundersBookings = [];
+        _searchController.clear();
       });
     }
   }
 
   void _scrollToIndex(int index) {
+    if (!_scrollController.hasClients) return;
+
     const itemWidth = 150.0;
     final screenWidth = MediaQuery.of(context).size.width;
     const padding = 10.0;
@@ -130,10 +131,11 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
   }
 
   Future<void> _refresh() async {
-    dataController.getRentedPropertiesData(widget.user.id ?? "");
-    _focusNode.addListener(_onFocusChange);
-    dataController.getPropertyTypeDatas();
-    dataController.rentedPropertiesNotifier.addListener(_updatePropertyList);
+    try {
+      await _initializeData();
+    } catch (e) {
+      debugPrint('Error refreshing data: $e');
+    }
   }
 
   String getIconPath(String typeName) {
@@ -153,27 +155,45 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
     }
   }
 
+  Future<void> _deleteRentedProperty(
+      RentedPropertiesModel correspondingOrder) async {
+    try {
+      final result = await api.deleteRentedProperyHistory(
+        bookingId: correspondingOrder.bookingId?.id ?? "",
+        userId: widget.user.id ?? "",
+      );
+
+      if (result == 200 && mounted) {
+        final currentList = dataController.rentedPropertiesNotifier.value;
+        if (currentList != null) {
+          final newList = List<RentedPropertiesModel>.from(currentList);
+          newList.removeWhere((booking) =>
+              booking.bookingId?.id == correspondingOrder.bookingId?.id);
+          dataController.rentedPropertiesNotifier.value = newList;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error deleting rented property: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    final displayItems = (onSearch && _founders.isNotEmpty)
-        ? _founders
-        : _getFilteredProperties();
+    final size = MediaQuery.of(context).size;
+    final displayItems = (onSearch && _foundersBookings.isNotEmpty)
+        ? _foundersBookings
+        : _getFilteredBookings();
 
     return FocusDetector(
-      onFocusGained: () {
-        _refresh();
-      },
+      onFocusGained: _refresh,
       child: Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
           backgroundColor: backgroundColor,
-          // ignore: deprecated_member_use
           shadowColor: Colors.black.withOpacity(0.5),
           elevation: 1,
           automaticallyImplyLeading: false,
-          title: onSearch == false ? const Text("Түрээсэлсэн") : const Text(""),
+          title: onSearch ? null : const Text("Түрээсэлсэн"),
           centerTitle: true,
           actions: [
             AnimatedContainer(
@@ -184,11 +204,11 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
               ),
               curve: Curves.linear,
               duration: const Duration(milliseconds: 300),
-              width: onSearch == false ? 56 : width - 40,
+              width: onSearch ? size.width - 40 : 56,
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(onSearch ? 12 : 28),
-                color: onSearch == false ? Colors.grey.shade200 : Colors.white,
+                color: onSearch ? Colors.white : Colors.grey.shade200,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -200,15 +220,13 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                         if (onSearch) {
                           _focusNode.requestFocus();
                         } else {
-                          _founders = [];
+                          _foundersBookings = [];
                           _searchController.clear();
                         }
                       });
                     },
                     icon: Icon(
-                      onSearch == false
-                          ? CupertinoIcons.search
-                          : CupertinoIcons.xmark,
+                      onSearch ? CupertinoIcons.xmark : CupertinoIcons.search,
                       color: Colors.black87,
                     ),
                   ),
@@ -217,10 +235,8 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                       child: TextField(
                         controller: _searchController,
                         focusNode: _focusNode,
-                        onChanged: (value) => _runFilter(value),
-                        onSubmitted: (value) {
-                          _runFilter(value);
-                        },
+                        onChanged: _runFilter,
+                        onSubmitted: _runFilter,
                         decoration: const InputDecoration(
                           hintText: 'Хайх...',
                           border: InputBorder.none,
@@ -245,109 +261,97 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                       baseColor: Colors.grey.withOpacity(0.2),
                       highlightColor: Colors.white,
                       child: ListView.separated(
-                        padding: const EdgeInsets.only(
-                          left: 20,
-                        ),
+                        padding: const EdgeInsets.only(left: 20),
                         scrollDirection: Axis.horizontal,
                         itemCount: 5,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Row(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                height: 30,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                ),
-                              )
-                            ],
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            height: 30,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
                           );
                         },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const SizedBox(
-                            width: 5,
-                          );
-                        },
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 5),
                       ),
                     ),
                   );
-                } else {
-                  final allTypes = [
-                    ...propertyTypeData,
-                  ];
-
-                  return SizedBox(
-                    height: 55,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.only(left: 20),
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        final typeName = index == 0
-                            ? "Бүгд"
-                            : allTypes[index - 1].typeName ?? "";
-
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedType = typeName;
-                              currentIndex = index;
-                              if (onSearch) {
-                                _focusNode.requestFocus();
-                              }
-                            });
-                            _scrollToIndex(index);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 5, bottom: 5),
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  height: 20,
-                                  fit: BoxFit.contain,
-                                  color: textDefaultColor,
-                                  getIconPath(typeName),
-                                ),
-                                Text(
-                                  typeName,
-                                  style: GoogleFonts.inter(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  switchInCurve: Easing.legacy,
-                                  child: currentIndex == index
-                                      ? Container(
-                                          width: 40,
-                                          key: ValueKey<int>(index),
-                                          height: 2,
-                                          decoration: BoxDecoration(
-                                            color: mRed,
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: allTypes.length + 1,
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(
-                          width: 5,
-                        );
-                      },
-                    ),
-                  );
                 }
+
+                final allTypes = [...propertyTypeData];
+
+                return SizedBox(
+                  height: 55,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.only(left: 20),
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: allTypes.length + 1,
+                    itemBuilder: (context, index) {
+                      final typeName = index == 0
+                          ? "Бүгд"
+                          : allTypes[index - 1].typeName ?? "";
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedType = typeName;
+                            currentIndex = index;
+                          });
+                          _scrollToIndex(index);
+                          if (onSearch) {
+                            _focusNode.requestFocus();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                getIconPath(typeName),
+                                height: 20,
+                                fit: BoxFit.contain,
+                                color: textDefaultColor,
+                              ),
+                              Text(
+                                typeName,
+                                style: GoogleFonts.inter(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                switchInCurve: Easing.legacy,
+                                child: currentIndex == index
+                                    ? Container(
+                                        key: ValueKey<int>(index),
+                                        width: 40,
+                                        height: 2,
+                                        decoration: BoxDecoration(
+                                          color: mRed,
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 5),
+                  ),
+                );
               },
             ),
           ),
@@ -359,32 +363,24 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
             physics: const AlwaysScrollableScrollPhysics(),
             child: ValueListenableBuilder(
               valueListenable: dataController.rentedPropertiesNotifier,
-              builder: (BuildContext context, value, Widget? child) {
+              builder: (context, value, child) {
                 if (value == null) {
                   return const ShimmerForRentHistory();
                 }
 
-                if (properties.isEmpty && value.isNotEmpty) {
-                  Future.microtask(() {
-                    setState(() {
-                      bookingData = List.from(value);
-                      properties = bookingData
-                          .where((booking) =>
-                              booking.bookingId != null &&
-                              booking.bookingId!.propertyId != null)
-                          .map((booking) => booking.bookingId!.propertyId!)
-                          .toList();
-                    });
+                if (bookingData.isEmpty && value.isNotEmpty) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _updateBookingList();
                   });
                 }
 
                 if (displayItems.isEmpty) {
                   return SizedBox(
-                    height: height - 185,
+                    height: size.height - 185,
                     child: Center(
                       child: Text(
                         onSearch
-                            ? "Хайлтад тохирох сууц олдсонгүй."
+                            ? "Хайлтад тохирох захиалга олдсонгүй."
                             : "Танд одоогоор түрээсэлсэн сууц алга байна.",
                         style: GoogleFonts.inter(
                           color: textDefaultColor,
@@ -402,18 +398,16 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                   ),
                   child: ListView.separated(
                     shrinkWrap: true,
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                    ),
+                    padding: const EdgeInsets.only(top: 10),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      final currentProperty = displayItems[index];
-                      final correspondingOrder = bookingData.firstWhere(
-                        (booking) =>
-                            booking.bookingId?.propertyId?.id ==
-                            currentProperty.id,
-                        orElse: () => bookingData.first,
-                      );
+                    itemCount: displayItems.length,
+                    itemBuilder: (context, index) {
+                      final reversedIndex = displayItems.length - index - 1;
+                      final currentBooking = displayItems[reversedIndex];
+
+                      if (currentBooking.bookingId?.propertyId == null) {
+                        return const SizedBox.shrink();
+                      }
 
                       return GestureDetector(
                         onTap: () {
@@ -421,7 +415,8 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PropertyDetailPage(
-                                propertyData: currentProperty,
+                                propertyData:
+                                    currentBooking.bookingId!.propertyId!,
                               ),
                             ),
                           );
@@ -433,56 +428,30 @@ class _RentHistoryPageState extends State<RentHistoryPage> {
                             children: [
                               CustomSlidableAction(
                                 padding: EdgeInsets.zero,
-                                onPressed: (context) async {
-                                  await api
-                                      .deleteRentedProperyHistory(
-                                    bookingId:
-                                        correspondingOrder.bookingId?.id ?? "",
-                                    userId: widget.user.id ?? "",
-                                  )
-                                      .then((value) {
-                                    if (value == 200) {
-                                      final newList =
-                                          List<RentedPropertiesModel>.from(
-                                              dataController
-                                                      .rentedPropertiesNotifier
-                                                      .value ??
-                                                  []);
-                                      newList.removeWhere((booking) =>
-                                          booking.bookingId?.id ==
-                                          correspondingOrder.bookingId?.id);
-
-                                      dataController.rentedPropertiesNotifier
-                                          .value = newList;
-                                    }
-                                  });
-                                },
+                                onPressed: (context) =>
+                                    _deleteRentedProperty(currentBooking),
                                 backgroundColor: const Color(0xffFF2761),
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(12),
                                   bottomLeft: Radius.circular(12),
                                 ),
                                 child: Image.asset(
+                                  "assets/trash.png",
                                   height: 50,
                                   width: 50,
                                   fit: BoxFit.fill,
-                                  "assets/trash.png",
                                 ),
                               ),
                             ],
                           ),
                           child: RentedProperty(
-                            bookingdata: correspondingOrder.bookingId!,
+                            bookingdata: currentBooking.bookingId!,
                           ),
                         ),
                       );
                     },
-                    itemCount: displayItems.length,
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(
-                        height: 10,
-                      );
-                    },
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
                   ),
                 );
               },

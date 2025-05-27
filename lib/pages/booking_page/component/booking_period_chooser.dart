@@ -498,7 +498,7 @@ class _BookingPeriodChooserComponentState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Дуусх огноо сонгоно уу",
+                          "Дуусaх огноо сонгоно уу",
                           style: GoogleFonts.inter(
                             color: Colors.grey,
                             fontWeight: FontWeight.w400,

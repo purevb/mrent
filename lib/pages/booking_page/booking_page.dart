@@ -16,6 +16,7 @@ import 'package:mrent/pages/booking_page/component/total_price.dart';
 import 'package:mrent/providers/property_provider.dart';
 import 'package:mrent/utils/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({required this.propertyData, super.key});
@@ -63,8 +64,15 @@ class _BookingPageState extends State<BookingPage> {
   int serviceFee = 20000;
 
   int getSelectedDaysDifference() {
+    print(_firstSelectedDay.toString());
+    print(_secondSelectedDay.toString());
+
     if (_firstSelectedDay != null && _secondSelectedDay != null) {
-      return _secondSelectedDay!.difference(_firstSelectedDay!).inDays + 1;
+      if (!isSameDay(_firstSelectedDay, _secondSelectedDay)) {
+        return (_secondSelectedDay!.difference(_firstSelectedDay!).inDays) + 1;
+      } else {
+        return 1;
+      }
     } else if (_firstSelectedDay != null) {
       return 1;
     }
@@ -133,7 +141,7 @@ class _BookingPageState extends State<BookingPage> {
                         setState(() {
                           _firstSelectedDay = start;
                           if (end == null) {
-                            _secondSelectedDay = start.add(Duration(days: 1));
+                            _secondSelectedDay = start;
                           } else {
                             _secondSelectedDay = end;
                           }

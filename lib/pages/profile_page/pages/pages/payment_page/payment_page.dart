@@ -242,15 +242,61 @@ class _PaymentPageState extends State<PaymentPage> {
                             children: [
                               CustomSlidableAction(
                                 padding: EdgeInsets.zero,
-                                onPressed: (context) => api
-                                    .deletePayment(paymentId: payment.id!)
-                                    .then((value) {
-                                  if (value == 200) {
-                                    setState(() {
-                                      widget.paymentData.removeAt(index);
-                                    });
+                                onPressed: (context) async {
+                                  try {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Deleting payment...'),
+                                        duration: Duration(seconds: 1),
+                                      ),
+                                    );
+
+                                    final result = await api.deletePayment(
+                                        paymentId: payment.id!);
+
+                                    if (result == 200) {
+                                      setState(() {
+                                        widget.paymentData.removeWhere(
+                                            (p) => p.id == payment.id);
+
+                                        _sortedPayments.removeWhere(
+                                            (p) => p.id == payment.id);
+                                      });
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Payment deleted successfully'),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Failed to delete payment'),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text('Error: ${e.toString()}'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
                                   }
-                                }),
+                                },
                                 backgroundColor: const Color(0xffFF2761),
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(12),

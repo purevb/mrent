@@ -421,7 +421,6 @@ class Api {
   Future<List<PropertyTableCalendar>> getTableDateData(
       String propertyId) async {
     final res = await api.get("/api/properties/$propertyId/calendar");
-    log(res.toString());
     final List<dynamic> data = res.data;
     return data.map((json) {
       return PropertyTableCalendar.fromJson(json);
@@ -472,6 +471,7 @@ class Api {
 
   Future<int> deletePayment({required String paymentId}) async {
     final res = await api.delete("/api/payments/$paymentId", {});
+    print(res.statusCode.toString());
     return res.statusCode!;
   }
 

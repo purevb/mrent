@@ -8,7 +8,7 @@ import 'package:mrent/utils/constants.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookingPeriodChooserComponent extends StatefulWidget {
-  final Function(DateTime, DateTime) onDatesSelected;
+  final Function(DateTime, DateTime?) onDatesSelected;
   final bool forAddProperties;
   final List<PropertyTableCalendar> bookedDates;
 
@@ -141,55 +141,6 @@ class _BookingPeriodChooserComponentState
     }
     return true;
   }
-
-  // Widget calendar(
-  //     BuildContext context,
-  //     DateTime focusedDay,
-  //     VoidCallback onLeftChevronTap,
-  //     VoidCallback onRightChevronTap,
-  //     VoidCallback onTodayTap,
-  //     bool isTodayVisible) {
-  //   final month = _mongolianMonths[focusedDay.month - 1];
-  //   final year = focusedDay.year;
-
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(vertical: 4),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         IconButton(
-  //           icon: const Icon(Icons.chevron_left),
-  //           onPressed: onLeftChevronTap,
-  //           color: mRed,
-  //         ),
-  //         GestureDetector(
-  //           onTap: onTodayTap,
-  //           child: Container(
-  //             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(20),
-  //               // ignore: deprecated_member_use
-  //               color: mRed.withOpacity(0.1),
-  //             ),
-  //             child: Text(
-  //               '$month $year',
-  //               style: GoogleFonts.inter(
-  //                 color: mRed,
-  //                 fontWeight: FontWeight.w600,
-  //                 fontSize: 16,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         IconButton(
-  //           icon: const Icon(Icons.chevron_right),
-  //           onPressed: onRightChevronTap,
-  //           color: mRed,
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -402,9 +353,43 @@ class _BookingPeriodChooserComponentState
             enabledDayPredicate: _isDateEnabled,
             onDaySelected: (selectedDay, focusedDay) {
               setState(() {
-                _selectedDay = selectedDay;
-                _rangeStart = null;
-                _rangeEnd = null;
+                if (_rangeStart == null) {
+                  // First selection - start of range
+                  _selectedDay = null;
+                  _rangeStart = selectedDay;
+                  _rangeEnd = null;
+                  _focusedDay = focusedDay;
+                  // Call callback with single day
+                  widget.onDatesSelected(selectedDay, null);
+                } else if (_rangeEnd == null) {
+                  // Second selection - end of range or same day
+                  if (selectedDay.isAfter(_rangeStart!) ||
+                      selectedDay.isAtSameMomentAs(_rangeStart!)) {
+                    _rangeEnd = selectedDay;
+                    if (_isRangeValid(_rangeStart, _rangeEnd)) {
+                      widget.onDatesSelected(_rangeStart!, _rangeEnd);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Сонгосон хугацаанд захиалга байна!'),
+                          backgroundColor: Colors.grey,
+                        ),
+                      );
+                      _rangeStart = null;
+                      _rangeEnd = null;
+                    }
+                  } else {
+                    // Selected earlier date, make it the new start
+                    _rangeStart = selectedDay;
+                    _rangeEnd = null;
+                    widget.onDatesSelected(selectedDay, null);
+                  }
+                } else {
+                  // Reset selection
+                  _rangeStart = selectedDay;
+                  _rangeEnd = null;
+                  widget.onDatesSelected(selectedDay, null);
+                }
                 _focusedDay = focusedDay;
               });
             },
@@ -428,12 +413,15 @@ class _BookingPeriodChooserComponentState
                     _rangeStart = null;
                     _rangeEnd = null;
                   }
+                } else if (start != null) {
+                  // Single day selected via range selection
+                  widget.onDatesSelected(start, null);
                 }
               });
             },
           ),
           const SizedBox(height: 10),
-          if (_rangeStart != null && _rangeEnd != null)
+          if (_rangeStart != null)
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -441,53 +429,84 @@ class _BookingPeriodChooserComponentState
                 color: bookingColor,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Эхлэх огноо",
-                        style: GoogleFonts.inter(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
+              child: _rangeEnd != null
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Эхлэх огноо",
+                              style: GoogleFonts.inter(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              DateFormat('yyyy-MM-dd').format(_rangeStart!),
+                              style: GoogleFonts.inter(
+                                color: textDefaultColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(_rangeStart!),
-                        style: GoogleFonts.inter(
-                          color: textDefaultColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Дуусах огноо",
+                              style: GoogleFonts.inter(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              DateFormat('yyyy-MM-dd').format(_rangeEnd!),
+                              style: GoogleFonts.inter(
+                                color: textDefaultColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Дуусах огноо",
-                        style: GoogleFonts.inter(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Сонгосон огноо",
+                          style: GoogleFonts.inter(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(_rangeEnd!),
-                        style: GoogleFonts.inter(
-                          color: textDefaultColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                        Text(
+                          DateFormat('yyyy-MM-dd').format(_rangeStart!),
+                          style: GoogleFonts.inter(
+                            color: textDefaultColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Дуусх огноо сонгоно уу",
+                          style: GoogleFonts.inter(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
         ],
       ),

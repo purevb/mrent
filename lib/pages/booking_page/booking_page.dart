@@ -65,6 +65,9 @@ class _BookingPageState extends State<BookingPage> {
   int getSelectedDaysDifference() {
     if (_firstSelectedDay != null && _secondSelectedDay != null) {
       return _secondSelectedDay!.difference(_firstSelectedDay!).inDays;
+    } else if (_firstSelectedDay != null) {
+      // Single day selected - default to 1 day
+      return 1;
     }
     return 0;
   }
@@ -130,7 +133,12 @@ class _BookingPageState extends State<BookingPage> {
                       onDatesSelected: (start, end) {
                         setState(() {
                           _firstSelectedDay = start;
-                          _secondSelectedDay = end;
+                          if (end == null) {
+                            // Single day selected - set checkout to next day
+                            _secondSelectedDay = start.add(Duration(days: 1));
+                          } else {
+                            _secondSelectedDay = end;
+                          }
                         });
                       },
                     ),
@@ -144,11 +152,9 @@ class _BookingPageState extends State<BookingPage> {
                       perDayServiceCost: serviceFee,
                     ),
                     MyButton(
-                      canPress: _firstSelectedDay != null &&
-                          _secondSelectedDay != null,
+                      canPress: _firstSelectedDay != null,
                       onPress: () {
-                        if (_firstSelectedDay == null ||
-                            _secondSelectedDay == null) {
+                        if (_firstSelectedDay == null) {
                           Fluttertoast.showToast(
                             msg: "Түрээслэх хугацааг сонгоно уу",
                             toastLength: Toast.LENGTH_SHORT,
@@ -160,6 +166,11 @@ class _BookingPageState extends State<BookingPage> {
                           );
                           return;
                         }
+
+                        // Ensure we have a checkout date
+                        DateTime checkoutDate = _secondSelectedDay ??
+                            _firstSelectedDay!.add(Duration(days: 1));
+
                         api
                             .postBookingRequest(
                           propertyId: widget.propertyData.id ?? "",
@@ -167,7 +178,7 @@ class _BookingPageState extends State<BookingPage> {
                           hostId: widget.propertyData.userId?.id ?? "",
                           additionalRequest: additionalRequestController.text,
                           checkInDate: _firstSelectedDay!,
-                          checkoutDate: _secondSelectedDay!,
+                          checkoutDate: checkoutDate,
                           totalPrice: calculateTotalPayment(),
                         )
                             .then(
